@@ -1,0 +1,51 @@
+/* Estilos para el carrusel */
+.carousel {
+  margin-bottom: 40px;
+}
+
+/* Ajustar los indicadores para que se vean mejor */
+.carousel-indicators {
+  bottom: -40px;
+}
+
+.carousel-indicators button {
+  background-color: #adb5bd;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.carousel-indicators button.active {
+  background-color: #0d6efd;
+}
+
+/* Hacer los controles más visibles */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+  opacity: 0.8;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.carousel-control-prev {
+  left: -20px;
+}
+
+.carousel-control-next {
+  right: -20px;
+}
+
+/* Espacio entre tarjetas */
+.carousel-item .col-md-3 {
+  padding: 0 10px;
+}
+
+/* Ocultar elementos de relleno */
+.card.hidden-product {
+  display: none;
+}

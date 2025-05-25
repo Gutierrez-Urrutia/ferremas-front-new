@@ -1,0 +1,15 @@
+.card-header {
+  height: 60px; /* Altura fija */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.card-header h6 {
+  margin: 0;
+  /* Para texto en una sola línea con puntos suspensivos */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
