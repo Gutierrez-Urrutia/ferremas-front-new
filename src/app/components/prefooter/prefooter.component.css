@@ -1,0 +1,31 @@
+.prefooter-confidence {
+  background-color: #163854;
+  color: white;
+  padding: 3rem 0;
+}
+
+/* Aseguramos que los h3 también sean blancos explícitamente */
+.prefooter-confidence h3 {
+  color: white;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.prefooter-confidence .fas {
+  color: #ff9124;
+}
+
+.prefooter-confidence p {
+  color: white;
+  opacity: 0.9;
+}
+
+.feature {
+  padding: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}

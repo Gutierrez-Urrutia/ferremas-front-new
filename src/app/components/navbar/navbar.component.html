@@ -11,7 +11,8 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Home</a>
+                    <a class="nav-link" [routerLink]="['/']" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact: true}">Home</a>
                 </li>
                 <!-- <li class="nav-item">
                     <a class="nav-link" href="#">Features</a>
@@ -26,14 +27,16 @@
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                         aria-haspopup="true" aria-expanded="false">Categorías</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a *ngFor="let categoria of categorias" class="dropdown-item"
+                            [routerLink]="['/categoria', categoria.id]">
+                            {{ categoria.nombre }}
+                        </a>
                     </div>
                 </li>
             </ul>
             <div class="d-flex me-4">
-                <button class="btn btn-outline-light position-relative border-0" type="button" aria-label="Carrito de compras">
+                <button class="btn btn-outline-light position-relative border-0" type="button"
+                    aria-label="Carrito de compras">
                     <i class="fas fa-shopping-cart fa-xl"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         3

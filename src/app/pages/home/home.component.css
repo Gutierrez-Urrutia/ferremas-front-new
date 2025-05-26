@@ -1,0 +1,26 @@
+.home-page {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.hero-section {
+  width: 100vw; /* Ancho completo de la ventana */
+  margin-left: calc(50% - 50vw); /* Centrar y expandir */
+  position: relative;
+}
+
+.productos-destacados {
+  background-color: #ffffff;
+}
+
+.prefooter-section {
+  width: 100vw; /* Ancho completo de la ventana */
+  margin-left: calc(50% - 50vw); /* Centrar y expandir */
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .hero-section {
+    margin-left: calc(50% - 50vw);
+  }
+}
