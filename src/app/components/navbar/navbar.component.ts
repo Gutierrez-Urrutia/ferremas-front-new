@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { CategoriaService } from '../../services/categoria.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { CategoriaService } from '../../services/categoria.service';
+import { CarritoService } from '../../services/carrito.service';
 import { Categoria } from '../../interfaces/categoria';
-
 
 @Component({
   selector: 'app-navbar',
@@ -11,17 +11,23 @@ import { Categoria } from '../../interfaces/categoria';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit{
+export class NavbarComponent implements OnInit {
   categorias: Categoria[] = [];
-  
-  constructor(private categoriaService: CategoriaService) { }
+  cantidadCarrito: number = 0;
+
+  constructor(
+    private categoriaService: CategoriaService,
+    private carritoService: CarritoService
+  ) {}
 
   ngOnInit(): void {
-    // Suscribirse al observable de categorías para obtener la lista
     this.categoriaService.getCategorias().subscribe(categorias => {
       this.categorias = categorias;
     });
+
+    // Suscribirse a cambios en el carrito
+    this.carritoService.itemsCarrito$.subscribe(items => {
+      this.cantidadCarrito = this.carritoService.obtenerCantidadTotal();
+    });
   }
-
-
 }
