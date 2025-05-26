@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-simular-pago',
@@ -30,6 +31,8 @@ export class SimularPagoComponent implements OnInit {
   // Fecha actual para mostrar en el recibo
   fechaTransaccion: Date = new Date();
 
+  constructor(private router: Router) {}
+
   ngOnInit() {
     // Auto-rellenar datos de prueba
     this.numeroTarjeta = '4532 1234 5678 9012';
@@ -46,7 +49,7 @@ export class SimularPagoComponent implements OnInit {
     }
 
     this.estadoPago = 'procesando';
-    this.tiempoRestante = 30; // 30 segundos de simulación
+    this.tiempoRestante = 5; // 30 segundos de simulación
     
     this.intervaloTiempo = setInterval(() => {
       this.tiempoRestante--;

@@ -14,15 +14,6 @@
                     <a class="nav-link" [routerLink]="['/']" routerLinkActive="active"
                         [routerLinkActiveOptions]="{exact: true}">Home</a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li> -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                         aria-haspopup="true" aria-expanded="false">Categorías</a>
@@ -34,16 +25,15 @@
                     </div>
                 </li>
             </ul>
-            <div class="d-flex me-4">
-                <button class="btn btn-outline-light position-relative border-0" type="button"
-                    aria-label="Carrito de compras">
-                    <i class="fas fa-shopping-cart fa-xl"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        3
-                        <span class="visually-hidden">productos en el carrito</span>
-                    </span>
-                </button>
-            </div>
+            <button class="btn btn-outline-light position-relative border-0 me-3" type="button" data-bs-toggle="modal"
+                data-bs-target="#modalCarrito">
+                <i class="fas fa-shopping-cart fa-xl"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    *ngIf="cantidadCarrito > 0">
+                    {{ cantidadCarrito }}
+                    <span class="visually-hidden">productos en carrito</span>
+                </span>
+            </button>
             <!-- <form class="d-flex">
                 <input class="form-control me-sm-2" type="search" placeholder="Search">
                 <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>

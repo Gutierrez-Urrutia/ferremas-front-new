@@ -14,16 +14,19 @@
 
             <div class="modal-body" *ngIf="compra">
                 <!-- Paso 1: Selección de cantidad -->
+                <!-- Reemplazar el contenido del paso 1 -->
                 <div *ngIf="paso === 1">
-                    <div class="row">
+                    <!-- Compra individual -->
+                    <div *ngIf="!compra.esCompraCarrito" class="row">
                         <div class="col-md-4">
-                            <img [src]="compra.producto.imagen" class="img-fluid rounded"
-                                [alt]="compra.producto.nombre">
+                            <img [src]="compra.productos[0].producto.imagen" class="img-fluid rounded"
+                                [alt]="compra.productos[0].producto.nombre">
                         </div>
                         <div class="col-md-8">
-                            <h4>{{ compra.producto.nombre }}</h4>
-                            <p class="text-muted">{{ compra.producto.descripcion }}</p>
-                            <p class="h5 text-success">${{ compra.producto.precio | number:'1.0-0' }} c/u</p>
+                            <h4>{{ compra.productos[0].producto.nombre }}</h4>
+                            <p class="text-muted">{{ compra.productos[0].producto.descripcion }}</p>
+                            <p class="h5 text-success">${{ compra.productos[0].producto.precio | number:'1.0-0' }} c/u
+                            </p>
 
                             <div class="row align-items-center mt-4">
                                 <div class="col-auto">
@@ -39,6 +42,37 @@
                                 <h5>Subtotal: <span class="text-success">${{ compra.subtotal | number:'1.0-0' }}</span>
                                 </h5>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Compra desde carrito -->
+                    <div *ngIf="compra.esCompraCarrito">
+                        <h5>Resumen de productos</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of compra.productos">
+                                        <td>
+                                            <strong>{{ item.producto.nombre }}</strong><br>
+                                            <small class="text-muted">{{ item.producto.descripcion }}</small>
+                                        </td>
+                                        <td>${{ item.producto.precio | number:'1.0-0' }}</td>
+                                        <td>{{ item.cantidad }}</td>
+                                        <td>${{ (item.producto.precio * item.cantidad) | number:'1.0-0' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-end">
+                            <h5>Total: <span class="text-success">${{ compra.subtotal | number:'1.0-0' }}</span></h5>
                         </div>
                     </div>
                 </div>
@@ -116,10 +150,23 @@
                             <h5>Resumen de compra</h5>
                         </div>
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <span>{{ compra.producto.nombre }} (x{{ compra.cantidad }})</span>
-                                <span>${{ compra.subtotal | number:'1.0-0' }}</span>
+                            <!-- Compra individual -->
+                            <div *ngIf="!compra.esCompraCarrito">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ compra.productos[0].producto.nombre }} (x{{ compra.productos[0].cantidad
+                                        }})</span>
+                                    <span>${{ compra.subtotal | number:'1.0-0' }}</span>
+                                </div>
                             </div>
+
+                            <!-- Compra desde carrito (múltiples productos) -->
+                            <div *ngIf="compra.esCompraCarrito">
+                                <div class="d-flex justify-content-between mb-2" *ngFor="let item of compra.productos">
+                                    <span>{{ item.producto.nombre }} (x{{ item.cantidad }})</span>
+                                    <span>${{ (item.producto.precio * item.cantidad) | number:'1.0-0' }}</span>
+                                </div>
+                            </div>
+
                             <div class="d-flex justify-content-between" *ngIf="tipoDespacho === 'domicilio'">
                                 <span>Despacho</span>
                                 <span>${{ costoDespacho | number:'1.0-0' }}</span>
@@ -142,9 +189,7 @@
 
                 <!-- Paso 4: Simulación de pago con Transbank -->
                 <div *ngIf="paso === 4">
-                    <app-simular-pago 
-                        [monto]="getTotal()"
-                        [numeroOrden]="numeroOrden"
+                    <app-simular-pago [monto]="getTotal()" [numeroOrden]="numeroOrden"
                         (pagoCompletado)="onPagoCompletado($event)">
                     </app-simular-pago>
                 </div>
