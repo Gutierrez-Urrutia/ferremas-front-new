@@ -1,6 +1,27 @@
 .logo{
     width: auto;
-    height: 5rem;
+    height: 2.5rem;
     margin: 0 auto;
     display: block;
+}
+/* Ajustar altura del navbar */
+.navbar {
+    min-height: 4rem; /* Ajusta este valor según necesites */
+    padding: 0.5rem 1rem; /* Reduce el padding vertical */
+}
+
+/* Si usas Bootstrap navbar */
+.navbar-nav {
+    align-items: center;
+}
+
+/* Ajustar contenedor del navbar */
+.navbar-brand {
+    margin-bottom: 0;
+}
+
+/* Para hacer el navbar más compacto */
+.navbar-toggler {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
 }
