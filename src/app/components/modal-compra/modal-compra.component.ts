@@ -6,11 +6,12 @@ import { CompraService } from '../../services/compra.service';
 import { DatosCompra } from '../../interfaces/datos-compra';
 import { CarritoService } from '../../services/carrito.service';
 import { SimularPagoComponent } from '../../pages/simular-pago/simular-pago.component';
+import { ConversorPipe } from '../../pipes/conversor.pipe';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-modal-compra',
-  imports: [CommonModule, FormsModule, SimularPagoComponent],
+  imports: [CommonModule, FormsModule, SimularPagoComponent, ConversorPipe],
   templateUrl: './modal-compra.component.html',
   styleUrl: './modal-compra.component.css'
 })
@@ -19,6 +20,7 @@ export class ModalCompraComponent implements OnInit {
   cantidad: number = 1;
   paso: number = 1;
   numeroOrden: string = '';
+  valorDespacho: number = 3000;
 
   // Datos del cliente
   datosCliente = {
@@ -48,6 +50,23 @@ export class ModalCompraComponent implements OnInit {
         }
       }
     });
+    this.compraService.limpiarFormulario$.subscribe(() => {
+      this.limpiarFormularioCliente();
+    });
+  }
+
+   limpiarFormularioCliente() {
+    this.datosCliente = {
+      nombre: '',
+      email: '',
+      telefono: '',
+      direccion: '',
+      ciudad: '',
+      region: ''
+    };
+    this.tipoDespacho = 'domicilio';
+    this.cantidad = 1;
+    this.paso = 1;
   }
 
   actualizarCantidad() {
@@ -116,16 +135,14 @@ export class ModalCompraComponent implements OnInit {
       title: '¡Compra exitosa!',
       text: 'Su pago ha sido procesado correctamente',
       icon: 'success',
-      showCancelButton: true,
       confirmButtonText: 'Ir al inicio',
-      cancelButtonText: 'Cerrar',
       confirmButtonColor: '#28a745',
       allowOutsideClick: false,
       allowEscapeKey: false
     }).then((result) => {
       console.log('Resultado SweetAlert:', result);
 
-      // Cerrar modal DESPUÉS de que el usuario haga clic
+      this.limpiarTodosLosDatos();
       this.cerrarModal();
 
       if (result.isConfirmed) {
@@ -157,5 +174,13 @@ export class ModalCompraComponent implements OnInit {
       total += this.costoDespacho;
     }
     return total;
+  }
+
+  limpiarTodosLosDatos() {
+    // Vaciar carrito
+    this.carritoService.vaciarCarrito();
+    
+    // Limpiar compra (esto automáticamente limpiará el formulario)
+    this.compraService.limpiarCompra();
   }
 }

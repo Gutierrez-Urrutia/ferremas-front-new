@@ -3,10 +3,11 @@ import { Producto } from '../../interfaces/producto';
 import { CommonModule } from '@angular/common';
 import { CompraService } from '../../services/compra.service';
 import { CarritoService } from '../../services/carrito.service';
+import { ConversorPipe } from '../../pipes/conversor.pipe';
 
 @Component({
   selector: 'app-card',
-  imports: [CommonModule],
+  imports: [CommonModule, ConversorPipe],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'
 })

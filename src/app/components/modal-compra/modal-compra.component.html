@@ -25,7 +25,7 @@
                         <div class="col-md-8">
                             <h4>{{ compra.productos[0].producto.nombre }}</h4>
                             <p class="text-muted">{{ compra.productos[0].producto.descripcion }}</p>
-                            <p class="h5 text-success">${{ compra.productos[0].producto.precio | number:'1.0-0' }} c/u
+                            <p class="h5 text-success">{{ compra.productos[0].producto.precio | conversor }} c/u
                             </p>
 
                             <div class="row align-items-center mt-4">
@@ -39,7 +39,7 @@
                             </div>
 
                             <div class="mt-4">
-                                <h5>Subtotal: <span class="text-success">${{ compra.subtotal | number:'1.0-0' }}</span>
+                                <h5>Subtotal: <span class="text-success">{{ compra.subtotal | conversor }}</span>
                                 </h5>
                             </div>
                         </div>
@@ -64,15 +64,15 @@
                                             <strong>{{ item.producto.nombre }}</strong><br>
                                             <small class="text-muted">{{ item.producto.descripcion }}</small>
                                         </td>
-                                        <td>${{ item.producto.precio | number:'1.0-0' }}</td>
+                                        <td>{{ item.producto.precio | conversor }}</td>
                                         <td>{{ item.cantidad }}</td>
-                                        <td>${{ (item.producto.precio * item.cantidad) | number:'1.0-0' }}</td>
+                                        <td>{{ (item.producto.precio * item.cantidad) | conversor }}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="text-end">
-                            <h5>Total: <span class="text-success">${{ compra.subtotal | number:'1.0-0' }}</span></h5>
+                            <h5>Total: <span class="text-success">{{ compra.subtotal | conversor }}</span></h5>
                         </div>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
                                 <input class="form-check-input" type="radio" id="domicilio" [(ngModel)]="tipoDespacho"
                                     name="tipoDespacho" value="domicilio">
                                 <label class="form-check-label" for="domicilio">
-                                    Despacho a domicilio (+$3.000)
+                                    Despacho a domicilio (+ {{valorDespacho | conversor}})
                                 </label>
                             </div>
                             <div class="form-check">
@@ -155,7 +155,7 @@
                                 <div class="d-flex justify-content-between">
                                     <span>{{ compra.productos[0].producto.nombre }} (x{{ compra.productos[0].cantidad
                                         }})</span>
-                                    <span>${{ compra.subtotal | number:'1.0-0' }}</span>
+                                    <span>{{ compra.subtotal | conversor }}</span>
                                 </div>
                             </div>
 
@@ -163,18 +163,18 @@
                             <div *ngIf="compra.esCompraCarrito">
                                 <div class="d-flex justify-content-between mb-2" *ngFor="let item of compra.productos">
                                     <span>{{ item.producto.nombre }} (x{{ item.cantidad }})</span>
-                                    <span>${{ (item.producto.precio * item.cantidad) | number:'1.0-0' }}</span>
+                                    <span>{{ (item.producto.precio * item.cantidad) | conversor }}</span>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-between" *ngIf="tipoDespacho === 'domicilio'">
                                 <span>Despacho</span>
-                                <span>${{ costoDespacho | number:'1.0-0' }}</span>
+                                <span>{{ costoDespacho | conversor }}</span>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between h5">
                                 <span>Total</span>
-                                <span class="text-success">${{ getTotal() | number:'1.0-0' }}</span>
+                                <span class="text-success">{{ getTotal() | conversor }}</span>
                             </div>
                         </div>
                     </div>
