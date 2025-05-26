@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Producto } from '../interfaces/producto';
 import { DatosCompra } from '../interfaces/datos-compra';
 import { DatosCliente } from '../interfaces/datos-cliente';
@@ -11,6 +11,9 @@ import { ItemCarrito } from './carrito.service';
 export class CompraService {
   private compraActualSource = new BehaviorSubject<DatosCompra | null>(null);
   compraActual$ = this.compraActualSource.asObservable();
+
+  private limpiarFormularioSource = new Subject<void>();
+  limpiarFormulario$ = this.limpiarFormularioSource.asObservable();
 
   iniciarCompra(producto: Producto, cantidad: number = 1) {
     const compra: DatosCompra = {
@@ -71,5 +74,6 @@ export class CompraService {
 
   limpiarCompra() {
     this.compraActualSource.next(null);
+    this.limpiarFormularioSource.next();
   }
 }

@@ -29,7 +29,7 @@
             <div class="col-md-4">
               <h6 class="mb-1">{{ item.producto.nombre }}</h6>
               <p class="text-muted small mb-1">{{ item.producto.descripcion }}</p>
-              <span class="text-success fw-bold">${{ item.producto.precio | number:'1.0-0' }}</span>
+              <span class="text-success fw-bold">{{ item.producto.precio | conversor }}</span>
             </div>
             <div class="col-md-3">
               <label class="form-label small">Cantidad</label>
@@ -51,7 +51,7 @@
             </div>
             <div class="col-md-2">
               <label class="form-label small">Subtotal</label>
-              <div class="fw-bold text-success">${{ item.subtotal | number:'1.0-0' }}</div>
+              <div class="fw-bold text-success">{{ item.subtotal | conversor }}</div>
             </div>
             <div class="col-md-1">
               <button class="btn btn-outline-danger btn-sm" 
@@ -73,7 +73,7 @@
             </div>
             <div class="col-md-6 text-end">
               <h4>
-                Total: <span class="text-success">${{ total | number:'1.0-0' }}</span>
+                Total: <span class="text-success">{{ total | conversor }}</span>
               </h4>
             </div>
           </div>

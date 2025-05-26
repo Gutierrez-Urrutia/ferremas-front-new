@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CarritoService, ItemCarrito } from '../../services/carrito.service';
 import { CompraService } from '../../services/compra.service';
+import { ConversorPipe } from '../../pipes/conversor.pipe';
 
 @Component({
   selector: 'app-modal-carrito',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConversorPipe],
   templateUrl: './modal-carrito.component.html',
   styleUrl: './modal-carrito.component.css'
 })
@@ -17,7 +18,7 @@ export class ModalCarritoComponent implements OnInit {
   constructor(
     private carritoService: CarritoService,
     private compraService: CompraService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.carritoService.itemsCarrito$.subscribe(items => {
@@ -50,7 +51,7 @@ export class ModalCarritoComponent implements OnInit {
 
     // Crear una compra con todos los productos del carrito
     this.compraService.iniciarCompraDesdeCarrito(this.items);
-    
+
     // Cerrar modal del carrito
     const modalElement = document.getElementById('modalCarrito');
     const modal = (window as any).bootstrap.Modal.getInstance(modalElement);

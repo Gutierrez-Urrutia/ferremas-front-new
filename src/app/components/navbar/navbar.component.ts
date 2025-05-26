@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { CategoriaService } from '../../services/categoria.service';
 import { CarritoService } from '../../services/carrito.service';
 import { Categoria } from '../../interfaces/categoria';
+import { DivisaRate } from '../../interfaces/divisa-rate';
+import { DivisaService } from '../../services/divisas.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,11 +16,26 @@ import { Categoria } from '../../interfaces/categoria';
 export class NavbarComponent implements OnInit {
   categorias: Categoria[] = [];
   cantidadCarrito: number = 0;
+  selectedDivisa: string = 'CLP';
+  availableDivisas: DivisaRate[] = [];
 
   constructor(
     private categoriaService: CategoriaService,
-    private carritoService: CarritoService
-  ) {}
+    private carritoService: CarritoService,
+    private divisaService: DivisaService
+  ) {
+    this.divisaService.selectedDivisa$.subscribe(divisa => {
+      this.selectedDivisa = divisa;
+    });
+
+    this.divisaService.rates$.subscribe(rates => {
+      this.availableDivisas = rates;
+    });
+  }
+
+  onDivisaChange(divisa: string): void {
+    this.divisaService.setSelectedDivisa(divisa);
+  }
 
   ngOnInit(): void {
     this.categoriaService.getCategorias().subscribe(categorias => {
