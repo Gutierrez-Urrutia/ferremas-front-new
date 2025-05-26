@@ -7,4 +7,5 @@ export interface Producto {
   descuento?: number;
   destacado?: boolean;
   oculto?: boolean;
+  categoriaId: number;
 }

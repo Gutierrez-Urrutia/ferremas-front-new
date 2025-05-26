@@ -1,56 +1,59 @@
-import { Component } from '@angular/core';
-import { CardComponent } from "../card/card.component";
-import { Producto } from '../../interfaces/producto';
-import { ProductoService } from '../../services/producto.service';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ProductoService } from '../../services/producto.service';
+import { Producto } from '../../interfaces/producto';
+import { CardComponent } from '../card/card.component';
+import { ModalCompraComponent } from '../modal-compra/modal-compra.component';
 
 @Component({
   selector: 'app-destacados',
-  imports: [CardComponent, CommonModule],
+  imports: [CommonModule, CardComponent, ModalCompraComponent],
   templateUrl: './destacados.component.html',
   styleUrl: './destacados.component.css'
 })
-export class DestacadosComponent {
-  productosDestacados: Producto[] = [];
+export class DestacadosComponent implements OnInit {
+  productos: Producto[] = [];
   productosAgrupados: Producto[][] = [];
-  itemsPorSlide = 4;
+  productosAMostrar: number = 4; // Por defecto para desktop
 
   constructor(private productoService: ProductoService) { }
 
   ngOnInit(): void {
+    this.calcularProductosAMostrar();
+    this.cargarProductosDestacados();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.calcularProductosAMostrar();
+    this.agruparProductos();
+  }
+
+  calcularProductosAMostrar(): void {
+    const width = window.innerWidth;
+    
+    if (width < 576) {
+      this.productosAMostrar = 1; // Mobile
+    } else if (width < 768) {
+      this.productosAMostrar = 2; // Tablet pequeño
+    } else if (width < 1200) {
+      this.productosAMostrar = 3; // Tablet/Desktop pequeño
+    } else {
+      this.productosAMostrar = 4; // Desktop grande
+    }
+  }
+
+  cargarProductosDestacados(): void {
     this.productoService.getProductosDestacados().subscribe(productos => {
-      this.productosDestacados = productos;
+      this.productos = productos;
       this.agruparProductos();
     });
   }
 
-  /**
-   * Agrupa los productos en arrays de 4 elementos para cada slide del carrusel
-   */
   agruparProductos(): void {
     this.productosAgrupados = [];
-    for (let i = 0; i < this.productosDestacados.length; i += this.itemsPorSlide) {
-      this.productosAgrupados.push(
-        this.productosDestacados.slice(i, i + this.itemsPorSlide)
-      );
-    }
-    
-    // Si el último grupo tiene menos de 4 productos, completar el grupo con null
-    const ultimoGrupo = this.productosAgrupados[this.productosAgrupados.length - 1];
-    if (ultimoGrupo && ultimoGrupo.length < this.itemsPorSlide) {
-      const faltantes = this.itemsPorSlide - ultimoGrupo.length;
-      for (let i = 0; i < faltantes; i++) {
-        // Para evitar errores, completamos con objetos vacíos que no mostrarán nada
-        ultimoGrupo.push({
-          id: 0,
-          nombre: '',
-          precio: 0,
-          descripcion: '',
-          destacado: false,
-          imagen: '',
-          oculto: true
-        });
-      }
+    for (let i = 0; i < this.productos.length; i += this.productosAMostrar) {
+      this.productosAgrupados.push(this.productos.slice(i, i + this.productosAMostrar));
     }
   }
 }

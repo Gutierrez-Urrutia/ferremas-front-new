@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Producto } from '../interfaces/producto';
 
 
@@ -15,7 +15,7 @@ export class ProductoService {
   }
   
   private cargarProductosIniciales() {
-    const productos = [
+    const productos: Producto[] = [
       {
         id: 1,
         nombre: "Taladro Percutor 850W",
@@ -24,7 +24,8 @@ export class ProductoService {
         imagen: "taladro.jpg",
         descuento: 10,
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 1
       },
       {
         id: 2,
@@ -33,7 +34,8 @@ export class ProductoService {
         descripcion: "Set completo con 42 piezas para todo tipo de tornillos",
         imagen: "destornilladores.jpg",
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 1
       },
       {
         id: 3,
@@ -43,7 +45,8 @@ export class ProductoService {
         imagen: "sierra.jpg",
         descuento: 5,
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 2
       },
       {
         id: 4,
@@ -52,7 +55,8 @@ export class ProductoService {
         descripcion: "Lijadora orbital de 300W con sistema de recolección de polvo",
         imagen: "lijadora.jpg",
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 2
       },
       {
         id: 5,
@@ -61,7 +65,8 @@ export class ProductoService {
         descripcion: "Juego de llaves Allen de alta calidad, 9 piezas",
         imagen: "llaves.jpg",
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 3
       },
       {
         id: 6,
@@ -70,7 +75,8 @@ export class ProductoService {
         descripcion: "Martillo de goma de 1kg, ideal para trabajos delicados",
         imagen: "martillo.jpg",
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 3
       },
       {
         id: 7,
@@ -79,7 +85,8 @@ export class ProductoService {
         descripcion: "Cinta métrica de 5 metros, ideal para mediciones precisas",
         imagen: "cinta.jpg",
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 4
       },
       {
         id: 8,
@@ -88,7 +95,8 @@ export class ProductoService {
         descripcion: "Escuadra de carpintero de alta precisión",
         imagen: "escuadra.jpg",
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 4
       },
       {
         id: 9,
@@ -97,7 +105,8 @@ export class ProductoService {
         descripcion: "Nivel de burbuja de 60cm, ideal para trabajos de nivelación",
         imagen: "nivel.jpg",
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 5
       },
       {
         id: 10,
@@ -107,7 +116,8 @@ export class ProductoService {
         imagen: "caja_herramientas.jpg",
         descuento: 15,
         destacado: true,
-        oculto: false
+        oculto: false,
+        categoriaId: 5
       }  
     ];
     
@@ -132,5 +142,11 @@ export class ProductoService {
         observer.next(productos.find(p => p.id === id));
       });
     });
+  }
+
+  getProductosPorCategoria(categoriaId: number): Observable<Producto[]> {
+    return this.productos$.pipe(
+      map((productos: Producto[]) => productos.filter(p => p.categoriaId === categoriaId && !p.oculto))
+    );
   }
 }

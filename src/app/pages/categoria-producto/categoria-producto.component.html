@@ -1,0 +1,26 @@
+<div class="container mt-5 pt-3">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center mb-4">{{ categoriaNombre }}</h1>
+      <hr>
+    </div>
+  </div>
+  
+  <div class="row" *ngIf="productos.length > 0; else noProductos">
+    <div class="col-md-6 col-lg-4 col-xl-3 mb-4" *ngFor="let producto of productos">
+      <app-card [producto]="producto"></app-card>
+    </div>
+  </div>
+  
+  <ng-template #noProductos>
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="alert alert-info mt-5">
+          <h4><i class="fas fa-info-circle"></i> No hay productos disponibles</h4>
+          <p>Esta categoría no tiene productos disponibles en este momento.</p>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+<app-modal-compra></app-modal-compra>

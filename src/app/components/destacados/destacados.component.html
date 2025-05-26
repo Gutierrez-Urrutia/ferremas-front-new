@@ -3,12 +3,19 @@
   
   <div id="productosCarrusel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
-      <!-- Grupo los productos en conjuntos de 4 para cada slide -->
+      <!-- Grupo los productos según el tamaño de pantalla -->
       <div *ngFor="let grupo of productosAgrupados; let i = index" 
            class="carousel-item" 
            [class.active]="i === 0">
-        <div class="row">
-          <div class="col-md-3" *ngFor="let producto of grupo">
+        <div class="row justify-content-center">
+          <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-3" 
+               *ngFor="let producto of grupo"
+               [ngClass]="{
+                 'col-12': productosAMostrar === 1,
+                 'col-6': productosAMostrar === 2,
+                 'col-4': productosAMostrar === 3,
+                 'col-3': productosAMostrar === 4
+               }">
             <app-card [producto]="producto"></app-card>
           </div>
         </div>
@@ -25,7 +32,7 @@
       <span class="visually-hidden">Siguiente</span>
     </button>
     
-    <!-- Indicadores (opcional) -->
+    <!-- Indicadores -->
     <div class="carousel-indicators">
       <button *ngFor="let grupo of productosAgrupados; let i = index" 
               type="button" 
@@ -37,3 +44,5 @@
     </div>
   </div>
 </div>
+
+<app-modal-compra></app-modal-compra>

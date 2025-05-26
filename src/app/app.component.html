@@ -1,8 +1,12 @@
-<app-navbar></app-navbar>
-<div class="content-container">
-  <app-carrousel></app-carrousel>
-  <app-destacados></app-destacados>
-  <app-prefooter></app-prefooter>
+<div class="app-layout">
+  <!-- Navbar siempre visible -->
+  <app-navbar></app-navbar>
+  
+  <!-- Contenido dinámico de las páginas -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <!-- Footer siempre visible -->
   <app-footer></app-footer>
-  <router-outlet />
 </div>
