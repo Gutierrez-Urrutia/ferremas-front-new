@@ -1,12 +1,12 @@
 .logo{
     width: auto;
-    height: 2.5rem;
+    height: 3rem;
     margin: 0 auto;
     display: block;
 }
 /* Ajustar altura del navbar */
 .navbar {
-    min-height: 4rem; /* Ajusta este valor según necesites */
+    min-height: 4.5rem; /* Ajusta este valor según necesites */
     padding: 0.5rem 1rem; /* Reduce el padding vertical */
 }
 
