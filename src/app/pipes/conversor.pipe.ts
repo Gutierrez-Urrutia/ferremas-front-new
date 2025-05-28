@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DivisaService } from '../services/divisas.service';
+import { DivisaService } from '../services/divisa.service';
 
 @Pipe({
   name: 'conversor',

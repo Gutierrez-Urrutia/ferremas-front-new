@@ -45,8 +45,7 @@
             <button class="btn btn-outline-light position-relative border-0 me-3" type="button" data-bs-toggle="modal"
                 data-bs-target="#modalCarrito">
                 <i class="fas fa-shopping-cart fa-xl"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    *ngIf="cantidadCarrito > 0">
+                <span class="position-absolute badge rounded-pill bg-danger carrito-badge" *ngIf="cantidadCarrito > 0">
                     {{ cantidadCarrito }}
                     <span class="visually-hidden">productos en carrito</span>
                 </span>

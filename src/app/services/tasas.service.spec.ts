@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { DivisaService } from './divisa.service';
 
+import { TasasService } from './tasas.service';
 
-
-describe('DivisasService', () => {
-  let service: DivisaService;
+describe('TasasService', () => {
+  let service: TasasService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(DivisaService);
+    service = TestBed.inject(TasasService);
   });
 
   it('should be created', () => {

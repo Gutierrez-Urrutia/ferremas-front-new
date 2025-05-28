@@ -5,7 +5,7 @@ import { CategoriaService } from '../../services/categoria.service';
 import { CarritoService } from '../../services/carrito.service';
 import { Categoria } from '../../interfaces/categoria';
 import { DivisaRate } from '../../interfaces/divisa-rate';
-import { DivisaService } from '../../services/divisas.service';
+import { DivisaService } from '../../services/divisa.service';
 
 @Component({
   selector: 'app-navbar',
