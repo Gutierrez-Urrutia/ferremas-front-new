@@ -25,3 +25,93 @@
     padding: 0.25rem 0.5rem;
     font-size: 1rem;
 }
+
+/* Estilos para el dropdown de divisas */
+.currency-item {
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.currency-item:hover {
+  background-color: #f8f9fa !important;
+  color: #495057 !important;
+  transform: translateX(2px);
+}
+
+.currency-item:active {
+  background-color: #e9ecef !important;
+}
+
+.currency-item.active {
+  background-color: #5a5a5a50 !important;
+  color: white !important;
+  font-weight: 500;
+}
+
+.currency-item.active:hover {
+  background-color: #1f1f1f8f !important;
+  color: white !important;
+}
+
+.check-icon {
+  color: #28a745;
+  font-size: 0.8rem;
+  min-width: 16px;
+}
+
+.currency-item.active .check-icon {
+  color: white;
+}
+
+.currency-info {
+  display: flex;
+  flex-direction: row; /* Cambiar de column a row */
+  align-items: center;
+  gap: 0.5rem; /* Espacio entre la sigla y el nombre */
+  line-height: 1.2;
+}
+
+.currency-info strong {
+  font-size: 0.9rem;
+}
+
+/* Mejorar el dropdown */
+.dropdown-menu {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .currency-item {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .currency-info {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+}
+
+/* Efecto de focus para accesibilidad */
+.currency-item:focus {
+  outline: 2px solid #007bff;
+  outline-offset: -2px;
+  background-color: #f8f9fa;
+}
+
+/* Animación del icono check */
+.check-icon {
+  transition: all 0.2s ease-in-out;
+}
+
+.currency-item:hover .check-icon {
+  transform: scale(1.1);
+}
