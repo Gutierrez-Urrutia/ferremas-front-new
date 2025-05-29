@@ -17,7 +17,8 @@ export class ConversorPipe implements PipeTransform {
     switch(selectedDivisa) {
       case 'USD':
         const precioUsd = new Intl.NumberFormat('en-US', {
-          minimumFractionDigits: 0
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
         }).format(precioConvertido);
         return `USD$ ${precioUsd}`;
       

@@ -33,11 +33,16 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li *ngFor="let currency of availableDivisas">
-                        <a class="dropdown-item" (click)="onDivisaChange(currency.code)"
-                            [class.active]="currency.code === selectedDivisa">
-                            <i class="fas fa-check me-2"
+                        <a class="dropdown-item currency-item" role="button" tabindex="0"
+                            (click)="onDivisaChange(currency.code)" (keydown.enter)="onDivisaChange(currency.code)"
+                            (keydown.space)="onDivisaChange(currency.code)"
+                            [class.active]="currency.code === selectedDivisa"
+                            [attr.aria-selected]="currency.code === selectedDivisa">
+                            <i class="fas fa-check me-2 check-icon"
                                 [style.visibility]="currency.code === selectedDivisa ? 'visible' : 'hidden'"></i>
-                            {{ currency.code }} - {{ currency.name }}
+                            <span class="currency-info">
+                                <strong>{{ currency.code }}</strong> - {{ currency.name }}
+                            </span>
                         </a>
                     </li>
                 </ul>
@@ -50,10 +55,6 @@
                     <span class="visually-hidden">productos en carrito</span>
                 </span>
             </button>
-            <!-- <form class="d-flex">
-                <input class="form-control me-sm-2" type="search" placeholder="Search">
-                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-            </form> -->
         </div>
     </div>
 </nav>
