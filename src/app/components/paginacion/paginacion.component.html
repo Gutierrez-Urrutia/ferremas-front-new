@@ -1,0 +1,48 @@
+<nav aria-label="Paginación" *ngIf="totalPages > 1">
+  <ul class="pagination justify-content-center">
+    <!-- Botón Primera página -->
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="goToFirst()" [disabled]="currentPage === 1">
+        <i class="fas fa-angle-double-left"></i>
+      </button>
+    </li>
+
+    <!-- Botón Anterior -->
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="goToPrevious()" [disabled]="currentPage === 1">
+        <i class="fas fa-angle-left"></i>
+      </button>
+    </li>
+
+    <!-- Páginas visibles -->
+    <li *ngFor="let page of visiblePages" 
+        class="page-item" 
+        [class.active]="page === currentPage">
+      <button class="page-link" (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    </li>
+
+    <!-- Botón Siguiente -->
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <button class="page-link" (click)="goToNext()" [disabled]="currentPage === totalPages">
+        <i class="fas fa-angle-right"></i>
+      </button>
+    </li>
+
+    <!-- Botón Última página -->
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <button class="page-link" (click)="goToLast()" [disabled]="currentPage === totalPages">
+        <i class="fas fa-angle-double-right"></i>
+      </button>
+    </li>
+  </ul>
+
+  <!-- Información adicional -->
+  <div class="text-center mt-2">
+    <small class="text-muted">
+      Página {{ currentPage }} de {{ totalPages }} 
+      ({{ totalItems }} elemento{{ totalItems !== 1 ? 's' : '' }} total{{ totalItems !== 1 ? 'es' : '' }})
+    </small>
+  </div>
+</nav>

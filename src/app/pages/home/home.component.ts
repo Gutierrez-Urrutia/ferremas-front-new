@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-
+  
   ngOnInit(): void { }
 
 }
