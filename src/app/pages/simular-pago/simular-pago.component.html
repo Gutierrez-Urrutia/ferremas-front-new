@@ -1,5 +1,5 @@
 <div class="transbank-simulator">
-  <!-- Header Transbank -->
+  <!-- Header Transbank: muestra el logo y nombre del servicio de pago -->
   <div class="transbank-header">
     <div class="d-flex align-items-center justify-content-center">
       <img src="assets/images/transbank-logo.png" alt="Transbank" class="transbank-logo me-3"
@@ -7,7 +7,6 @@
       <h4 class="mb-0 text-white">Webpay Plus</h4>
     </div>
   </div>
-
   <!-- Estado Inicial: Formulario de pago -->
   <div *ngIf="estadoPago === 'inicial'" class="payment-form">
     <div class="row mb-4">
@@ -30,7 +29,7 @@
         </div>
       </div>
     </div>
-
+    <!-- Formulario de ingreso de datos de tarjeta -->
     <form (ngSubmit)="iniciarPago()">
       <div class="row">
         <div class="col-md-6 mb-3">
@@ -94,16 +93,14 @@
       </div>
     </form>
   </div>
-
-  <!-- En la sección de procesando, agregar la barra de progreso -->
+  <!-- Estado Procesando: muestra animación y barra de progreso mientras se procesa el pago -->
   <div *ngIf="estadoPago === 'procesando'" class="text-center">
     <div class="spinner-border text-primary mb-3" role="status">
       <span class="visually-hidden">Procesando...</span>
     </div>
     <h5>Procesando pago...</h5>
     <p>Tiempo restante: {{ tiempoRestante }} segundos</p>
-
-    <!-- Barra de progreso -->
+    <!-- Barra de progreso visual del procesamiento -->
     <div class="progress mb-3" style="height: 25px;">
       <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
         [style.width.%]="progreso" [attr.aria-valuenow]="progreso" aria-valuemin="0" aria-valuemax="100">
@@ -115,8 +112,7 @@
       Cancelar Pago
     </button>
   </div>
-
-  <!-- Estado Completado -->
+  <!-- Estado Completado: muestra detalles de la transacción exitosa -->
   <div *ngIf="estadoPago === 'completado'" class="text-center py-5">
     <div class="success-icon mb-3">
       <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
@@ -141,8 +137,7 @@
       </div>
     </div>
   </div>
-
-  <!-- Estado Error -->
+  <!-- Estado Error: muestra mensaje y opciones tras un pago fallido -->
   <div *ngIf="estadoPago === 'error'" class="text-center py-5">
     <div class="error-icon mb-3">
       <i class="fas fa-times-circle text-danger" style="font-size: 4rem;"></i>

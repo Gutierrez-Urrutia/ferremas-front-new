@@ -12,27 +12,44 @@ export class ProductoApiService {
 
   constructor(private http: HttpClient) { }
 
-  // Obtener todos los productos
+  /* 
+    Obtiene la lista completa de productos desde la API.
+    Retorna un Observable con un arreglo de productos.
+  */
   getProductos(): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.baseUrl}/productos`);
   }
 
-  // Obtener producto por ID
+  /* 
+    Busca un producto específico por su ID.
+    Retorna un Observable con el producto encontrado.
+  */
   getProductoById(id: number): Observable<Producto> {
     return this.http.get<Producto>(`${this.baseUrl}/productos/${id}`);
   }
 
-  // Obtener productos por categoría
+  /* 
+    Obtiene todos los productos que pertenecen a una categoría específica.
+    Recibe el ID de la categoría como parámetro.
+    Retorna un Observable con un arreglo de productos.
+  */
   getProductosByCategoria(categoriaId: number): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.baseUrl}/productos/categoria/${categoriaId}`);
   }
 
-  // Obtener productos destacados
+  /* 
+    Obtiene los productos destacados según la lógica definida en el backend.
+    Retorna un Observable con un arreglo de productos destacados.
+  */
   getProductosDestacados(): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.baseUrl}/productos/destacados`);
   }
 
-  // Obtener productos por marca
+  /* 
+    Obtiene todos los productos asociados a una marca específica.
+    Recibe el ID de la marca como parámetro.
+    Retorna un Observable con un arreglo de productos.
+  */
   getProductosByMarca(marcaId: number): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.baseUrl}/productos/marca/${marcaId}`);
   }

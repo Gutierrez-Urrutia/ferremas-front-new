@@ -8,31 +8,35 @@ import { CommonModule } from '@angular/common';
   styleUrl: './paginacion.component.css'
 })
 export class PaginacionComponent implements OnChanges {
-  @Input() totalItems: number = 0;
-  @Input() itemsPerPage: number = 10;
-  @Input() currentPage: number = 1;
-  @Input() maxVisiblePages: number = 5;
-  
-  @Output() pageChanged = new EventEmitter<number>();
+  @Input() totalItems: number = 0; // Total de elementos a paginar
+  @Input() itemsPerPage: number = 8; // Cantidad de elementos por página
+  @Input() currentPage: number = 1; // Página actual seleccionada
+  @Input() maxVisiblePages: number = 5; // Máximo de botones de página visibles
 
-  totalPages: number = 0;
-  visiblePages: number[] = [];
+  @Output() pageChanged = new EventEmitter<number>(); // Emite el número de página cuando se cambia
+
+  totalPages: number = 0; // Total de páginas calculadas
+  visiblePages: number[] = []; // Números de páginas visibles en la paginación
 
   ngOnChanges(): void {
     this.calculatePagination();
   }
 
+  /* Calcula el total de páginas y actualiza los números de página visibles. 
+  Se ejecuta cada vez que cambian los inputs relevantes.*/
   private calculatePagination(): void {
     this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
     this.generateVisiblePages();
   }
 
+  /* Genera el rango de páginas que se mostrarán en la paginación,
+  centrando la página actual cuando sea posible.*/
   private generateVisiblePages(): void {
     const half = Math.floor(this.maxVisiblePages / 2);
     let start = Math.max(1, this.currentPage - half);
     let end = Math.min(this.totalPages, start + this.maxVisiblePages - 1);
 
-    // Ajustar el inicio si estamos cerca del final
+    // Ajusta el inicio si no hay suficientes páginas al final
     if (end - start + 1 < this.maxVisiblePages) {
       start = Math.max(1, end - this.maxVisiblePages + 1);
     }

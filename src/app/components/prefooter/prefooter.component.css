@@ -4,7 +4,6 @@
   padding: 3rem 0;
 }
 
-/* Aseguramos que los h3 también sean blancos explícitamente */
 .prefooter-confidence h3 {
   color: white;
   font-weight: 600;

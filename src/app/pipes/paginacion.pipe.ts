@@ -4,6 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'paginacion'
 })
 export class PaginacionPipe implements PipeTransform {
+  // Devuelve una porción del array correspondiente a la página e items por página indicados.
   transform(array: any[], page: number = 1, itemsPerPage: number = 10): any[] {
     if (!array || array.length === 0) {
       return [];

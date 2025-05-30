@@ -32,6 +32,7 @@ export class MarcaProductoComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        // Se suscribe a los parámetros de la ruta para detectar cambios en el id de la marca
         this.route.params.subscribe(params => {
             this.currentPage = 1
             this.marcaId = +params['id'];
@@ -41,6 +42,7 @@ export class MarcaProductoComponent implements OnInit {
     }
 
     cargarMarca(): void {
+        // Obtiene la información de la marca por su id
         this.marcaService.getMarcaPorId(this.marcaId).subscribe({
             next: (marca) => {
                 if (marca) {
@@ -59,7 +61,7 @@ export class MarcaProductoComponent implements OnInit {
     cargarProductosPorMarca(): void {
         this.loading = true;
         this.error = '';
-        
+        // Obtiene los productos asociados a la marca y filtra los ocultos
         this.productoService.getProductosPorMarca(this.marcaId).subscribe({
             next: (productos) => {
                 this.productos = productos.filter(p => !p.oculto);

@@ -14,8 +14,7 @@
                     <a class="nav-link" [routerLink]="['/']" routerLinkActive="active"
                         [routerLinkActiveOptions]="{exact: true}">Home</a>
                 </li>
-
-                <!-- Dropdown Categorías -->
+                <!-- Dropdown Categorías: Lista dinámica de categorías obtenidas desde el componente -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                         aria-haspopup="true" aria-expanded="false">
@@ -28,8 +27,7 @@
                         </a>
                     </div>
                 </li>
-
-                <!-- Dropdown Marcas -->
+                <!-- Dropdown Marcas: Lista dinámica de marcas obtenidas desde el componente -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                         aria-haspopup="true" aria-expanded="false">
@@ -41,16 +39,14 @@
                         </a>
                     </div>
                 </li>
-
-                <!-- Link Ofertas (convertido de dropdown a link simple) -->
+                <!-- Link Ofertas  -->
                 <li class="nav-item">
                     <a class="nav-link" [routerLink]="['/ofertas']" routerLinkActive="active">
                         <i class="fas fa-percent me-1"></i>Ofertas
                     </a>
                 </li>
             </ul>
-
-            <!-- Selector de divisa -->
+            <!-- Selector de divisa: Permite cambiar la moneda de visualización -->
             <div class="dropdown me-3">
                 <button class="btn btn-outline-light dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
@@ -73,8 +69,7 @@
                     </li>
                 </ul>
             </div>
-
-            <!-- Carrito -->
+            <!-- Carrito: Muestra el número de productos en el carrito y abre el modal al hacer clic -->
             <button class="btn btn-outline-light position-relative border-0 me-3" type="button" data-bs-toggle="modal"
                 data-bs-target="#modalCarrito">
                 <i class="fas fa-shopping-cart fa-xl"></i>

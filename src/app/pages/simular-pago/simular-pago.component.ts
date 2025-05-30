@@ -15,29 +15,24 @@ export class SimularPagoComponent implements OnInit {
   @Input() numeroOrden!: string;
   @Output() pagoCompletado = new EventEmitter<boolean>();
 
-  // Estado del pago
   estadoPago: 'inicial' | 'procesando' | 'completado' | 'error' = 'inicial';
   
-  // Datos simulados de tarjeta
   numeroTarjeta: string = '';
   mesExpiracion: string = '';
   anoExpiracion: string = '';
   cvv: string = '';
   nombreTitular: string = '';
 
-  // Simulación de proceso
   tiempoRestante: number = 0;
-  progreso: number = 0; // Nueva propiedad para el progreso
+  progreso: number = 0; 
   intervaloTiempo: any;
-  intervaloProgreso: any; // Nuevo intervalo para el progreso
-  
-  // Fecha actual para mostrar en el recibo
+  intervaloProgreso: any; 
   fechaTransaccion: Date = new Date();
 
   constructor(private router: Router) {}
 
   ngOnInit() {
-    // Auto-rellenar datos de prueba
+    
     this.numeroTarjeta = '4532 1234 5678 9012';
     this.mesExpiracion = '12';
     this.anoExpiracion = '2025';
@@ -58,10 +53,9 @@ export class SimularPagoComponent implements OnInit {
     }
 
     this.estadoPago = 'procesando';
-    this.tiempoRestante = 5; // 5 segundos de simulación
-    this.progreso = 0; // Reiniciar progreso
+    this.tiempoRestante = 5; 
+    this.progreso = 0; 
     
-    // Intervalo para el tiempo restante (cada segundo)
     this.intervaloTiempo = setInterval(() => {
       this.tiempoRestante--;
       
@@ -70,9 +64,8 @@ export class SimularPagoComponent implements OnInit {
       }
     }, 1000);
 
-    // Intervalo para el progreso (cada 100ms para llenar en 5 segundos)
     this.intervaloProgreso = setInterval(() => {
-      this.progreso += 2; // Incrementar 2% cada 100ms (2% * 50 intervalos = 100% en 5 segundos)
+      this.progreso += 2; 
       
       if (this.progreso >= 100) {
         this.progreso = 100;
@@ -85,13 +78,10 @@ export class SimularPagoComponent implements OnInit {
     clearInterval(this.intervaloTiempo);
     clearInterval(this.intervaloProgreso);
     
-    // Asegurar que el progreso esté en 100%
     this.progreso = 100;
     
-    // Actualizar fecha de transacción al momento del pago
     this.fechaTransaccion = new Date();
     
-    // Simular resultado aleatorio (80% éxito, 20% fallo)
     const exitoso = Math.random() > 0.2;
     
     if (exitoso) {
@@ -107,7 +97,7 @@ export class SimularPagoComponent implements OnInit {
   reintentar() {
     this.estadoPago = 'inicial';
     this.tiempoRestante = 0;
-    this.progreso = 0; // Reiniciar progreso
+    this.progreso = 0; 
   }
 
   cancelarPago() {
@@ -155,11 +145,8 @@ export class SimularPagoComponent implements OnInit {
   formatearTarjeta() {
     // Remover espacios y caracteres no numéricos
     let valor = this.numeroTarjeta.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    
-    // Limitar a 16 dígitos
     valor = valor.substring(0, 16);
     
-    // Agregar espacios cada 4 dígitos
     const matches = valor.match(/\d{4,16}/g);
     const match = matches && matches[0] || '';
     const parts = [];

@@ -1,20 +1,21 @@
 <nav aria-label="Paginación" *ngIf="totalPages > 1">
   <ul class="pagination justify-content-center">
-    <!-- Botón Primera página -->
+
+    <!-- Botón para ir a la primera página -->
     <li class="page-item" [class.disabled]="currentPage === 1">
       <button class="page-link" (click)="goToFirst()" [disabled]="currentPage === 1">
         <i class="fas fa-angle-double-left"></i>
       </button>
     </li>
 
-    <!-- Botón Anterior -->
+    <!-- Botón para ir a la página anterior -->
     <li class="page-item" [class.disabled]="currentPage === 1">
       <button class="page-link" (click)="goToPrevious()" [disabled]="currentPage === 1">
         <i class="fas fa-angle-left"></i>
       </button>
     </li>
 
-    <!-- Páginas visibles -->
+    <!-- Renderiza solo las páginas visibles -->
     <li *ngFor="let page of visiblePages" 
         class="page-item" 
         [class.active]="page === currentPage">
@@ -23,14 +24,14 @@
       </button>
     </li>
 
-    <!-- Botón Siguiente -->
+    <!-- Botón para ir a la página siguiente -->
     <li class="page-item" [class.disabled]="currentPage === totalPages">
       <button class="page-link" (click)="goToNext()" [disabled]="currentPage === totalPages">
         <i class="fas fa-angle-right"></i>
       </button>
     </li>
 
-    <!-- Botón Última página -->
+    <!-- Botón para ir a la última página -->
     <li class="page-item" [class.disabled]="currentPage === totalPages">
       <button class="page-link" (click)="goToLast()" [disabled]="currentPage === totalPages">
         <i class="fas fa-angle-double-right"></i>
@@ -38,7 +39,7 @@
     </li>
   </ul>
 
-  <!-- Información adicional -->
+  <!-- Información resumida de la paginación actual -->
   <div class="text-center mt-2">
     <small class="text-muted">
       Página {{ currentPage }} de {{ totalPages }} 

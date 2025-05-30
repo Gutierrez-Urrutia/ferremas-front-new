@@ -1,16 +1,13 @@
 <div class="producto-carrusel container my-5">
   <h2 class="text-center mb-4">Productos Destacados</h2>
-  
+
   <div id="productosCarrusel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
-      <!-- Grupo los productos según el tamaño de pantalla -->
-      <div *ngFor="let grupo of productosAgrupados; let i = index" 
-           class="carousel-item" 
-           [class.active]="i === 0">
+      <!-- Recorre los grupos de productos para cada slide del carrusel -->
+      <div *ngFor="let grupo of productosAgrupados; let i = index" class="carousel-item" [class.active]="i === 0">
         <div class="row justify-content-center">
-          <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-3" 
-               *ngFor="let producto of grupo"
-               [ngClass]="{
+          <!-- Muestra cada producto dentro del grupo, ajustando el tamaño de columna según productosAMostrar -->
+          <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-3" *ngFor="let producto of grupo" [ngClass]="{
                  'col-12': productosAMostrar === 1,
                  'col-6': productosAMostrar === 2,
                  'col-4': productosAMostrar === 3,
@@ -21,8 +18,7 @@
         </div>
       </div>
     </div>
-    
-    <!-- Controles de navegación -->
+    <!-- Controles de navegación del carrusel -->
     <button class="carousel-control-prev" type="button" data-bs-target="#productosCarrusel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Anterior</span>
@@ -31,16 +27,11 @@
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Siguiente</span>
     </button>
-    
-    <!-- Indicadores -->
+    <!-- Indicadores de posición del carrusel -->
     <div class="carousel-indicators">
-      <button *ngFor="let grupo of productosAgrupados; let i = index" 
-              type="button" 
-              data-bs-target="#productosCarrusel" 
-              [attr.data-bs-slide-to]="i" 
-              [class.active]="i === 0" 
-              aria-current="true"
-              [attr.aria-label]="'Slide ' + (i + 1)"></button>
+      <button *ngFor="let grupo of productosAgrupados; let i = index" type="button" data-bs-target="#productosCarrusel"
+        [attr.data-bs-slide-to]="i" [class.active]="i === 0" aria-current="true"
+        [attr.aria-label]="'Slide ' + (i + 1)"></button>
     </div>
   </div>
 </div>

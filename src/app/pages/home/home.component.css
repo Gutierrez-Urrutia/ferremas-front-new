@@ -4,8 +4,8 @@
 }
 
 .hero-section {
-  width: 100vw; /* Ancho completo de la ventana */
-  margin-left: calc(50% - 50vw); /* Centrar y expandir */
+  width: 100vw; 
+  margin-left: calc(50% - 50vw); 
   position: relative;
 }
 
@@ -14,11 +14,10 @@
 }
 
 .prefooter-section {
-  width: 100vw; /* Ancho completo de la ventana */
-  margin-left: calc(50% - 50vw); /* Centrar y expandir */
+  width: 100vw; 
+  margin-left: calc(50% - 50vw); 
 }
 
-/* Responsividad */
 @media (max-width: 768px) {
   .hero-section {
     margin-left: calc(50% - 50vw);

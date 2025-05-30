@@ -6,10 +6,11 @@ import { CardComponent } from '../../components/card/card.component';
 import { Producto } from '../../interfaces/producto';
 import { PaginacionComponent } from '../../components/paginacion/paginacion.component';
 import { PaginacionPipe } from '../../pipes/paginacion.pipe';
+import { ModalCompraComponent } from '../../components/modal-compra/modal-compra.component';
 
 @Component({
   selector: 'app-oferta-producto',
-  imports: [CommonModule, CardComponent, PaginacionComponent, PaginacionPipe],
+  imports: [CommonModule, CardComponent, PaginacionComponent, PaginacionPipe, ModalCompraComponent],
   templateUrl: './oferta-producto.component.html',
   styleUrl: './oferta-producto.component.css'
 })
@@ -29,13 +30,15 @@ export class OfertaProductoComponent implements OnInit {
     this.cargarProductosConDescuento();
   }
 
+  /*Obtiene los productos desde el servicio y filtra solo aquellos
+  que tienen descuento y no están ocultos. Maneja el estado de carga y errores.*/
   cargarProductosConDescuento(): void {
     this.loading = true;
     this.error = '';
     
     this.productoService.getProductos().subscribe({
       next: (productos) => {
-        // Filtrar solo productos que tienen descuento > 0
+        // Filtrar solo productos que tienen descuento > 0 y no están ocultos
         this.productos = productos.filter(producto => 
           producto.descuento > 0 && !producto.oculto
         );
@@ -52,7 +55,6 @@ export class OfertaProductoComponent implements OnInit {
 
   onPageChanged(page: number): void {
     this.currentPage = page;
-    // Scroll hacia arriba cuando cambie de página
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

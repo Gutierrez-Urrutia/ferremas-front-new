@@ -14,7 +14,7 @@ import { Producto } from '../../interfaces/producto';
 export class DestacadosComponent implements OnInit {
   productos: Producto[] = [];
   productosAgrupados: Producto[][] = [];
-  productosAMostrar: number = 4; // Por defecto para desktop
+  productosAMostrar: number = 4; // Cantidad de productos a mostrar por grupo
 
   constructor(private productoService: ProductoService) { }
 
@@ -23,6 +23,7 @@ export class DestacadosComponent implements OnInit {
     this.cargarProductosDestacados();
   }
 
+  // Escucha el evento de cambio de tamaño de ventana para ajustar la cantidad de productos a mostrar
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.calcularProductosAMostrar();
@@ -33,16 +34,17 @@ export class DestacadosComponent implements OnInit {
     const width = window.innerWidth;
     
     if (width < 576) {
-      this.productosAMostrar = 1; // Mobile
+      this.productosAMostrar = 1;
     } else if (width < 768) {
-      this.productosAMostrar = 2; // Tablet pequeño
+      this.productosAMostrar = 2; 
     } else if (width < 1200) {
-      this.productosAMostrar = 3; // Tablet/Desktop pequeño
+      this.productosAMostrar = 3; 
     } else {
-      this.productosAMostrar = 4; // Desktop grande
+      this.productosAMostrar = 4;
     }
   }
 
+  // Obtiene los productos destacados desde el servicio y los agrupa según el tamaño de pantalla
   cargarProductosDestacados(): void {
     this.productoService.getProductosDestacados().subscribe(productos => {
       this.productos = productos;

@@ -4,29 +4,26 @@
     margin: 0 auto;
     display: block;
 }
-/* Ajustar altura del navbar */
+
 .navbar {
-    min-height: 4.5rem; /* Ajusta este valor según necesites */
-    padding: 0.5rem 1rem; /* Reduce el padding vertical */
+    min-height: 4.5rem; 
+    padding: 0.5rem 1rem; 
 }
 
-/* Si usas Bootstrap navbar */
 .navbar-nav {
     align-items: center;
 }
 
-/* Ajustar contenedor del navbar */
+
 .navbar-brand {
     margin-bottom: 0;
 }
 
-/* Para hacer el navbar más compacto */
 .navbar-toggler {
     padding: 0.25rem 0.5rem;
     font-size: 1rem;
 }
 
-/* Estilos para el dropdown de divisas */
 .currency-item {
   cursor: pointer !important;
   transition: all 0.2s ease-in-out;
@@ -69,9 +66,9 @@
 
 .currency-info {
   display: flex;
-  flex-direction: row; /* Cambiar de column a row */
+  flex-direction: row; 
   align-items: center;
-  gap: 0.5rem; /* Espacio entre la sigla y el nombre */
+  gap: 0.5rem; 
   line-height: 1.2;
 }
 
@@ -79,7 +76,6 @@
   font-size: 0.9rem;
 }
 
-/* Mejorar el dropdown */
 .dropdown-menu {
   border-radius: 0.5rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
@@ -87,7 +83,6 @@
   padding: 0.5rem 0;
 }
 
-/* Responsive para móviles */
 @media (max-width: 768px) {
   .currency-item {
     padding: 0.75rem 1rem;
@@ -100,14 +95,12 @@
   }
 }
 
-/* Efecto de focus para accesibilidad */
 .currency-item:focus {
   outline: 2px solid #007bff;
   outline-offset: -2px;
   background-color: #f8f9fa;
 }
 
-/* Animación del icono check */
 .check-icon {
   transition: all 0.2s ease-in-out;
 }

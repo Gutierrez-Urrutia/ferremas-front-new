@@ -8,23 +8,22 @@
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      
+
       <div class="modal-body">
-        <!-- Carrito vacío -->
+        <!-- Mensaje cuando el carrito está vacío -->
         <div *ngIf="items.length === 0" class="text-center py-5">
           <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
           <h5 class="text-muted">Tu carrito está vacío</h5>
           <p class="text-muted">Agrega algunos productos para comenzar</p>
         </div>
 
-        <!-- Items del carrito -->
         <div *ngIf="items.length > 0">
+          <!-- Listado de productos en el carrito -->
           <div class="row mb-3" *ngFor="let item of items; trackBy: trackByProductoId">
             <div class="col-md-2">
-              <img [src]="item.producto.imagen || 'notfound.png'" 
-                   class="img-fluid rounded" 
-                   [alt]="item.producto.nombre"
-                   style="width: 80px; height: 80px; object-fit: cover;">
+              <!-- Imagen del producto (muestra imagen por defecto si no existe) -->
+              <img [src]="item.producto.imagen || 'notfound.png'" class="img-fluid rounded" [alt]="item.producto.nombre"
+                style="width: 80px; height: 80px; object-fit: cover;">
             </div>
             <div class="col-md-4">
               <h6 class="mb-1">{{ item.producto.nombre }}</h6>
@@ -34,17 +33,17 @@
             <div class="col-md-3">
               <label class="form-label small">Cantidad</label>
               <div class="input-group input-group-sm">
-                <button class="btn btn-outline-secondary" type="button" 
-                        (click)="actualizarCantidad(item.producto.id, item.cantidad - 1)"
-                        [disabled]="item.cantidad <= 1">
+                <!-- Botón para disminuir cantidad (deshabilitado si es 1) -->
+                <button class="btn btn-outline-secondary" type="button"
+                  (click)="actualizarCantidad(item.producto.id, item.cantidad - 1)" [disabled]="item.cantidad <= 1">
                   <i class="fas fa-minus"></i>
                 </button>
-                <input type="number" class="form-control text-center" 
-                       [value]="item.cantidad"
-                       (change)="actualizarCantidad(item.producto.id, +$any($event.target).value)"
-                       min="1" max="99">
-                <button class="btn btn-outline-secondary" type="button" 
-                        (click)="actualizarCantidad(item.producto.id, item.cantidad + 1)">
+                <!-- Campo para modificar cantidad manualmente -->
+                <input type="number" class="form-control text-center" [value]="item.cantidad"
+                  (change)="actualizarCantidad(item.producto.id, +$any($event.target).value)" min="1" max="99">
+                <!-- Botón para aumentar cantidad -->
+                <button class="btn btn-outline-secondary" type="button"
+                  (click)="actualizarCantidad(item.producto.id, item.cantidad + 1)">
                   <i class="fas fa-plus"></i>
                 </button>
               </div>
@@ -54,18 +53,18 @@
               <div class="fw-bold text-success">{{ item.subtotal | conversor }}</div>
             </div>
             <div class="col-md-1">
-              <button class="btn btn-outline-danger btn-sm" 
-                      (click)="eliminarItem(item.producto.id)"
-                      title="Eliminar producto">
+              <!-- Botón para eliminar el producto del carrito -->
+              <button class="btn btn-outline-danger btn-sm" (click)="eliminarItem(item.producto.id)"
+                title="Eliminar producto">
                 <i class="fas fa-trash"></i>
               </button>
             </div>
             <hr class="mt-3">
           </div>
-
-          <!-- Total -->
+          <!-- Sección de total y vaciar carrito -->
           <div class="row mt-4">
             <div class="col-md-6">
+              <!-- Botón para vaciar todo el carrito -->
               <button class="btn btn-outline-warning" (click)="vaciarCarrito()">
                 <i class="fas fa-trash me-2"></i>
                 Vaciar carrito
@@ -79,7 +78,7 @@
           </div>
         </div>
       </div>
-      
+      <!-- Footer con acciones principales cuando hay productos en el carrito -->
       <div class="modal-footer" *ngIf="items.length > 0">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Seguir comprando

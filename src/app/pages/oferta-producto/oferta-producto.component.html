@@ -8,7 +8,6 @@
       <p class="text-center text-muted mb-5">Aprovecha nuestros descuentos exclusivos</p>
     </div>
   </div>
-
   <!-- Loading -->
   <div *ngIf="loading" class="text-center my-5">
     <div class="spinner-border text-primary" role="status">
@@ -16,7 +15,6 @@
     </div>
     <p class="mt-3 text-muted">Cargando productos en oferta...</p>
   </div>
-
   <!-- Error -->
   <div *ngIf="error && !loading" class="row">
     <div class="col-12">
@@ -25,7 +23,6 @@
       </div>
     </div>
   </div>
-
   <!-- Sin productos -->
   <div *ngIf="!loading && !error && productos.length === 0" class="row">
     <div class="col-12">
@@ -35,7 +32,6 @@
       </div>
     </div>
   </div>
-
   <!-- Lista de productos con ofertas -->
   <div *ngIf="!loading && !error && productos.length > 0">
     <!-- Información de productos -->
@@ -51,8 +47,7 @@
           </div>
         </div>
       </div>
-    </div>
-    
+    </div> 
     <!-- Cards de productos (paginados) -->
     <div class="row">
       <div *ngFor="let producto of productos | paginacion:currentPage:itemsPerPage" 
@@ -60,7 +55,6 @@
         <app-card [producto]="producto"></app-card>
       </div>
     </div>
-
     <!-- Componente de paginación -->
     <div class="row mt-4">
       <div class="col-12">
@@ -74,7 +68,6 @@
       </div>
     </div>
   </div>
-
   <!-- Información adicional de ofertas -->
   <div *ngIf="!loading && !error && productos.length > 0" class="row mt-5">
     <div class="col-12">
@@ -85,3 +78,5 @@
     </div>
   </div>
 </div>
+
+<app-modal-compra></app-modal-compra>

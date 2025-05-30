@@ -5,8 +5,8 @@
 
 footer {
   border-top: 1px solid rgba(0,0,0,.125);
-  padding: 0.5rem 0;  /* Reduce la altura vertical */
-  font-size: 0.8rem;  /* Reduce el tamaño de letra */
+  padding: 0.5rem 0;  
+  font-size: 0.8rem; 
 }
 
 .footer-custom {

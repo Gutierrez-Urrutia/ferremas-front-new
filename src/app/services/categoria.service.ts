@@ -8,6 +8,7 @@ import { map, catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CategoriaService {
+  // Fuente reactiva que mantiene el estado actual de las categorías en memoria
   private categoriasSource = new BehaviorSubject<Categoria[]>([]);
   categorias$ = this.categoriasSource.asObservable();
 
@@ -15,69 +16,58 @@ export class CategoriaService {
     this.cargarCategoriasIniciales();
   }
 
+  /* Carga las categorías desde el backend al inicializar el servicio.
+  Si ocurre un error, utiliza categorías por defecto.*/
   private cargarCategoriasIniciales(): void {
-    console.log('🔄 Cargando categorías desde backend...');
+    console.log('Cargando categorías desde backend...');
 
     this.categoriaApiService.getCategorias().pipe(
-      // CORRECCIÓN: Agregar tipado explícito al map
       map((categorias: Categoria[]) => categorias),
       catchError((error: any) => {
-        console.error('❌ Error cargando categorías desde backend:', error);
-        console.warn('⚠️ Usando categorías por defecto');
+        console.error('Error cargando categorías desde backend:', error);
+        console.warn('Usando categorías por defecto');
         return of(this.obtenerCategoriasPorDefecto());
       })
     ).subscribe((categorias: Categoria[]) => {
-      console.log('✅ Categorías cargadas:', categorias);
+      console.log('Categorías cargadas:', categorias);
       this.categoriasSource.next(categorias);
     });
   }
 
+  /* Devuelve un arreglo de categorías por defecto en caso de error al cargar desde backend. */
   private obtenerCategoriasPorDefecto(): Categoria[] {
     return [
-      
+
     ];
   }
 
-  /**
-   * Obtiene todas las categorías disponibles
-   */
   getCategorias(): Observable<Categoria[]> {
     return this.categorias$;
   }
 
-  /**
-   * Obtiene una categoría específica por su ID
-   */
   getCategoriaPorId(id: number): Observable<Categoria | undefined> {
     return this.categorias$.pipe(
       map(categorias => categorias.find(categoria => categoria.id === id))
     );
   }
 
-  /**
-   * Obtiene una categoría específica desde el backend por su ID
-   */
+  /* Obtiene una categoría por ID directamente desde el backend.
+  Si ocurre un error, retorna undefined.*/
   getCategoriaPorIdFromBackend(id: number): Observable<Categoria | undefined> {
     return this.categoriaApiService.getCategoriaById(id).pipe(
       map((categoria: any) => categoria as Categoria),
       catchError((error: any) => {
-        console.error('❌ Error obteniendo categoría por ID desde backend:', error);
+        console.error('Error obteniendo categoría por ID desde backend:', error);
         return of(undefined);
       })
     );
   }
 
-  /**
-   * Refrescar categorías desde el backend
-   */
   refreshCategorias(): void {
-    console.log('🔄 Refrescando categorías...');
+    console.log('Refrescando categorías...');
     this.cargarCategoriasIniciales();
   }
 
-  /**
-   * Buscar categorías por nombre
-   */
   buscarCategorias(termino: string): Observable<Categoria[]> {
     return this.categorias$.pipe(
       map(categorias =>
@@ -88,9 +78,6 @@ export class CategoriaService {
     );
   }
 
-  /**
-   * Obtener categorías actuales (sincrono)
-   */
   getCategoriasActuales(): Categoria[] {
     return this.categoriasSource.value;
   }

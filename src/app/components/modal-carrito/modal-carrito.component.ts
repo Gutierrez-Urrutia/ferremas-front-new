@@ -23,6 +23,7 @@ export class ModalCarritoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Suscribe a los cambios en el carrito para actualizar la lista de items y el total
     this.carritoService.itemsCarrito$.subscribe(items => {
       this.items = items;
       this.total = this.carritoService.obtenerTotal();
@@ -30,6 +31,7 @@ export class ModalCarritoComponent implements OnInit {
   }
 
   getPrecioActual(producto: Producto): number {
+    // Retorna el precio actual del producto (primer precio disponible)
     if (!producto.precios || producto.precios.length === 0) {
       return 0;
     }
@@ -47,6 +49,7 @@ export class ModalCarritoComponent implements OnInit {
   }
 
   vaciarCarrito(): void {
+    // Muestra un diálogo de confirmación antes de vaciar el carrito
     Swal.fire({
       title: '¿Vaciar carrito?',
       text: 'Se eliminarán todos los productos del carrito',
@@ -77,17 +80,16 @@ export class ModalCarritoComponent implements OnInit {
       return;
     }
 
-    // Crear una compra con todos los productos del carrito
+    // Inicia el proceso de compra con los productos actuales del carrito
     this.compraService.iniciarCompraDesdeCarrito(this.items);
 
-    // Cerrar modal del carrito
+    // Oculta el modal del carrito y muestra el modal de compra
     const modalElement = document.getElementById('modalCarrito');
     const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
     if (modal) {
       modal.hide();
     }
 
-    // Abrir modal de compra
     setTimeout(() => {
       const modalCompra = new (window as any).bootstrap.Modal(document.getElementById('modalCompra'));
       modalCompra.show();

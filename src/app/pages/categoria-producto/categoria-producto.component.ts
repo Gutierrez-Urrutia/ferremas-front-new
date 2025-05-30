@@ -31,6 +31,7 @@ export class CategoriaProductoComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    // Se suscribe a los parámetros de la ruta para obtener el id de la categoría y cargar los datos correspondientes
     this.route.params.subscribe(params => {
       this.categoriaId = +params['id'];
       this.cargarCategoria();
@@ -39,6 +40,7 @@ export class CategoriaProductoComponent implements OnInit {
   }
 
   cargarCategoria(): void {
+    // Obtiene el nombre de la categoría a partir de su id
     this.categoriaService.getCategoriaPorId(this.categoriaId).subscribe(categoria => {
       if (categoria) {
         this.categoriaNombre = categoria.nombre;
@@ -52,6 +54,7 @@ export class CategoriaProductoComponent implements OnInit {
     this.loading = true;
     this.error = '';
     
+    // Obtiene los productos de la categoría y filtra los que están ocultos
     this.productoService.getProductosPorCategoria(this.categoriaId).subscribe({
       next: (productos) => {
         this.productos = productos.filter(p => !p.oculto);

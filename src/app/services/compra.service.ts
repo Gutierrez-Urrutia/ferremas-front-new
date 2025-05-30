@@ -9,9 +9,12 @@ import { Producto } from '../interfaces/producto';
   providedIn: 'root'
 })
 export class CompraService {
+  // BehaviorSubject que mantiene el estado actual de la compra
   private compraActualSource = new BehaviorSubject<DatosCompra | null>(null);
+  // Observable para que otros componentes puedan suscribirse a los cambios en la compra actual
   compraActual$ = this.compraActualSource.asObservable();
 
+  // Subject para notificar cuando se debe limpiar el formulario de compra
   private limpiarFormularioSource = new Subject<void>();
   limpiarFormulario$ = this.limpiarFormularioSource.asObservable();
 
@@ -24,6 +27,7 @@ export class CompraService {
     this.compraActualSource.next(compra);
   }
 
+  // Obtiene el precio del primer elemento en el arreglo de precios del producto
   private getPrecioProducto(producto: Producto): number {
     if (!producto.precios || producto.precios.length === 0) {
       return 0;
@@ -37,6 +41,7 @@ export class CompraService {
       cantidad: item.cantidad
     }));
     
+    // Calcula el subtotal sumando el precio de cada producto por su cantidad
     const subtotal = productos.reduce((total, item) => {
       return total + (this.getPrecioProducto(item.producto) * item.cantidad);
     }, 0);

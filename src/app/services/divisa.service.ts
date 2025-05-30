@@ -4,12 +4,7 @@ import { DivisaRate } from '../interfaces/divisa-rate';
 import { BehaviorSubject, catchError, map, of } from 'rxjs';
 import { TasasService } from './tasas.service';
 import { Tasa } from '../interfaces/tasa';
-
-// Interface para el localStorage
-interface TasasCache {
-  tasas: DivisaRate[];
-  timestamp: string; // Fecha en formato ISO
-}
+import { TasasCache } from '../interfaces/tasas-cache';
 
 @Injectable({
   providedIn: 'root'
@@ -29,42 +24,47 @@ export class DivisaService {
     this.loadRates();
   }
 
+  /*
+   Intenta cargar las tasas desde cache, si no existen o están expiradas, las carga desde el backend.
+  */
   private loadRates(): void {
-    console.log('🔄 Iniciando carga de tasas...');
+    console.log('Iniciando carga de tasas...');
     
-    // Primero verificar si hay tasas válidas en cache
     const cachedRates = this.getCachedRates();
     if (cachedRates) {
-      console.log('💾 Usando tasas desde localStorage:', cachedRates);
+      console.log('Usando tasas desde localStorage:', cachedRates);
       this.ratesSubject.next(cachedRates);
       return;
     }
 
-    // Si no hay cache válido, cargar desde backend
-    console.log('🌐 Cargando tasas desde backend...');
+    console.log('Cargando tasas desde backend...');
     this.loadFromBackend();
   }
 
+  /*
+   Obtiene las tasas desde el backend y las guarda en cache.
+  */
   private loadFromBackend(): void {
     this.tasaService.getTasasCambio().pipe(
       map(response => {
-        console.log('📊 Respuesta del backend:', response);
+        console.log('Respuesta del backend:', response);
         return this.mapBackendResponseToRates(response);
       }),
       catchError(error => {
-        console.error('❌ Error cargando tasas desde backend:', error);
+        console.error('Error cargando tasas desde backend:', error);
         return of(this.getDefaultRates());
       })
     ).subscribe(rates => {
-      // Guardar en cache
+
       this.saveTasasToCache(rates);
-      
-      // Actualizar el subject
       this.ratesSubject.next(rates);
-      console.log('💾 Tasas actualizadas y guardadas en cache');
+      console.log('Tasas actualizadas y guardadas en cache');
     });
   }
 
+  /*
+   Lee las tasas almacenadas en cache local si son válidas.
+  */
   private getCachedRates(): DivisaRate[] | null {
     try {
       const cached = localStorage.getItem(this.CACHE_KEY);
@@ -75,43 +75,47 @@ export class DivisaService {
 
       const tasasCache: TasasCache = JSON.parse(cached);
       
-      // Verificar si las tasas son del día actual
       if (this.isCacheValid(tasasCache.timestamp)) {
-        console.log('✅ Cache válido, tasas del día actual');
+        console.log('Cache válido, tasas del día actual');
         return tasasCache.tasas;
       } else {
-        console.log('⏰ Cache expirado, necesita renovación');
-        localStorage.removeItem(this.CACHE_KEY); // Limpiar cache expirado
+        console.log('Cache expirado, necesita renovación');
+        localStorage.removeItem(this.CACHE_KEY); 
         return null;
       }
 
     } catch (error) {
-      console.error('❌ Error leyendo cache:', error);
-      localStorage.removeItem(this.CACHE_KEY); // Limpiar cache corrupto
+      console.error('Error leyendo cache:', error);
+      localStorage.removeItem(this.CACHE_KEY); 
       return null;
     }
   }
 
+  /*
+   Verifica si la fecha del cache corresponde al día actual.
+  */
   private isCacheValid(cacheTimestamp: string): boolean {
     try {
       const cacheDate = new Date(cacheTimestamp);
       const today = new Date();
       
-      // Comparar solo la fecha (año, mes, día)
       const isSameDay = 
         cacheDate.getFullYear() === today.getFullYear() &&
         cacheDate.getMonth() === today.getMonth() &&
         cacheDate.getDate() === today.getDate();
 
-      console.log(`📅 Fecha cache: ${cacheDate.toDateString()}, Hoy: ${today.toDateString()}, Válido: ${isSameDay}`);
+      console.log(`Fecha cache: ${cacheDate.toDateString()}, Hoy: ${today.toDateString()}, Válido: ${isSameDay}`);
       
       return isSameDay;
     } catch (error) {
-      console.error('❌ Error validando fecha del cache:', error);
+      console.error('Error validando fecha del cache:', error);
       return false;
     }
   }
 
+  /*
+   Guarda las tasas y la fecha actual en el cache local.
+  */
   private saveTasasToCache(tasas: DivisaRate[]): void {
     try {
       const tasasCache: TasasCache = {
@@ -120,20 +124,22 @@ export class DivisaService {
       };
 
       localStorage.setItem(this.CACHE_KEY, JSON.stringify(tasasCache));
-      console.log('💾 Tasas guardadas en localStorage');
+      console.log('Tasas guardadas en localStorage');
 
     } catch (error) {
-      console.error('❌ Error guardando tasas en cache:', error);
+      console.error('Error guardando tasas en cache:', error);
     }
   }
 
+  /*
+   Convierte la respuesta del backend al formato interno de tasas.
+  */
   private mapBackendResponseToRates(tasas: Tasa[]): DivisaRate[] {
-    // Siempre incluir CLP como base
+
     const rates: DivisaRate[] = [
       { code: 'CLP', name: 'Peso Chileno', rate: 1 }
     ];
     
-    // Mapear respuesta del backend
     tasas.forEach(tasa => {
       const divisaName = this.getDivisaName(tasa.currency);
       rates.push({
@@ -143,10 +149,13 @@ export class DivisaService {
       });
     });
     
-    console.log('✅ Tasas procesadas:', rates);
+    console.log('Tasas procesadas:', rates);
     return rates;
   }
 
+  /*
+   Devuelve el nombre legible de una divisa a partir de su código.
+  */
   private getDivisaName(currency: string): string {
     const divisaNames: { [key: string]: string } = {
       'USD': 'Dólar',
@@ -157,6 +166,9 @@ export class DivisaService {
     return divisaNames[currency] || currency;
   }
 
+  /*
+   Retorna tasas por defecto en caso de error o ausencia de datos.
+  */
   private getDefaultRates(): DivisaRate[] {
     const defaultRates: DivisaRate[] = [
       { code: 'CLP', name: 'Peso Chileno', rate: 1 },
@@ -164,24 +176,21 @@ export class DivisaService {
       { code: 'EUR', name: 'Euro', rate: 1050 }
     ];
     
-    console.warn('⚠️ Usando tasas por defecto:', defaultRates);
+    console.warn('Usando tasas por defecto:', defaultRates);
     return defaultRates;
   }
 
-  // Método público para forzar actualización desde backend
   refreshRates(): void {
-    console.log('🔄 Refrescando tasas manualmente...');
-    localStorage.removeItem(this.CACHE_KEY); // Limpiar cache
+    console.log('Refrescando tasas manualmente...');
+    localStorage.removeItem(this.CACHE_KEY); 
     this.loadFromBackend();
   }
 
-  // Método para limpiar cache manualmente
   clearCache(): void {
     localStorage.removeItem(this.CACHE_KEY);
-    console.log('🗑️ Cache de tasas limpiado');
+    console.log('Cache de tasas limpiado');
   }
 
-  // Método para verificar si las tasas están en cache
   hasCachedRates(): boolean {
     const cached = localStorage.getItem(this.CACHE_KEY);
     if (!cached) return false;
@@ -194,7 +203,6 @@ export class DivisaService {
     }
   }
 
-  // Método para obtener la fecha del último cache
   getLastCacheDate(): Date | null {
     try {
       const cached = localStorage.getItem(this.CACHE_KEY);
@@ -207,7 +215,6 @@ export class DivisaService {
     }
   }
 
-  // Método para obtener las tasas actuales
   getCurrentRates(): DivisaRate[] {
     return this.ratesSubject.value;
   }
@@ -220,6 +227,10 @@ export class DivisaService {
     return this.selectedDivisaSubject.value;
   }
 
+  /*
+   Convierte un precio de una divisa a otra usando las tasas actuales.
+   Si no se especifica la divisa destino, se usa la seleccionada actualmente.
+  */
   convertPrice(price: number, fromDivisa: string = 'CLP', toDivisa?: string): number {
     const targetDivisa = toDivisa || this.getSelectedDivisa();
     const rates = this.ratesSubject.value;
@@ -231,21 +242,21 @@ export class DivisaService {
     const fromRate = rates.find(r => r.code === fromDivisa)?.rate || 1;
     const toRate = rates.find(r => r.code === targetDivisa)?.rate || 1;
     
-    // Si estamos convirtiendo desde CLP
     if (fromDivisa === 'CLP') {
       return price / toRate;
     }
     
-    // Si estamos convirtiendo a CLP
     if (targetDivisa === 'CLP') {
       return price * fromRate;
     }
     
-    // Convertir de cualquier moneda a otra pasando por CLP
     const priceInCLP = price * fromRate;
     return priceInCLP / toRate;
   }
 
+  /*
+   Formatea un precio convertido a la divisa seleccionada, usando el formato local adecuado.
+  */
   formatPrice(price: number, fromDivisa: string = 'CLP'): string {
     const convertedPrice = this.convertPrice(price, fromDivisa);
     const selectedDivisa = this.getSelectedDivisa();

@@ -15,20 +15,20 @@ export class ProductoService {
   }
 
   private cargarProductosIniciales() {
-    console.log('🔄 Cargando productos desde backend...');
+    console.log('Cargando productos desde backend...');
 
     this.productoApiService.getProductos().pipe(
       map((productosBackend: any) => {
-        console.log('📦 Productos recibidos del backend:', productosBackend);
+        console.log('Productos recibidos del backend:', productosBackend);
         return productosBackend as Producto[];
       }),
       catchError((error: any): Observable<Producto[]> => {
-        console.error('❌ Error cargando productos desde backend:', error);
-        console.warn('⚠️ Usando productos por defecto');
+        console.error('Error cargando productos desde backend:', error);
+        console.warn('Usando productos por defecto');
         return of([]);
       })
     ).subscribe((productos: Producto[]) => {
-      console.log('✅ Productos cargados:', productos);
+      console.log('Productos cargados:', productos);
       this.productosSource.next(productos);
     });
   }

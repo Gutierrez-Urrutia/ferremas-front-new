@@ -11,10 +11,11 @@ declare var bootstrap: any;
 })
 export class CarrouselComponent implements AfterViewInit {
 
+  // Inicializa el carrusel de Bootstrap después de que la vista se ha renderizado
   ngAfterViewInit() {
-    // Inicializar el carrusel manualmente
     const carouselElement = document.getElementById('carouselExampleCaptions');
     if (carouselElement) {
+      // Configura el carrusel para que cambie cada 8 segundos automáticamente
       const carousel = new bootstrap.Carousel(carouselElement, {
         interval: 8000,
         ride: 'carousel'
