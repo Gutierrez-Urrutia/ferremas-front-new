@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { Producto } from '../../interfaces/producto';
 import { CommonModule } from '@angular/common';
 import { CompraService } from '../../services/compra.service';
 import { CarritoService } from '../../services/carrito.service';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
+import { ProductoResponse } from '../../interfaces/producto-response';
 
 @Component({
   selector: 'app-card',
@@ -12,12 +12,12 @@ import { ConversorPipe } from '../../pipes/conversor.pipe';
   styleUrl: './card.component.css'
 })
 export class CardComponent {
-  @Input() producto!: Producto;
+  @Input() producto!: ProductoResponse;
 
   constructor(
     private compraService: CompraService,
     private carritoService: CarritoService
-  ) {}
+  ) { }
 
   onMostrar() {
     this.compraService.iniciarCompra(this.producto);
@@ -25,40 +25,41 @@ export class CardComponent {
 
   onAgregarAlCarrito() {
     this.carritoService.agregarProducto(this.producto, 1);
-    
-    // Mostrar notificación temporal
     this.mostrarNotificacion();
+  }
+
+  getPrecioActual(): number {
+    if (!this.producto.precios || this.producto.precios.length === 0) {
+      return 0;
+    }
+    return this.producto.precios[0].precio;
   }
 
   private mostrarNotificacion() {
     // Crear elemento de notificación
     const notificacion = document.createElement('div');
-    notificacion.className = 'alert alert-success position-fixed';
-    notificacion.style.cssText = `
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    `;
+    notificacion.className = 'alert alert-success toast-notification';
     notificacion.innerHTML = `
-      <i class="fas fa-check-circle me-2"></i>
-      Producto agregado al carrito
-    `;
+    <i class="fas fa-check-circle me-2"></i>
+    Producto agregado al carrito
+  `;
 
     document.body.appendChild(notificacion);
 
     // Mostrar notificación
     setTimeout(() => {
-      notificacion.style.opacity = '1';
-    }, 100);
+      notificacion.classList.add('show');
+    }, 50);
 
     // Ocultar y remover notificación
     setTimeout(() => {
-      notificacion.style.opacity = '0';
+      notificacion.classList.remove('show');
       setTimeout(() => {
-        document.body.removeChild(notificacion);
+        if (notificacion.parentNode) {
+          document.body.removeChild(notificacion);
+        }
       }, 300);
     }, 2000);
   }
+  
 }

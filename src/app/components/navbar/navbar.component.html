@@ -14,9 +14,13 @@
                     <a class="nav-link" [routerLink]="['/']" routerLinkActive="active"
                         [routerLinkActiveOptions]="{exact: true}">Home</a>
                 </li>
+
+                <!-- Dropdown Categorías -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                        aria-haspopup="true" aria-expanded="false">Categorías</a>
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-th-large me-1"></i>Categorías
+                    </a>
                     <div class="dropdown-menu">
                         <a *ngFor="let categoria of categorias" class="dropdown-item"
                             [routerLink]="['/categoria', categoria.id]">
@@ -24,7 +28,29 @@
                         </a>
                     </div>
                 </li>
+
+                <!-- Dropdown Marcas -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-tags me-1"></i>Marcas
+                    </a>
+                    <div class="dropdown-menu">
+                        <a *ngFor="let marca of marcas" class="dropdown-item" [routerLink]="['/marca', marca.id]">
+                            {{ marca.nombre }}
+                        </a>
+                    </div>
+                </li>
+
+                <!-- Link Ofertas (convertido de dropdown a link simple) -->
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/ofertas']" routerLinkActive="active">
+                        <i class="fas fa-percent me-1"></i>Ofertas
+                    </a>
+                </li>
             </ul>
+
+            <!-- Selector de divisa -->
             <div class="dropdown me-3">
                 <button class="btn btn-outline-light dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
@@ -47,6 +73,8 @@
                     </li>
                 </ul>
             </div>
+
+            <!-- Carrito -->
             <button class="btn btn-outline-light position-relative border-0 me-3" type="button" data-bs-toggle="modal"
                 data-bs-target="#modalCarrito">
                 <i class="fas fa-shopping-cart fa-xl"></i>

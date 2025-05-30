@@ -20,7 +20,7 @@ export class CategoriaService {
 
     this.categoriaApiService.getCategorias().pipe(
       // CORRECCIÓN: Agregar tipado explícito al map
-      map((categorias: any) => categorias as Categoria[]),
+      map((categorias: Categoria[]) => categorias),
       catchError((error: any) => {
         console.error('❌ Error cargando categorías desde backend:', error);
         console.warn('⚠️ Usando categorías por defecto');

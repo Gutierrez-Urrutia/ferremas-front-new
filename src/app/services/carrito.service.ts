@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Producto } from '../interfaces/producto';
+import { ProductoResponse } from '../interfaces/producto-response';
 
 export interface ItemCarrito {
-  producto: Producto;
+  producto: ProductoResponse;
   cantidad: number;
   subtotal: number;
 }
@@ -21,11 +22,22 @@ export class CarritoService {
     this.cargarCarritoDesdeStorage();
   }
 
+  private getPrecioProducto(producto: ProductoResponse): number {
+    if (!producto.precios || producto.precios.length === 0) {
+      return 0;
+    }
+    return producto.precios[0].precio;
+  }
+
   private cargarCarritoDesdeStorage(): void {
     try {
       const carritoGuardado = localStorage.getItem(this.CARRITO_KEY);
       if (carritoGuardado) {
         const items = JSON.parse(carritoGuardado);
+        // Recalcular subtotales al cargar desde storage
+        items.forEach((item: ItemCarrito) => {
+          item.subtotal = this.getPrecioProducto(item.producto) * item.cantidad;
+        });
         this.itemsCarritoSource.next(items);
       }
     } catch (error) {
@@ -42,20 +54,21 @@ export class CarritoService {
     }
   }
 
-  agregarProducto(producto: Producto, cantidad: number = 1): void {
+  agregarProducto(producto: ProductoResponse, cantidad: number = 1): void {
     const itemsActuales = this.itemsCarritoSource.value;
     const itemExistente = itemsActuales.find(item => item.producto.id === producto.id);
+    const precio = this.getPrecioProducto(producto);
 
     if (itemExistente) {
       // Si el producto ya existe, aumentar la cantidad
       itemExistente.cantidad += cantidad;
-      itemExistente.subtotal = itemExistente.producto.precio * itemExistente.cantidad;
+      itemExistente.subtotal = this.getPrecioProducto(itemExistente.producto) * itemExistente.cantidad;
     } else {
       // Si no existe, agregarlo como nuevo item
       const nuevoItem: ItemCarrito = {
         producto,
         cantidad,
-        subtotal: producto.precio * cantidad
+        subtotal: precio * cantidad
       };
       itemsActuales.push(nuevoItem);
     }
@@ -70,7 +83,7 @@ export class CarritoService {
 
     if (item && nuevaCantidad > 0) {
       item.cantidad = nuevaCantidad;
-      item.subtotal = item.producto.precio * nuevaCantidad;
+      item.subtotal = this.getPrecioProducto(item.producto) * nuevaCantidad;
       this.itemsCarritoSource.next(itemsActuales);
       this.guardarCarritoEnStorage();
     }
@@ -93,7 +106,12 @@ export class CarritoService {
   }
 
   obtenerTotal(): number {
-    return this.itemsCarritoSource.value.reduce((total, item) => total + item.subtotal, 0);
+    return this.itemsCarritoSource.value.reduce((total, item) => {
+      // Recalcular subtotal en caso de que no esté actualizado
+      const precio = this.getPrecioProducto(item.producto);
+      const subtotal = precio * item.cantidad;
+      return total + subtotal;
+    }, 0);
   }
 
   obtenerItems(): ItemCarrito[] {

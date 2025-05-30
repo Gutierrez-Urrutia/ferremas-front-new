@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Producto } from '../interfaces/producto';
 import { DatosCompra } from '../interfaces/datos-compra';
 import { DatosCliente } from '../interfaces/datos-cliente';
 import { ItemCarrito } from './carrito.service';
+import { ProductoResponse } from '../interfaces/producto-response';
 
 @Injectable({
   providedIn: 'root'
@@ -15,13 +15,20 @@ export class CompraService {
   private limpiarFormularioSource = new Subject<void>();
   limpiarFormulario$ = this.limpiarFormularioSource.asObservable();
 
-  iniciarCompra(producto: Producto, cantidad: number = 1) {
+  iniciarCompra(producto: ProductoResponse, cantidad: number = 1) {
     const compra: DatosCompra = {
       productos: [{ producto, cantidad }],
-      subtotal: producto.precio * cantidad,
+      subtotal: this.getPrecioProducto(producto) * cantidad,
       esCompraCarrito: false
     };
     this.compraActualSource.next(compra);
+  }
+
+  private getPrecioProducto(producto: ProductoResponse): number {
+    if (!producto.precios || producto.precios.length === 0) {
+      return 0;
+    }
+    return producto.precios[0].precio;
   }
 
   iniciarCompraDesdeCarrito(items: ItemCarrito[]) {
@@ -30,7 +37,9 @@ export class CompraService {
       cantidad: item.cantidad
     }));
     
-    const subtotal = items.reduce((total, item) => total + item.subtotal, 0);
+    const subtotal = productos.reduce((total, item) => {
+      return total + (this.getPrecioProducto(item.producto) * item.cantidad);
+    }, 0);
     
     const compra: DatosCompra = {
       productos,
@@ -46,7 +55,7 @@ export class CompraService {
       const producto = compraActual.productos[0];
       if (producto) {
         producto.cantidad = cantidad;
-        compraActual.subtotal = producto.producto.precio * cantidad;
+        compraActual.subtotal = this.getPrecioProducto(producto.producto) * cantidad;
         this.compraActualSource.next(compraActual);
       }
     }
