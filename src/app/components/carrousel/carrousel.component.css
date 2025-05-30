@@ -1,8 +1,10 @@
 /* pantallas grandes */
 .carousel-item img {
   width: 100%;
-  height: 500px;
+  height: 400px;
   object-fit: cover;
+  filter: brightness(0.8);
+  transition: filter 0.3s ease;
 }
 
 /* pantallas medianas (tablets) */
@@ -110,13 +112,6 @@
     transform: translateX(0);
     opacity: 1;
   }
-}
-
-.carousel-item img {
-  object-fit: cover;
-  height: 500px;
-  filter: brightness(0.8);
-  transition: filter 0.3s ease;
 }
 
 .carousel-item:hover img {
