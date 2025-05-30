@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CompraService } from '../../services/compra.service';
 import { CarritoService } from '../../services/carrito.service';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
-import { ProductoResponse } from '../../interfaces/producto-response';
+import { Producto } from '../../interfaces/producto';
 
 @Component({
   selector: 'app-card',
@@ -12,7 +12,7 @@ import { ProductoResponse } from '../../interfaces/producto-response';
   styleUrl: './card.component.css'
 })
 export class CardComponent {
-  @Input() producto!: ProductoResponse;
+  @Input() producto!: Producto;
 
   constructor(
     private compraService: CompraService,

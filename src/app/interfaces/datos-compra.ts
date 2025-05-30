@@ -1,8 +1,8 @@
 import { DatosCliente } from './datos-cliente';
-import { ProductoResponse } from './producto-response';
+import { Producto } from './producto';
 
 export interface DatosCompra {
-  productos: { producto: ProductoResponse; cantidad: number }[];
+  productos: { producto: Producto; cantidad: number }[];
   subtotal: number;
   datosCliente?: DatosCliente;
   tipoDespacho?: string;

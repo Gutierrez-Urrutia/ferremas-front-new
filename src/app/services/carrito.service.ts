@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+
 import { Producto } from '../interfaces/producto';
-import { ProductoResponse } from '../interfaces/producto-response';
 
 export interface ItemCarrito {
-  producto: ProductoResponse;
+  producto: Producto;
   cantidad: number;
   subtotal: number;
 }
@@ -22,7 +22,7 @@ export class CarritoService {
     this.cargarCarritoDesdeStorage();
   }
 
-  private getPrecioProducto(producto: ProductoResponse): number {
+  private getPrecioProducto(producto: Producto): number {
     if (!producto.precios || producto.precios.length === 0) {
       return 0;
     }
@@ -54,7 +54,7 @@ export class CarritoService {
     }
   }
 
-  agregarProducto(producto: ProductoResponse, cantidad: number = 1): void {
+  agregarProducto(producto: Producto, cantidad: number = 1): void {
     const itemsActuales = this.itemsCarritoSource.value;
     const itemExistente = itemsActuales.find(item => item.producto.id === producto.id);
     const precio = this.getPrecioProducto(producto);

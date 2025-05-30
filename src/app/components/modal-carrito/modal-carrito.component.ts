@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CarritoService, ItemCarrito } from '../../services/carrito.service';
 import { CompraService } from '../../services/compra.service';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
-import { ProductoResponse } from '../../interfaces/producto-response';
+import { Producto } from '../../interfaces/producto';
 
 @Component({
   selector: 'app-modal-carrito',
@@ -28,7 +28,7 @@ export class ModalCarritoComponent implements OnInit {
     });
   }
 
-  getPrecioActual(producto: ProductoResponse): number {
+  getPrecioActual(producto: Producto): number {
     if (!producto.precios || producto.precios.length === 0) {
       return 0;
     }

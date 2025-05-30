@@ -8,7 +8,7 @@ import { CarritoService } from '../../services/carrito.service';
 import { SimularPagoComponent } from '../../pages/simular-pago/simular-pago.component';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
 import Swal from 'sweetalert2';
-import { ProductoResponse } from '../../interfaces/producto-response';
+import { Producto } from '../../interfaces/producto';
 
 @Component({
   selector: 'app-modal-compra',
@@ -56,7 +56,7 @@ export class ModalCompraComponent implements OnInit {
     });
   }
 
-  getPrecioActual(producto: ProductoResponse): number {
+  getPrecioActual(producto: Producto): number {
     if (!producto.precios || producto.precios.length === 0) {
       return 0;
     }

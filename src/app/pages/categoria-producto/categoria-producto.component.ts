@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Producto } from '../../interfaces/producto';
 import { CategoriaService } from '../../services/categoria.service';
 import { ActivatedRoute } from '@angular/router';
 import { ProductoService } from '../../services/producto.service';
 import { CardComponent } from '../../components/card/card.component';
 import { ModalCompraComponent } from '../../components/modal-compra/modal-compra.component';
+import { Producto } from '../../interfaces/producto';
 
 @Component({
   selector: 'app-categoria-producto',

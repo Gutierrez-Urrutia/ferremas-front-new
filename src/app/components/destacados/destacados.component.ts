@@ -1,9 +1,9 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductoService } from '../../services/producto.service';
-import { Producto } from '../../interfaces/producto';
 import { CardComponent } from '../card/card.component';
 import { ModalCompraComponent } from '../modal-compra/modal-compra.component';
+import { Producto } from '../../interfaces/producto';
 
 @Component({
   selector: 'app-destacados',
