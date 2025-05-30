@@ -7,7 +7,6 @@ export interface Producto {
   categoria: string;
   marca: string;
   precios: Precio[];
-  precio: number;
   descripcion: string;
   imagen: string;
   descuento: number;
