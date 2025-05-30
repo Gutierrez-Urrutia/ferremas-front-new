@@ -4,13 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductoService } from '../../services/producto.service';
 import { CardComponent } from '../../components/card/card.component';
 import { ModalCompraComponent } from '../../components/modal-compra/modal-compra.component';
-import { Marca } from '../../interfaces/marca';
 import { MarcaService } from '../../services/marca.service';
 import { Producto } from '../../interfaces/producto';
+import { PaginacionComponent } from '../../components/paginacion/paginacion.component';
+import { PaginacionPipe } from '../../pipes/paginacion.pipe';
 
 @Component({
     selector: 'app-marca-producto',
-    imports: [CommonModule, CardComponent, ModalCompraComponent],
+    imports: [CommonModule, CardComponent, ModalCompraComponent, PaginacionComponent, PaginacionPipe],
     templateUrl: './marca-producto.component.html',
     styleUrls: ['./marca-producto.component.css']
 })
@@ -18,6 +19,9 @@ export class MarcaProductoComponent implements OnInit {
     marcaId!: number;
     marcaNombre: string = '';
     productos: Producto[] = [];
+    currentPage = 1;
+    itemsPerPage = 8;
+    totalItems = 0;
 
     constructor(
         private productoService: ProductoService,
@@ -46,8 +50,14 @@ export class MarcaProductoComponent implements OnInit {
     cargarProductosPorMarca(): void {
         this.productoService.getProductosPorMarca(this.marcaId).subscribe(productos => {
             this.productos = productos;
+            this.totalItems = productos.length;
         }, error => {
             console.error('Error al cargar productos por marca:', error);
         });
+    }
+
+    onPageChanged(page: number): void {
+        this.currentPage = page;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }

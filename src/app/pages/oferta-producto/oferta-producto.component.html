@@ -37,22 +37,41 @@
   </div>
 
   <!-- Lista de productos con ofertas -->
-  <div *ngIf="!loading && !error && productos.length > 0" class="row">
-    <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <p class="text-muted mb-0">
-          <i class="fas fa-tags me-1"></i>
-          {{ productos.length }} producto{{ productos.length !== 1 ? 's' : '' }} en oferta
-        </p>
-        <div class="badge bg-danger fs-6">
-          <i class="fas fa-fire me-1"></i>¡Descuentos activos!
+  <div *ngIf="!loading && !error && productos.length > 0">
+    <!-- Información de productos -->
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <p class="text-muted mb-0">
+            <i class="fas fa-tags me-1"></i>
+            {{ totalItems }} producto{{ totalItems !== 1 ? 's' : '' }} en oferta
+          </p>
+          <div class="badge bg-danger fs-6">
+            <i class="fas fa-fire me-1"></i>¡Descuentos activos!
+          </div>
         </div>
       </div>
     </div>
     
-    <!-- Cards de productos con descuento activado -->
-    <div *ngFor="let producto of productos" class="col-lg-3 col-md-4 col-sm-6 mb-4">
-      <app-card [producto]="producto"></app-card>
+    <!-- Cards de productos (paginados) -->
+    <div class="row">
+      <div *ngFor="let producto of productos | paginacion:currentPage:itemsPerPage" 
+           class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <app-card [producto]="producto"></app-card>
+      </div>
+    </div>
+
+    <!-- Componente de paginación -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <app-pagination 
+          [totalItems]="totalItems"
+          [itemsPerPage]="itemsPerPage"
+          [currentPage]="currentPage"
+          [maxVisiblePages]="5"
+          (pageChanged)="onPageChanged($event)">
+        </app-pagination>
+      </div>
     </div>
   </div>
 

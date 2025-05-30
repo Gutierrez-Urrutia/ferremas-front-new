@@ -6,11 +6,26 @@
     </div>
   </div>
   
-  <div class="row" *ngIf="productos.length > 0; else noProductos">
-    <div class="col-md-6 col-lg-4 col-xl-3 mb-4" *ngFor="let producto of productos">
-      <app-card [producto]="producto"></app-card>
+  <!-- Cards de productos (paginados) -->
+    <div class="row">
+      <div *ngFor="let producto of productos | paginacion:currentPage:itemsPerPage" 
+           class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <app-card [producto]="producto"></app-card>
+      </div>
     </div>
-  </div>
+
+    <!-- Paginación -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <app-pagination 
+          [totalItems]="totalItems"
+          [itemsPerPage]="itemsPerPage"
+          [currentPage]="currentPage"
+          [maxVisiblePages]="5"
+          (pageChanged)="onPageChanged($event)">
+        </app-pagination>
+      </div>
+    </div>
   
   <ng-template #noProductos>
     <div class="row">

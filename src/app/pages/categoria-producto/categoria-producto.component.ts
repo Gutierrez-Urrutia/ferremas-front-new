@@ -6,10 +6,12 @@ import { ProductoService } from '../../services/producto.service';
 import { CardComponent } from '../../components/card/card.component';
 import { ModalCompraComponent } from '../../components/modal-compra/modal-compra.component';
 import { Producto } from '../../interfaces/producto';
+import { PaginacionComponent } from '../../components/paginacion/paginacion.component';
+import { PaginacionPipe } from '../../pipes/paginacion.pipe';
 
 @Component({
   selector: 'app-categoria-producto',
-  imports: [CommonModule, CardComponent, ModalCompraComponent],
+  imports: [CommonModule, CardComponent, ModalCompraComponent, PaginacionComponent, PaginacionPipe],
   templateUrl: './categoria-producto.component.html',
   styleUrl: './categoria-producto.component.css'
 })
@@ -17,6 +19,9 @@ export class CategoriaProductoComponent implements OnInit {
   categoriaId!: number;
   categoriaNombre: string = '';
   productos: Producto[] = [];
+  currentPage = 1;
+  itemsPerPage = 8;
+  totalItems = 0;
 
   constructor(
     private productoService: ProductoService,
@@ -44,8 +49,14 @@ export class CategoriaProductoComponent implements OnInit {
   cargarProductosPorCategoria(): void {
     this.productoService.getProductosPorCategoria(this.categoriaId).subscribe(productos => {
       this.productos = productos;
+      this.totalItems = productos.length;
     }, error => {
       console.error('Error al cargar productos por categoría:', error);
     });
+  }
+
+  onPageChanged(page: number): void {
+    this.currentPage = page;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
