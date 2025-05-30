@@ -1,3 +1,4 @@
+```markdown
 # 🔧 Ferremas - Plataforma E-commerce para Ferretería
 
 Una aplicación web moderna desarrollada con **Angular** que ofrece una experiencia completa de compra online para productos de ferretería, incluyendo navegación por categorías, gestión de carrito y simulación de pagos.
