@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ProductoService } from '../../services/producto.service';
 import { CommonModule } from '@angular/common';
 import { CardComponent } from '../../components/card/card.component';
-import { ProductoResponse } from '../../interfaces/producto-response';
+import { ProductoResponse } from '../../interfaces/producto';
 
 @Component({
   selector: 'app-oferta-producto',

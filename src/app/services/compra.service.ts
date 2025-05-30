@@ -3,7 +3,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { DatosCompra } from '../interfaces/datos-compra';
 import { DatosCliente } from '../interfaces/datos-cliente';
 import { ItemCarrito } from './carrito.service';
-import { ProductoResponse } from '../interfaces/producto-response';
+import { Producto } from '../interfaces/producto';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class CompraService {
   private limpiarFormularioSource = new Subject<void>();
   limpiarFormulario$ = this.limpiarFormularioSource.asObservable();
 
-  iniciarCompra(producto: ProductoResponse, cantidad: number = 1) {
+  iniciarCompra(producto: Producto, cantidad: number = 1) {
     const compra: DatosCompra = {
       productos: [{ producto, cantidad }],
       subtotal: this.getPrecioProducto(producto) * cantidad,
@@ -24,7 +24,7 @@ export class CompraService {
     this.compraActualSource.next(compra);
   }
 
-  private getPrecioProducto(producto: ProductoResponse): number {
+  private getPrecioProducto(producto: Producto): number {
     if (!producto.precios || producto.precios.length === 0) {
       return 0;
     }

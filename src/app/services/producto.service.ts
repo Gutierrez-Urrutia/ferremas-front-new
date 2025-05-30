@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of } from "rxjs";
-import { ProductoResponse } from "../interfaces/producto-response";
+import { Producto } from "../interfaces/producto";
 import { ProductoApiService } from "./producto-api.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductoService {
-  private productosSource = new BehaviorSubject<ProductoResponse[]>([]);
+  private productosSource = new BehaviorSubject<Producto[]>([]);
   productos$ = this.productosSource.asObservable();
 
   constructor(private productoApiService: ProductoApiService) {
@@ -20,56 +20,56 @@ export class ProductoService {
     this.productoApiService.getProductos().pipe(
       map((productosBackend: any) => {
         console.log('📦 Productos recibidos del backend:', productosBackend);
-        return productosBackend as ProductoResponse[];
+        return productosBackend as Producto[];
       }),
-      catchError((error: any): Observable<ProductoResponse[]> => {
+      catchError((error: any): Observable<Producto[]> => {
         console.error('❌ Error cargando productos desde backend:', error);
         console.warn('⚠️ Usando productos por defecto');
         return of([]);
       })
-    ).subscribe((productos: ProductoResponse[]) => {
+    ).subscribe((productos: Producto[]) => {
       console.log('✅ Productos cargados:', productos);
       this.productosSource.next(productos);
     });
   }
 
-  getProductos(): Observable<ProductoResponse[]> {
+  getProductos(): Observable<Producto[]> {
     return this.productos$;
   }
 
-  getProductosDestacados(): Observable<ProductoResponse[]> {
+  getProductosDestacados(): Observable<Producto[]> {
     return this.productos$.pipe(
       map(productos => productos.filter(p => p.destacado && !p.oculto))
     );
   }
   
-  getProductosConDescuento(): Observable<ProductoResponse[]> {
+  getProductosConDescuento(): Observable<Producto[]> {
     return this.productos$.pipe(
       map(productos => productos.filter(p => p.descuento && !p.oculto))
     );
   }
   
-  getProductoPorId(id: number): Observable<ProductoResponse | undefined> {
+  getProductoPorId(id: number): Observable<Producto | undefined> {
     return this.productos$.pipe(
       map(productos => productos.find(p => p.id === id))
     );
   }
 
-  getProductosPorCategoria(categoriaId: number): Observable<ProductoResponse[]> {
+  getProductosPorCategoria(categoriaId: number): Observable<Producto[]> {
     return this.productos$.pipe(
-      map((productos: ProductoResponse[]) => productos.filter(p => p.categoriaId === categoriaId && !p.oculto))
+      map((productos: Producto[]) => productos.filter(p => p.categoriaId === categoriaId && !p.oculto))
     );
   }
 
-  getProductosPorMarca(marcaId: number): Observable<ProductoResponse[]> {
+  getProductosPorMarca(marcaId: number): Observable<Producto[]> {
     return this.productos$.pipe(
-      map((productos: ProductoResponse[]) => productos.filter(p => p.marcaId === marcaId && !p.oculto))
+      map((productos: Producto[]) => productos.filter(p => p.marcaId === marcaId && !p.oculto))
     );
   }
 
   getMarcasDisponibles(): Observable<string[]> {
     return this.productos$.pipe(
-      map((productos: ProductoResponse[]) => {
+      map((productos: Producto[]) => {
         const marcas = productos
           .filter(p => p.marca && !p.oculto)
           .map(p => p.marca)
@@ -80,7 +80,7 @@ export class ProductoService {
     );
   }
 
-  buscarProductos(termino: string): Observable<ProductoResponse[]> {
+  buscarProductos(termino: string): Observable<Producto[]> {
     return this.productos$.pipe(
       map(productos => 
         productos.filter(producto =>

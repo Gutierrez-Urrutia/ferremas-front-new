@@ -6,7 +6,7 @@ import { CardComponent } from '../../components/card/card.component';
 import { ModalCompraComponent } from '../../components/modal-compra/modal-compra.component';
 import { Marca } from '../../interfaces/marca';
 import { MarcaService } from '../../services/marca.service';
-import { ProductoResponse } from '../../interfaces/producto-response';
+import { Producto } from '../../interfaces/producto';
 
 @Component({
     selector: 'app-marca-producto',
@@ -17,7 +17,7 @@ import { ProductoResponse } from '../../interfaces/producto-response';
 export class MarcaProductoComponent implements OnInit {
     marcaId!: number;
     marcaNombre: string = '';
-    productos: ProductoResponse[] = [];
+    productos: Producto[] = [];
 
     constructor(
         private productoService: ProductoService,
