@@ -25,7 +25,7 @@
                         <div class="col-md-8">
                             <h4>{{ compra.productos[0].producto.nombre }}</h4>
                             <p class="text-muted">{{ compra.productos[0].producto.descripcion }}</p>
-                            <p class="h5 text-success">{{ compra.productos[0].producto.precio | conversor }} c/u
+                            <p class="h5 text-success">{{ getPrecioActual(compra.productos[0].producto) | conversor }} c/u
                             </p>
 
                             <div class="row align-items-center mt-4">
@@ -64,9 +64,9 @@
                                             <strong>{{ item.producto.nombre }}</strong><br>
                                             <small class="text-muted">{{ item.producto.descripcion }}</small>
                                         </td>
-                                        <td>{{ item.producto.precio | conversor }}</td>
+                                        <td>{{ getPrecioActual(item.producto) | conversor }}</td>
                                         <td>{{ item.cantidad }}</td>
-                                        <td>{{ (item.producto.precio * item.cantidad) | conversor }}</td>
+                                        <td>{{ (getPrecioActual(item.producto) * item.cantidad) | conversor }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -163,7 +163,7 @@
                             <div *ngIf="compra.esCompraCarrito">
                                 <div class="d-flex justify-content-between mb-2" *ngFor="let item of compra.productos">
                                     <span>{{ item.producto.nombre }} (x{{ item.cantidad }})</span>
-                                    <span>{{ (item.producto.precio * item.cantidad) | conversor }}</span>
+                                    <span>{{ (getPrecioActual(item.producto) * item.cantidad) | conversor }}</span>
                                 </div>
                             </div>
 

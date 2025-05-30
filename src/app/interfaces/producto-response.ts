@@ -1,10 +1,12 @@
+import { Precio } from './precio';
+
 export interface ProductoResponse {
   id: number;
   codigo_producto: string;
   nombre: string;
   categoria: string;
   marca: string;
-  precios: any[];
+  precios: Precio[];
   precio: number;
   descripcion: string;
   imagen: string;
@@ -12,4 +14,6 @@ export interface ProductoResponse {
   destacado: boolean;
   oculto: boolean;
   categoriaId: number;
+  marcaId: number;
 }
+

@@ -31,4 +31,9 @@ export class ProductoApiService {
   getProductosDestacados(): Observable<ProductoResponse[]> {
     return this.http.get<ProductoResponse[]>(`${this.baseUrl}/productos/destacados`);
   }
+
+  // Obtener productos por marca
+  getProductosByMarca(marcaId: number): Observable<ProductoResponse[]> {
+    return this.http.get<ProductoResponse[]>(`${this.baseUrl}/productos/marca/${marcaId}`);
+  }
 }

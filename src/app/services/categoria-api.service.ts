@@ -10,20 +10,20 @@ export class CategoriaApiService {
   private readonly baseUrl = 'http://localhost:8090/api/v1';
   constructor(private http: HttpClient) { }
 
-  getCategorias(){
-    return this.http.get(`${this.baseUrl}/categorias`);
+  getCategorias(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${this.baseUrl}/categorias`);
   }
 
-  getCategoriaById(id: number){
-    return this.http.get(`${this.baseUrl}/categorias/${id}`);
+  getCategoriaById(id: number): Observable<Categoria> {
+    return this.http.get<Categoria>(`${this.baseUrl}/categorias/${id}`);
   }
 
    // Si tu backend tiene estos endpoints adicionales
-  createCategoria(categoria: any): Observable<Categoria> {
+  createCategoria(categoria: Categoria): Observable<Categoria> {
     return this.http.post<Categoria>(`${this.baseUrl}/categorias`, categoria);
   }
 
-  updateCategoria(id: number, categoria: any): Observable<Categoria> {
+  updateCategoria(id: number, categoria: Categoria): Observable<Categoria> {
     return this.http.put<Categoria>(`${this.baseUrl}/categorias/${id}`, categoria);
   }
 

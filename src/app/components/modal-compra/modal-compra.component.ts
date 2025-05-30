@@ -8,6 +8,7 @@ import { CarritoService } from '../../services/carrito.service';
 import { SimularPagoComponent } from '../../pages/simular-pago/simular-pago.component';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
 import Swal from 'sweetalert2';
+import { ProductoResponse } from '../../interfaces/producto-response';
 
 @Component({
   selector: 'app-modal-compra',
@@ -55,7 +56,14 @@ export class ModalCompraComponent implements OnInit {
     });
   }
 
-   limpiarFormularioCliente() {
+  getPrecioActual(producto: ProductoResponse): number {
+    if (!producto.precios || producto.precios.length === 0) {
+      return 0;
+    }
+    return producto.precios[0].precio;
+  }
+
+  limpiarFormularioCliente() {
     this.datosCliente = {
       nombre: '',
       email: '',
@@ -179,7 +187,7 @@ export class ModalCompraComponent implements OnInit {
   limpiarTodosLosDatos() {
     // Vaciar carrito
     this.carritoService.vaciarCarrito();
-    
+
     // Limpiar compra (esto automáticamente limpiará el formulario)
     this.compraService.limpiarCompra();
   }
