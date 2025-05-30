@@ -1,5 +1,3 @@
-Basándome en la exploración de tu repositorio Ferremas, aquí tienes un README.md completo en español:
-
 ```markdown
 # 🔧 Ferremas - Plataforma E-commerce para Ferretería
 
