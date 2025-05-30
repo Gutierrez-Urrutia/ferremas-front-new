@@ -22,6 +22,8 @@ export class MarcaProductoComponent implements OnInit {
     currentPage = 1;
     itemsPerPage = 8;
     totalItems = 0;
+    loading = true;
+    error = '';
 
     constructor(
         private productoService: ProductoService,
@@ -31,6 +33,7 @@ export class MarcaProductoComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params.subscribe(params => {
+            this.currentPage = 1
             this.marcaId = +params['id'];
             this.cargarMarca();
             this.cargarProductosPorMarca();
@@ -38,21 +41,36 @@ export class MarcaProductoComponent implements OnInit {
     }
 
     cargarMarca(): void {
-        this.marcaService.getMarcaPorId(this.marcaId).subscribe(marca => {
-            if (marca) {
-                this.marcaNombre = marca.nombre;
-            } else {
-                console.error('Marca no encontrada');
+        this.marcaService.getMarcaPorId(this.marcaId).subscribe({
+            next: (marca) => {
+                if (marca) {
+                    this.marcaNombre = marca.nombre;
+                } else {
+                    this.error = 'Marca no encontrada';
+                }
+            },
+            error: (error) => {
+                console.error('Error al cargar marca:', error);
+                this.marcaNombre = 'Marca desconocida';
             }
         });
     }
 
     cargarProductosPorMarca(): void {
-        this.productoService.getProductosPorMarca(this.marcaId).subscribe(productos => {
-            this.productos = productos;
-            this.totalItems = productos.length;
-        }, error => {
-            console.error('Error al cargar productos por marca:', error);
+        this.loading = true;
+        this.error = '';
+        
+        this.productoService.getProductosPorMarca(this.marcaId).subscribe({
+            next: (productos) => {
+                this.productos = productos.filter(p => !p.oculto);
+                this.totalItems = this.productos.length;
+                this.loading = false;
+            },
+            error: (error) => {
+                this.error = 'Error al cargar los productos de la marca';
+                this.loading = false;
+                console.error('Error:', error);
+            }
         });
     }
 

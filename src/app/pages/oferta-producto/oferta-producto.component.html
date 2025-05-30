@@ -64,13 +64,13 @@
     <!-- Componente de paginación -->
     <div class="row mt-4">
       <div class="col-12">
-        <app-pagination 
+        <app-paginacion 
           [totalItems]="totalItems"
           [itemsPerPage]="itemsPerPage"
           [currentPage]="currentPage"
           [maxVisiblePages]="5"
           (pageChanged)="onPageChanged($event)">
-        </app-pagination>
+        </app-paginacion>
       </div>
     </div>
   </div>

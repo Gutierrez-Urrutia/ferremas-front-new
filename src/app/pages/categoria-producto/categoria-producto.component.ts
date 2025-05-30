@@ -22,6 +22,8 @@ export class CategoriaProductoComponent implements OnInit {
   currentPage = 1;
   itemsPerPage = 8;
   totalItems = 0;
+  loading = true;
+  error = '';
 
   constructor(
     private productoService: ProductoService,
@@ -47,11 +49,20 @@ export class CategoriaProductoComponent implements OnInit {
   }
 
   cargarProductosPorCategoria(): void {
-    this.productoService.getProductosPorCategoria(this.categoriaId).subscribe(productos => {
-      this.productos = productos;
-      this.totalItems = productos.length;
-    }, error => {
-      console.error('Error al cargar productos por categoría:', error);
+    this.loading = true;
+    this.error = '';
+    
+    this.productoService.getProductosPorCategoria(this.categoriaId).subscribe({
+      next: (productos) => {
+        this.productos = productos.filter(p => !p.oculto);
+        this.totalItems = this.productos.length;
+        this.loading = false;
+      },
+      error: (error) => {
+        this.error = 'Error al cargar los productos de la categoría';
+        this.loading = false;
+        console.error('Error:', error);
+      }
     });
   }
 

@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-pagination',
+  selector: 'app-paginacion',
   imports: [CommonModule],
   templateUrl: './paginacion.component.html',
   styleUrl: './paginacion.component.css'
