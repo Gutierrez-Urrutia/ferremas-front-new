@@ -1,7 +1,10 @@
 ```markdown
 # 🔧 Ferremas - Plataforma E-commerce para Ferretería
 
-Una aplicación web moderna desarrollada con **Angular** que ofrece una experiencia completa de compra online para productos de ferretería, incluyendo navegación por categorías, gestión de carrito y simulación de pagos.
+Una aplicación web moderna desarrollada con **Angular**  
+que ofrece una experiencia completa de compra online  
+para productos de ferretería, incluyendo navegación  
+por categorías, gestión de carrito y simulación de pagos.
 
 ---
 
@@ -18,17 +21,17 @@ Una aplicación web moderna desarrollada con **Angular** que ofrece una experien
 
 ## 🛠️ Stack Tecnológico
 
-- **Angular 19.2.0** — Framework principal
-- **Bootstrap 5.3.6** — Framework CSS y componentes UI
-- **FontAwesome 6.7.2** — Iconografía
-- **SweetAlert2** — Notificaciones y alertas
-- **RxJS** — Programación reactiva
+- **Angular 19.2.0** — Framework principal  
+- **Bootstrap 5.3.6** — Framework CSS y componentes UI  
+- **FontAwesome 6.7.2** — Iconografía  
+- **SweetAlert2** — Notificaciones y alertas  
+- **RxJS** — Programación reactiva  
 
 ---
 
 ## 📁 Arquitectura del Proyecto
 
-```plaintext
+```
 src/app/
 ├── components/          # Componentes reutilizables
 │   ├── navbar/         # Navegación principal
@@ -79,16 +82,16 @@ src/app/
     ```
 
 4. **Acceder a la aplicación**  
-    Abrir [`http://localhost:4200/`](http://localhost:4200/) en el navegador.
+    Abrir [http://localhost:4200/](http://localhost:4200/) en el navegador.
 
 ---
 
 ## 📝 Scripts Disponibles
 
-- `ng serve` — Servidor de desarrollo
-- `ng build` — Construcción para producción
-- `ng test` — Ejecutar pruebas unitarias
-- `ng e2e` — Pruebas end-to-end
+- `ng serve` — Servidor de desarrollo  
+- `ng build` — Construcción para producción  
+- `ng test` — Ejecutar pruebas unitarias  
+- `ng e2e` — Pruebas end-to-end  
 
 ---
 
@@ -146,11 +149,11 @@ La aplicación se conecta con APIs backend para:
 
 ## 🤝 Contribución
 
-1. Fork del proyecto
-2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Crear Pull Request
+1. Fork del proyecto  
+2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)  
+3. Commit cambios (`git commit -m 'Agregar nueva funcionalidad'`)  
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)  
+5. Crear Pull Request  
 
 ---
 
