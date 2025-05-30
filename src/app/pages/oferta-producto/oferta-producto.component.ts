@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../../services/producto.service';
 import { CommonModule } from '@angular/common';
 import { CardComponent } from '../../components/card/card.component';
-import { ProductoResponse } from '../../interfaces/producto';
+import { Producto } from '../../interfaces/producto';
 
 @Component({
   selector: 'app-oferta-producto',
@@ -10,8 +10,8 @@ import { ProductoResponse } from '../../interfaces/producto';
   templateUrl: './oferta-producto.component.html',
   styleUrl: './oferta-producto.component.css'
 })
-export class OfertaProductoComponent {
-  productos: ProductoResponse[] = [];
+export class OfertaProductoComponent implements OnInit {
+  productos: Producto[] = [];
   loading = true;
   error = '';
 
@@ -23,9 +23,14 @@ export class OfertaProductoComponent {
 
   cargarProductosConDescuento(): void {
     this.loading = true;
-    this.productoService.getProductosConDescuento().subscribe({
+    this.error = '';
+
+    this.productoService.getProductos().subscribe({
       next: (productos) => {
-        this.productos = productos;
+        // Filtrar solo productos que tienen descuento > 0
+        this.productos = productos.filter(producto =>
+          producto.descuento > 0 && !producto.oculto
+        );
         this.loading = false;
       },
       error: (error) => {

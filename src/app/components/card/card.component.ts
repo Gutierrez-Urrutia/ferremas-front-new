@@ -35,6 +35,10 @@ export class CardComponent {
     return this.producto.precios[0].precio;
   }
 
+  tieneDescuento(): boolean {
+    return this.producto.descuento > 0;
+  }
+
   private mostrarNotificacion() {
     // Crear elemento de notificación
     const notificacion = document.createElement('div');
