@@ -93,7 +93,14 @@ export class ModalCompraComponent implements OnInit {
       this.compraService.actualizarTipoDespacho(this.tipoDespacho);
       this.paso = 3;
     } else {
-      alert('Por favor, complete todos los campos obligatorios.');
+      // Cambio 1: Alerta de validación con SweetAlert2
+      Swal.fire({
+        title: 'Datos incompletos',
+        text: 'Por favor, complete todos los campos obligatorios.',
+        icon: 'warning',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#ffc107'
+      });
     }
   }
 
@@ -132,8 +139,16 @@ export class ModalCompraComponent implements OnInit {
       // Mostrar alerta PRIMERO, luego cerrar modal en el callback
       this.mostrarAlertaExito();
     } else {
-      alert('Pago rechazado. Volviendo al resumen de compra.');
-      this.paso = 3;
+      // Cambio 2: Alerta de pago rechazado con SweetAlert2
+      Swal.fire({
+        title: 'Pago rechazado',
+        text: 'Su pago no pudo ser procesado. Volviendo al resumen de compra.',
+        icon: 'error',
+        confirmButtonText: 'Reintentar',
+        confirmButtonColor: '#dc3545'
+      }).then(() => {
+        this.paso = 3;
+      });
       return;
     }
   }

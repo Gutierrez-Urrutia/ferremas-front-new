@@ -2,8 +2,8 @@
   <!-- Header Transbank -->
   <div class="transbank-header">
     <div class="d-flex align-items-center justify-content-center">
-      <img src="assets/images/transbank-logo.png" alt="Transbank" class="transbank-logo me-3" 
-           onerror="this.style.display='none'">
+      <img src="assets/images/transbank-logo.png" alt="Transbank" class="transbank-logo me-3"
+        onerror="this.style.display='none'">
       <h4 class="mb-0 text-white">Webpay Plus</h4>
     </div>
   </div>
@@ -35,28 +35,13 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label for="numeroTarjeta" class="form-label">Número de tarjeta *</label>
-          <input 
-            type="text" 
-            id="numeroTarjeta" 
-            class="form-control" 
-            [(ngModel)]="numeroTarjeta"
-            (input)="formatearTarjeta()"
-            name="numeroTarjeta"
-            placeholder="0000 0000 0000 0000"
-            maxlength="19"
-            required>
+          <input type="text" id="numeroTarjeta" class="form-control" [(ngModel)]="numeroTarjeta"
+            (input)="formatearTarjeta()" name="numeroTarjeta" placeholder="0000 0000 0000 0000" maxlength="19" required>
         </div>
         <div class="col-md-6 mb-3">
           <label for="nombreTitular" class="form-label">Nombre del titular *</label>
-          <input 
-            type="text" 
-            id="nombreTitular" 
-            class="form-control" 
-            [(ngModel)]="nombreTitular"
-            name="nombreTitular"
-            placeholder="Como aparece en la tarjeta"
-            style="text-transform: uppercase"
-            required>
+          <input type="text" id="nombreTitular" class="form-control" [(ngModel)]="nombreTitular" name="nombreTitular"
+            placeholder="Como aparece en la tarjeta" style="text-transform: uppercase" required>
         </div>
       </div>
 
@@ -93,15 +78,8 @@
         </div>
         <div class="col-md-4 mb-3">
           <label for="cvv" class="form-label">CVV *</label>
-          <input 
-            type="password" 
-            id="cvv" 
-            class="form-control" 
-            [(ngModel)]="cvv"
-            name="cvv"
-            placeholder="123"
-            maxlength="4"
-            required>
+          <input type="password" id="cvv" class="form-control" [(ngModel)]="cvv" name="cvv" placeholder="123"
+            maxlength="4" required>
         </div>
       </div>
 
@@ -117,24 +95,24 @@
     </form>
   </div>
 
-  <!-- Estado Procesando -->
-  <div *ngIf="estadoPago === 'procesando'" class="text-center py-5">
+  <!-- En la sección de procesando, agregar la barra de progreso -->
+  <div *ngIf="estadoPago === 'procesando'" class="text-center">
     <div class="spinner-border text-primary mb-3" role="status">
       <span class="visually-hidden">Procesando...</span>
     </div>
     <h5>Procesando pago...</h5>
-    <p class="text-muted">Por favor, no cierre esta ventana</p>
-    <div class="progress mb-3" style="width: 200px; margin: 0 auto;">
-      <div 
-        class="progress-bar progress-bar-striped progress-bar-animated" 
-        role="progressbar" 
-        [style.width.%]="((30 - tiempoRestante) / 30) * 100">
+    <p>Tiempo restante: {{ tiempoRestante }} segundos</p>
+
+    <!-- Barra de progreso -->
+    <div class="progress mb-3" style="height: 25px;">
+      <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
+        [style.width.%]="progreso" [attr.aria-valuenow]="progreso" aria-valuemin="0" aria-valuemax="100">
+        {{ progreso }}%
       </div>
     </div>
-    <p class="small">Tiempo restante: {{ tiempoRestante }}s</p>
-    
-    <button type="button" class="btn btn-danger btn-sm mt-3" (click)="cancelarPago()">
-      Cancelar transacción
+
+    <button class="btn btn-danger" (click)="cancelarPago()">
+      Cancelar Pago
     </button>
   </div>
 
@@ -145,7 +123,7 @@
     </div>
     <h4 class="text-success">¡Pago aprobado!</h4>
     <p class="text-muted">Su transacción ha sido procesada exitosamente</p>
-    
+
     <div class="transaction-details mt-4">
       <div class="card">
         <div class="card-body">
@@ -171,7 +149,7 @@
     </div>
     <h4 class="text-danger">Pago rechazado</h4>
     <p class="text-muted">Su transacción no pudo ser procesada</p>
-    
+
     <div class="mt-4">
       <button type="button" class="btn btn-primary me-3" (click)="reintentar()">
         <i class="fas fa-redo me-2"></i>

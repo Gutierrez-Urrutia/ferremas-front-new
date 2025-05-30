@@ -5,6 +5,7 @@ import { CarritoService, ItemCarrito } from '../../services/carrito.service';
 import { CompraService } from '../../services/compra.service';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
 import { Producto } from '../../interfaces/producto';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-modal-carrito',
@@ -46,9 +47,28 @@ export class ModalCarritoComponent implements OnInit {
   }
 
   vaciarCarrito(): void {
-    if (confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
-      this.carritoService.vaciarCarrito();
-    }
+    Swal.fire({
+      title: '¿Vaciar carrito?',
+      text: 'Se eliminarán todos los productos del carrito',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, vaciar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.carritoService.vaciarCarrito();
+        Swal.fire({
+          title: '¡Carrito vaciado!',
+          text: 'Todos los productos han sido eliminados',
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    });
   }
 
   procederACompra(): void {
