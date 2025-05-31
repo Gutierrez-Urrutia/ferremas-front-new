@@ -8,12 +8,14 @@
             aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link" [routerLink]="['/']" routerLinkActive="active"
                         [routerLinkActiveOptions]="{exact: true}">Home</a>
                 </li>
+                
                 <!-- Dropdown Categorías: Lista dinámica de categorías obtenidas desde el componente -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
@@ -27,6 +29,7 @@
                         </a>
                     </div>
                 </li>
+                
                 <!-- Dropdown Marcas: Lista dinámica de marcas obtenidas desde el componente -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
@@ -39,6 +42,7 @@
                         </a>
                     </div>
                 </li>
+                
                 <!-- Link Ofertas  -->
                 <li class="nav-item">
                     <a class="nav-link" [routerLink]="['/ofertas']" routerLinkActive="active">
@@ -48,7 +52,7 @@
             </ul>
 
             <div class="d-flex align-items-center">
-                <!-- Selector de divisa -->
+                <!-- Selector de divisa: Permite cambiar la moneda de visualización -->
                 <div class="dropdown me-3">
                     <button class="btn btn-outline-light dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
@@ -71,8 +75,53 @@
                         </li>
                     </ul>
                 </div>
-    
-                <!-- Carrito -->
+
+                <!-- Dropdown Usuario: Opciones de autenticación -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-outline-light dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fas fa-user me-1"></i>
+                        <!-- Mostrar "Usuario" si no está logueado, o el nombre si está logueado -->
+                        {{ authService.isAuthenticated() ? getUserName() : '' }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <!-- Mostrar opciones de login/registro si NO está autenticado -->
+                        <ng-container *ngIf="!authService.isAuthenticated()">
+                            <li>
+                                <a class="dropdown-item" [routerLink]="['/login']">
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    Iniciar sesión
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" [routerLink]="['/registro']">
+                                    <i class="fas fa-user-plus me-2"></i>
+                                    Registrarse
+                                </a>
+                            </li>
+                        </ng-container>
+
+                        <!-- Mostrar opciones de usuario logueado si SÍ está autenticado -->
+                        <ng-container *ngIf="authService.isAuthenticated()">
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <i class="fas fa-user-circle me-2 text-primary"></i>
+                                    <strong>Bienvenido {{ getUserName() }}</strong>
+                                </span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#" (click)="logout(); $event.preventDefault()">
+                                    <i class="fas fa-sign-out-alt me-2 text-primary"></i>
+                                    Cerrar sesión
+                                </a>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </div>
+
+                <!-- Carrito: Muestra el número de productos en el carrito y abre el modal al hacer clic -->
                 <button class="btn btn-outline-light position-relative border-0 me-3" type="button" data-bs-toggle="modal"
                     data-bs-target="#modalCarrito">
                     <i class="fas fa-shopping-cart fa-xl"></i>
@@ -81,24 +130,6 @@
                         <span class="visually-hidden">productos en carrito</span>
                     </span>
                 </button>
-                <ng-container *ngIf="!authService.isAuthenticated(); else usuarioAutenticado">
-                    <a class="btn btn-outline-light me-2" [routerLink]="['/iniciar-sesion']">
-                        <i class="fas fa-user me-1"></i> Iniciar sesión
-                    </a>
-                    <a class="btn btn-primary" [routerLink]="['/registro']">
-                        <i class="fas fa-user-plus me-1"></i> Registrarse
-                    </a>
-                </ng-container>
-
-                <ng-template #usuarioAutenticado>
-                    <div class="text-white me-2">
-                        <i class="fas fa-user-circle me-1"></i>
-                        {{ authService.getCurrentUser()?.email }}
-                    </div>
-                    <button class="btn btn-danger" (click)="logout()">
-                        <i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión
-                    </button>
-                </ng-template>
             </div>
         </div>
     </div>

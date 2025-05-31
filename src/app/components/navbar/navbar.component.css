@@ -109,22 +109,26 @@
   transform: scale(1.1);
 }
 
-.modal-backdrop {
-    z-index: 1040 !important;
+/* Estilo para el mensaje de bienvenida */
+.dropdown-item-text {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: #495057;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
 }
 
-.modal {
-    z-index: 1050 !important;
-}
-.modal-backdrop.show {
-  opacity: 0.5 !important;
+/* .dropdown-item-text strong {
+  color: #28a745;
+} */
+
+/* Hover effects para los items del dropdown */
+.dropdown-item:hover {
+  background-color: #f8f9fa;
 }
 
-.modal.show {
-  z-index: 1050 !important;
-  opacity: 1 !important;
-}
-
-body.modal-open {
-  overflow: hidden;
+.dropdown-item:hover .text-danger {
+  color: #dc3545 !important;
 }

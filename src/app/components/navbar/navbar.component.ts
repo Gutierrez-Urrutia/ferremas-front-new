@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CategoriaService } from '../../services/categoria.service';
@@ -8,38 +8,27 @@ import { DivisaRate } from '../../interfaces/divisa-rate';
 import { DivisaService } from '../../services/divisa.service';
 import { Marca } from '../../interfaces/marca';
 import { MarcaService } from '../../services/marca.service';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service'; // Agregar import
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, AfterViewInit {
   categorias: Categoria[] = [];
   marcas: Marca[] = [];
   cantidadCarrito: number = 0;
   selectedDivisa: string = 'CLP';
   availableDivisas: DivisaRate[] = [];
 
-  login = {
-    email: '',
-    password: ''
-  };
-
-  onLogin() {
-    // Llamar al servicio de autenticación
-    console.log('Login con', this.login);
-  }
-
   constructor(
     private categoriaService: CategoriaService,
     private carritoService: CarritoService,
     private divisaService: DivisaService,
     private marcaService: MarcaService,
-    public authService: AuthService
+    public authService: AuthService // Agregar AuthService como público
   ) {
     // Suscribe a los cambios de divisa seleccionada para actualizar el valor local
     this.divisaService.selectedDivisa$.subscribe(divisa => {
@@ -49,19 +38,18 @@ export class NavbarComponent implements OnInit {
     // Suscribe a los cambios en las tasas de divisas disponibles
     this.divisaService.rates$.subscribe(rates => {
       this.availableDivisas = rates;
+      // Reinicializar dropdowns cuando cambien las divisas
+      setTimeout(() => this.initializeDropdowns(), 50);
     });
-  }
-
-  onDivisaChange(divisa: string): void {
-    this.divisaService.setSelectedDivisa(divisa);
   }
 
   ngOnInit(): void {
     // Carga las categorías al inicializar el componente
     this.categoriaService.getCategorias().subscribe(categorias => {
       this.categorias = categorias;
+      setTimeout(() => this.initializeDropdowns(), 50);
     });
-    
+
     // Actualiza la cantidad de productos en el carrito cuando hay cambios
     this.carritoService.itemsCarrito$.subscribe(items => {
       this.cantidadCarrito = this.carritoService.obtenerCantidadTotal();
@@ -71,9 +59,77 @@ export class NavbarComponent implements OnInit {
     this.marcaService.getMarcas().subscribe(marcas => {
       this.marcas = marcas;
       console.log('Marcas cargadas:', this.marcas);
+      setTimeout(() => this.initializeDropdowns(), 50);
     });
   }
+
+  ngAfterViewInit(): void {
+    // Inicializar dropdowns después de que la vista esté completamente renderizada
+    setTimeout(() => {
+      this.initializeDropdowns();
+    }, 100);
+  }
+
+  private initializeDropdowns(): void {
+    if (typeof (window as any).bootstrap !== 'undefined') {
+      const dropdownElements = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+
+      dropdownElements.forEach(element => {
+        const existingInstance = (window as any).bootstrap.Dropdown.getInstance(element);
+        if (!existingInstance) {
+          new (window as any).bootstrap.Dropdown(element);
+        }
+      });
+
+      console.log(`✅ Inicializados ${dropdownElements.length} dropdowns de Bootstrap`);
+    }
+  }
+
+  onDivisaChange(divisa: string): void {
+    this.divisaService.setSelectedDivisa(divisa);
+    this.closeAllDropdowns();
+  }
+
+  private closeAllDropdowns(): void {
+    if (typeof (window as any).bootstrap !== 'undefined') {
+      document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(element => {
+        const dropdown = (window as any).bootstrap.Dropdown.getInstance(element);
+        if (dropdown) {
+          dropdown.hide();
+        }
+      });
+    }
+  }
+
+  // Método para obtener el nombre del usuario
+  getUserName(): string {
+    const user = this.authService.getCurrentUser();
+
+    if (user) {
+      // Priorizar nombre y apellido
+      if (user.nombre) {
+        return `${user.nombre}`;
+      }
+      // Si solo tiene nombre
+      if (user.nombre) {
+        return user.nombre;
+      }
+      // Si solo tiene apellido
+      if (user.apellido) {
+        return user.apellido;
+      }
+      // Fallback al email si no tiene nombre/apellido
+      if (user.email) {
+        return user.email;
+      }
+    }
+
+    return 'Usuario';
+  }
+
+  // Método para cerrar sesión
   logout(): void {
     this.authService.logout();
+    this.closeAllDropdowns();
   }
 }
