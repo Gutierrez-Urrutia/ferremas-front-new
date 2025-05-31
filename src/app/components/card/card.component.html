@@ -1,4 +1,4 @@
-<div class="card mb-3 h-100 d-flex flex-column" *ngIf="!producto.oculto">
+<div class="card mb-3 h-100 d-flex flex-column" [class.agotado]="producto.stock === 0" *ngIf="!producto.oculto">
     <!-- Mostrar tarjeta  -->
     <h6 class="card-header">{{ producto.nombre }}</h6>
     <div class="image-container">
@@ -15,6 +15,21 @@
     <div class="card-body d-flex flex-column">
         <!-- Descripción -->
         <p class="card-text" style="height: 70px; overflow: hidden;">{{ producto.descripcion }}</p>
+
+                <!-- Información de stock -->
+        <div class="stock-info mb-2">
+            <span *ngIf="producto.stock === 0" class="badge bg-danger">Agotado</span>
+            <span *ngIf="producto.stock === 1" class="badge bg-warning-red">
+                Última unidad
+            </span>
+            <span *ngIf="producto.stock > 1 && producto.stock <= 5" class="badge bg-warning-red">
+                Últimas {{ producto.stock }} unidades
+            </span>
+            <span *ngIf="producto.stock > 5" class="text-muted small">
+                Stock: {{ producto.stock }} unidades
+            </span>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mt-auto">
             <strong class="text-primary">{{ getPrecioActual() | conversor}}</strong>
             <!-- Mostrar badge de descuento -->
@@ -22,9 +37,13 @@
         </div>
     </div>
     <div class="card-footer d-flex justify-content-between">
-        <button type="button" class="btn btn-outline-primary btn-sm " (click)="onAgregarAlCarrito()">Agregar al
-            Carro</button>
-        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalCompra"
-            (click)="onMostrar()">Comprar</button>
+        <button type="button" class="btn btn-outline-primary btn-sm" [disabled]="producto.stock === 0"
+            (click)="onAgregarAlCarrito()">
+            Agregar al Carro
+        </button>
+        <button type="button" class="btn btn-success btn-sm" [disabled]="producto.stock === 0" data-bs-toggle="modal"
+            data-bs-target="#modalCompra" (click)="onMostrar()">
+            Comprar
+        </button>
     </div>
 </div>

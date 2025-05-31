@@ -14,5 +14,6 @@ export interface Producto {
   oculto: boolean;
   categoriaId: number;
   marcaId: number;
+  stock:number;
 }
 
