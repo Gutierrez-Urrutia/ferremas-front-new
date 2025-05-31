@@ -8,12 +8,14 @@
             aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link" [routerLink]="['/']" routerLinkActive="active"
                         [routerLinkActiveOptions]="{exact: true}">Home</a>
                 </li>
+                
                 <!-- Dropdown Categorías: Lista dinámica de categorías obtenidas desde el componente -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
@@ -27,6 +29,7 @@
                         </a>
                     </div>
                 </li>
+                
                 <!-- Dropdown Marcas: Lista dinámica de marcas obtenidas desde el componente -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
@@ -39,6 +42,7 @@
                         </a>
                     </div>
                 </li>
+                
                 <!-- Link Ofertas  -->
                 <li class="nav-item">
                     <a class="nav-link" [routerLink]="['/ofertas']" routerLinkActive="active">
@@ -77,21 +81,43 @@
                     <button class="btn btn-outline-light dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         <i class="fas fa-user me-1"></i>
+                        <!-- Mostrar "Usuario" si no está logueado, o el nombre si está logueado -->
+                        {{ authService.isAuthenticated() ? getUserName() : '' }}
                     </button>
                     <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" [routerLink]="['/login']">
-                                <i class="fas fa-sign-in-alt me-2"></i>
-                                Iniciar sesión
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item" [routerLink]="['/registro']">
-                                <i class="fas fa-user-plus me-2"></i>
-                                Registrarse
-                            </a>
-                        </li>
+                        <!-- Mostrar opciones de login/registro si NO está autenticado -->
+                        <ng-container *ngIf="!authService.isAuthenticated()">
+                            <li>
+                                <a class="dropdown-item" [routerLink]="['/login']">
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    Iniciar sesión
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" [routerLink]="['/registro']">
+                                    <i class="fas fa-user-plus me-2"></i>
+                                    Registrarse
+                                </a>
+                            </li>
+                        </ng-container>
+
+                        <!-- Mostrar opciones de usuario logueado si SÍ está autenticado -->
+                        <ng-container *ngIf="authService.isAuthenticated()">
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <i class="fas fa-user-circle me-2 text-primary"></i>
+                                    <strong>Bienvenido {{ getUserName() }}</strong>
+                                </span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#" (click)="logout(); $event.preventDefault()">
+                                    <i class="fas fa-sign-out-alt me-2 text-primary"></i>
+                                    Cerrar sesión
+                                </a>
+                            </li>
+                        </ng-container>
                     </ul>
                 </div>
 

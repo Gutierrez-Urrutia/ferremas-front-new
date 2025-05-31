@@ -1,1 +1,18 @@
-<p>registro works!</p>
+<div class="container py-5">
+  <h2>Registro de nuevo usuario</h2>
+  <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre completo</label>
+      <input type="text" id="nombre" class="form-control" [(ngModel)]="registro.nombre" name="nombre" required>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Correo electrónico</label>
+      <input type="email" id="email" class="form-control" [(ngModel)]="registro.email" name="email" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Contraseña</label>
+      <input type="password" id="password" class="form-control" [(ngModel)]="registro.password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Registrarse</button>
+  </form>
+</div>
