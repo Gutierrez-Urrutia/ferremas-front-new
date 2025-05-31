@@ -46,38 +46,65 @@
                     </a>
                 </li>
             </ul>
-            <!-- Selector de divisa: Permite cambiar la moneda de visualización -->
-            <div class="dropdown me-3">
-                <button class="btn btn-outline-light dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    <i class="fas fa-money-bill-wave me-1"></i>
-                    {{ selectedDivisa }}
+
+            <div class="d-flex align-items-center">
+                <!-- Selector de divisa: Permite cambiar la moneda de visualización -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-outline-light dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fas fa-money-bill-wave me-1"></i>
+                        {{ selectedDivisa }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li *ngFor="let currency of availableDivisas">
+                            <a class="dropdown-item currency-item" role="button" tabindex="0"
+                                (click)="onDivisaChange(currency.code)" (keydown.enter)="onDivisaChange(currency.code)"
+                                (keydown.space)="onDivisaChange(currency.code)"
+                                [class.active]="currency.code === selectedDivisa"
+                                [attr.aria-selected]="currency.code === selectedDivisa">
+                                <i class="fas fa-check me-2 check-icon"
+                                    [style.visibility]="currency.code === selectedDivisa ? 'visible' : 'hidden'"></i>
+                                <span class="currency-info">
+                                    <strong>{{ currency.code }}</strong> - {{ currency.name }}
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Dropdown Usuario: Opciones de autenticación -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-outline-light dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fas fa-user me-1"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['/login']">
+                                <i class="fas fa-sign-in-alt me-2"></i>
+                                Iniciar sesión
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['/registro']">
+                                <i class="fas fa-user-plus me-2"></i>
+                                Registrarse
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Carrito: Muestra el número de productos en el carrito y abre el modal al hacer clic -->
+                <button class="btn btn-outline-light position-relative border-0 me-3" type="button" data-bs-toggle="modal"
+                    data-bs-target="#modalCarrito">
+                    <i class="fas fa-shopping-cart fa-xl"></i>
+                    <span class="position-absolute badge rounded-pill bg-danger carrito-badge" *ngIf="cantidadCarrito > 0">
+                        {{ cantidadCarrito }}
+                        <span class="visually-hidden">productos en carrito</span>
+                    </span>
                 </button>
-                <ul class="dropdown-menu">
-                    <li *ngFor="let currency of availableDivisas">
-                        <a class="dropdown-item currency-item" role="button" tabindex="0"
-                            (click)="onDivisaChange(currency.code)" (keydown.enter)="onDivisaChange(currency.code)"
-                            (keydown.space)="onDivisaChange(currency.code)"
-                            [class.active]="currency.code === selectedDivisa"
-                            [attr.aria-selected]="currency.code === selectedDivisa">
-                            <i class="fas fa-check me-2 check-icon"
-                                [style.visibility]="currency.code === selectedDivisa ? 'visible' : 'hidden'"></i>
-                            <span class="currency-info">
-                                <strong>{{ currency.code }}</strong> - {{ currency.name }}
-                            </span>
-                        </a>
-                    </li>
-                </ul>
             </div>
-            <!-- Carrito: Muestra el número de productos en el carrito y abre el modal al hacer clic -->
-            <button class="btn btn-outline-light position-relative border-0 me-3" type="button" data-bs-toggle="modal"
-                data-bs-target="#modalCarrito">
-                <i class="fas fa-shopping-cart fa-xl"></i>
-                <span class="position-absolute badge rounded-pill bg-danger carrito-badge" *ngIf="cantidadCarrito > 0">
-                    {{ cantidadCarrito }}
-                    <span class="visually-hidden">productos en carrito</span>
-                </span>
-            </button>
         </div>
     </div>
 </nav>
