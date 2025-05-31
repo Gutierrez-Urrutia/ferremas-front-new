@@ -6,5 +6,6 @@ export const routes: Routes = [
     { path: 'marca/:id', loadComponent: () => import('./pages/marca-producto/marca-producto.component').then(m => m.MarcaProductoComponent) },
     { path: 'registro', loadComponent: () => import('./pages/registro/registro.component').then(m => m.RegistroComponent)},
     { path: 'iniciar-sesion', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)},
+    { path: 'ofertas', loadComponent: () => import('./pages/oferta-producto/oferta-producto.component').then(m => m.OfertaProductoComponent) },
     { path: '**', redirectTo:''}
 ];

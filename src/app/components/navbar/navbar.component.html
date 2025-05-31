@@ -14,8 +14,7 @@
                     <a class="nav-link" [routerLink]="['/']" routerLinkActive="active"
                         [routerLinkActiveOptions]="{exact: true}">Home</a>
                 </li>
-
-                <!-- Dropdown Categorías -->
+                <!-- Dropdown Categorías: Lista dinámica de categorías obtenidas desde el componente -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                         aria-haspopup="true" aria-expanded="false">
@@ -28,8 +27,7 @@
                         </a>
                     </div>
                 </li>
-
-                <!-- Dropdown Marcas -->
+                <!-- Dropdown Marcas: Lista dinámica de marcas obtenidas desde el componente -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                         aria-haspopup="true" aria-expanded="false">
@@ -41,8 +39,7 @@
                         </a>
                     </div>
                 </li>
-
-                <!-- Link Ofertas (convertido de dropdown a link simple) -->
+                <!-- Link Ofertas  -->
                 <li class="nav-item">
                     <a class="nav-link" [routerLink]="['/ofertas']" routerLinkActive="active">
                         <i class="fas fa-percent me-1"></i>Ofertas

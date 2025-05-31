@@ -7,7 +7,6 @@ export interface Producto {
   categoria: string;
   marca: string;
   precios: Precio[];
-  precio: number;
   descripcion: string;
   imagen: string;
   descuento: number;
@@ -15,5 +14,6 @@ export interface Producto {
   oculto: boolean;
   categoriaId: number;
   marcaId: number;
+  stock:number;
 }
 

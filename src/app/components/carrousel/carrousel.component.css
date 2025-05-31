@@ -1,19 +1,133 @@
+/* pantallas grandes */
 .carousel-item img {
   width: 100%;
-  height: 500px;       /* Altura para pantallas grandes */
+  height: 400px;
   object-fit: cover;
+  filter: brightness(0.8);
+  transition: filter 0.3s ease;
 }
 
-/* Altura para tablets */
+/* pantallas medianas (tablets) */
 @media (max-width: 992px) {
   .carousel-item img {
     height: 400px;
   }
 }
 
-/* Altura para móviles */
+/* pantallas pequeñas (moviles)*/
 @media (max-width: 576px) {
   .carousel-item img {
     height: 300px;
   }
+}
+
+.carousel-title {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.8rem, 5vw, 4rem);
+  color: #ffffff;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+  margin-bottom: 1rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1.1;
+  -webkit-text-stroke: 0.5px #292828;
+}
+
+.carousel-subtitle {
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  color: #f8f9fa;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+
+.carousel-cta .btn {
+  font-family: 'Arial Black', sans-serif;
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 2px solid transparent;
+}
+
+.carousel-cta .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  filter: brightness(1.1);
+}
+
+@media (max-width: 768px) {
+  .carousel-caption-custom {
+    padding: 1.5rem;
+    bottom: 5%;
+    width: 95%;
+  }
+
+  .carousel-title {
+    margin-bottom: 0.8rem;
+  }
+
+  .carousel-subtitle {
+    margin-bottom: 1rem;
+  }
+
+  .carousel-cta .btn {
+    padding: 0.6rem 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel-caption-custom {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  .carousel-title {
+    letter-spacing: 1px;
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.carousel-item:hover img {
+  filter: brightness(0.9);
+}
+
+.carousel-indicators button {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin: 0 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 2px solid #fff;
+}
+
+.carousel-indicators button.active {
+  background-color: #f8ac20da;
+  transform: scale(1.2);
 }

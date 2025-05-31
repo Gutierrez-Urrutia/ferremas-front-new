@@ -7,7 +7,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CategoriaApiService {
+  
   private readonly baseUrl = 'http://localhost:8090/api/v1';
+
   constructor(private http: HttpClient) { }
 
   getCategorias(): Observable<Categoria[]> {
@@ -18,7 +20,6 @@ export class CategoriaApiService {
     return this.http.get<Categoria>(`${this.baseUrl}/categorias/${id}`);
   }
 
-   // Si tu backend tiene estos endpoints adicionales
   createCategoria(categoria: Categoria): Observable<Categoria> {
     return this.http.post<Categoria>(`${this.baseUrl}/categorias`, categoria);
   }

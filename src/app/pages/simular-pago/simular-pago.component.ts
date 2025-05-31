@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-simular-pago',
@@ -14,27 +15,24 @@ export class SimularPagoComponent implements OnInit {
   @Input() numeroOrden!: string;
   @Output() pagoCompletado = new EventEmitter<boolean>();
 
-  // Estado del pago
   estadoPago: 'inicial' | 'procesando' | 'completado' | 'error' = 'inicial';
   
-  // Datos simulados de tarjeta
   numeroTarjeta: string = '';
   mesExpiracion: string = '';
   anoExpiracion: string = '';
   cvv: string = '';
   nombreTitular: string = '';
 
-  // Simulación de proceso
   tiempoRestante: number = 0;
+  progreso: number = 0; 
   intervaloTiempo: any;
-  
-  // Fecha actual para mostrar en el recibo
+  intervaloProgreso: any; 
   fechaTransaccion: Date = new Date();
 
   constructor(private router: Router) {}
 
   ngOnInit() {
-    // Auto-rellenar datos de prueba
+    
     this.numeroTarjeta = '4532 1234 5678 9012';
     this.mesExpiracion = '12';
     this.anoExpiracion = '2025';
@@ -44,12 +42,19 @@ export class SimularPagoComponent implements OnInit {
 
   iniciarPago() {
     if (!this.validarDatos()) {
-      alert('Por favor, complete todos los campos correctamente.');
+      Swal.fire({
+        title: 'Datos incompletos',
+        text: 'Por favor, complete todos los campos correctamente.',
+        icon: 'warning',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#ffc107'
+      });
       return;
     }
 
     this.estadoPago = 'procesando';
-    this.tiempoRestante = 5; // 30 segundos de simulación
+    this.tiempoRestante = 5; 
+    this.progreso = 0; 
     
     this.intervaloTiempo = setInterval(() => {
       this.tiempoRestante--;
@@ -58,15 +63,25 @@ export class SimularPagoComponent implements OnInit {
         this.finalizarPago();
       }
     }, 1000);
+
+    this.intervaloProgreso = setInterval(() => {
+      this.progreso += 2; 
+      
+      if (this.progreso >= 100) {
+        this.progreso = 100;
+        clearInterval(this.intervaloProgreso);
+      }
+    }, 100);
   }
 
   finalizarPago() {
     clearInterval(this.intervaloTiempo);
+    clearInterval(this.intervaloProgreso);
     
-    // Actualizar fecha de transacción al momento del pago
+    this.progreso = 100;
+    
     this.fechaTransaccion = new Date();
     
-    // Simular resultado aleatorio (80% éxito, 20% fallo)
     const exitoso = Math.random() > 0.2;
     
     if (exitoso) {
@@ -82,13 +97,41 @@ export class SimularPagoComponent implements OnInit {
   reintentar() {
     this.estadoPago = 'inicial';
     this.tiempoRestante = 0;
+    this.progreso = 0; 
   }
 
   cancelarPago() {
-    if (this.intervaloTiempo) {
-      clearInterval(this.intervaloTiempo);
-    }
-    this.pagoCompletado.emit(false);
+    Swal.fire({
+      title: '¿Cancelar pago?',
+      text: 'Se cancelará el proceso de pago actual',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'Continuar pago',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (this.intervaloTiempo) {
+          clearInterval(this.intervaloTiempo);
+        }
+        if (this.intervaloProgreso) {
+          clearInterval(this.intervaloProgreso);
+        }
+        
+        Swal.fire({
+          title: 'Pago cancelado',
+          text: 'El proceso de pago ha sido cancelado',
+          icon: 'info',
+          timer: 2000,
+          showConfirmButton: false,
+          timerProgressBar: true
+        });
+        
+        this.pagoCompletado.emit(false);
+      }
+    });
   }
 
   validarDatos(): boolean {
@@ -102,11 +145,8 @@ export class SimularPagoComponent implements OnInit {
   formatearTarjeta() {
     // Remover espacios y caracteres no numéricos
     let valor = this.numeroTarjeta.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    
-    // Limitar a 16 dígitos
     valor = valor.substring(0, 16);
     
-    // Agregar espacios cada 4 dígitos
     const matches = valor.match(/\d{4,16}/g);
     const match = matches && matches[0] || '';
     const parts = [];

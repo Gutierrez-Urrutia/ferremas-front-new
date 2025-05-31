@@ -13,7 +13,9 @@ export interface ItemCarrito {
   providedIn: 'root'
 })
 export class CarritoService {
+  // Fuente de datos reactiva que mantiene el estado actual del carrito.
   private itemsCarritoSource = new BehaviorSubject<ItemCarrito[]>([]);
+  // Observable para suscribirse a los cambios en el carrito.
   itemsCarrito$ = this.itemsCarritoSource.asObservable();
 
   private readonly CARRITO_KEY = 'carrito_ferremas';
@@ -22,6 +24,8 @@ export class CarritoService {
     this.cargarCarritoDesdeStorage();
   }
 
+  /* Obtiene el precio del producto desde el primer elemento del arreglo de precios.
+  Si no hay precios, retorna 0. */
   private getPrecioProducto(producto: Producto): number {
     if (!producto.precios || producto.precios.length === 0) {
       return 0;
@@ -29,12 +33,14 @@ export class CarritoService {
     return producto.precios[0].precio;
   }
 
+  /* Carga el carrito desde localStorage y recalcula los subtotales
+  en caso de que el precio del producto haya cambiado.*/
   private cargarCarritoDesdeStorage(): void {
     try {
       const carritoGuardado = localStorage.getItem(this.CARRITO_KEY);
       if (carritoGuardado) {
         const items = JSON.parse(carritoGuardado);
-        // Recalcular subtotales al cargar desde storage
+        
         items.forEach((item: ItemCarrito) => {
           item.subtotal = this.getPrecioProducto(item.producto) * item.cantidad;
         });
@@ -45,6 +51,7 @@ export class CarritoService {
     }
   }
 
+  /* Guarda el estado actual del carrito en localStorage. */
   private guardarCarritoEnStorage(): void {
     try {
       const items = this.itemsCarritoSource.value;
@@ -60,11 +67,11 @@ export class CarritoService {
     const precio = this.getPrecioProducto(producto);
 
     if (itemExistente) {
-      // Si el producto ya existe, aumentar la cantidad
+      // Si el producto ya existe en el carrito, solo actualiza la cantidad y el subtotal
       itemExistente.cantidad += cantidad;
       itemExistente.subtotal = this.getPrecioProducto(itemExistente.producto) * itemExistente.cantidad;
     } else {
-      // Si no existe, agregarlo como nuevo item
+      // Si el producto no existe, lo agrega como un nuevo item
       const nuevoItem: ItemCarrito = {
         producto,
         cantidad,
@@ -105,9 +112,10 @@ export class CarritoService {
     return this.itemsCarritoSource.value.reduce((total, item) => total + item.cantidad, 0);
   }
 
+  /* Calcula el total del carrito sumando los subtotales de todos los items.
+  Se asegura de recalcular el subtotal por si el precio del producto cambió. */
   obtenerTotal(): number {
     return this.itemsCarritoSource.value.reduce((total, item) => {
-      // Recalcular subtotal en caso de que no esté actualizado
       const precio = this.getPrecioProducto(item.producto);
       const subtotal = precio * item.cantidad;
       return total + subtotal;

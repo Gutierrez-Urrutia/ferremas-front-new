@@ -3,19 +3,20 @@ import { DivisaService } from '../services/divisa.service';
 
 @Pipe({
   name: 'conversor',
-  pure: false // Para que se actualice cuando cambie la divisa seleccionada
+  pure: false // Permite que el pipe se actualice cuando cambian dependencias externas (como el servicio de divisas)
 })
 export class ConversorPipe implements PipeTransform {
   
   constructor(private divisaService: DivisaService) {}
 
   transform(precio: number, fromDivisa: string = 'CLP'): string {
+    // Convierte el precio a la divisa seleccionada usando el servicio
     const precioConvertido = this.divisaService.convertPrice(precio, fromDivisa);
     const selectedDivisa = this.divisaService.getSelectedDivisa();
     
-    // Formatear según la divisa
     switch(selectedDivisa) {
       case 'USD':
+        // Formatea el precio en dólares estadounidenses con dos decimales
         const precioUsd = new Intl.NumberFormat('en-US', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
@@ -23,6 +24,7 @@ export class ConversorPipe implements PipeTransform {
         return `USD$ ${precioUsd}`;
       
       case 'EUR':
+        // Formatea el precio en euros usando el formato local español
         return new Intl.NumberFormat('es-ES', {
           style: 'currency',
           currency: 'EUR',
@@ -31,6 +33,7 @@ export class ConversorPipe implements PipeTransform {
       
       case 'CLP':
       default:
+        // Formatea el precio en pesos chilenos sin decimales
         const precioClp =  new Intl.NumberFormat('es-CL', {
           minimumFractionDigits: 0,
           maximumFractionDigits: 0

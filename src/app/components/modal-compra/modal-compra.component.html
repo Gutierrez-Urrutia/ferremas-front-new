@@ -3,6 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalCompraLabel">
+                    <!-- Título dinámico según el paso actual -->
                     <span *ngIf="paso === 1">Seleccionar Cantidad</span>
                     <span *ngIf="paso === 2">Datos de Entrega</span>
                     <span *ngIf="paso === 3">Confirmar Pago</span>
@@ -14,7 +15,6 @@
 
             <div class="modal-body" *ngIf="compra">
                 <!-- Paso 1: Selección de cantidad -->
-                <!-- Reemplazar el contenido del paso 1 -->
                 <div *ngIf="paso === 1">
                     <!-- Compra individual -->
                     <div *ngIf="!compra.esCompraCarrito" class="row">
@@ -33,8 +33,35 @@
                                     <label for="cantidad" class="form-label">Cantidad:</label>
                                 </div>
                                 <div class="col-auto">
-                                    <input type="number" id="cantidad" class="form-control" [(ngModel)]="cantidad"
-                                        (ngModelChange)="actualizarCantidad()" min="1" style="width: 80px;">
+                                    <!-- Grupo de controles de cantidad -->
+                                    <div class="input-group input-group-sm" style="width: 140px;">
+                                        <!-- Botón - a la izquierda -->
+                                        <button type="button" class="btn btn-outline-secondary" 
+                                                (click)="disminuirCantidad()" 
+                                                [disabled]="cantidad <= 1">
+                                            -
+                                        </button>
+                                        <!-- Input de cantidad en el centro -->
+                                        <input type="number" id="cantidad" class="form-control text-center" 
+                                               [(ngModel)]="cantidad"
+                                               (ngModelChange)="actualizarCantidad()" 
+                                               [min]="1" 
+                                               [max]="getStockDisponible()">
+                                        <!-- Botón + a la derecha -->
+                                        <button type="button" class="btn btn-outline-secondary" 
+                                                (click)="aumentarCantidad()" 
+                                                [disabled]="cantidad >= getStockDisponible() || getStockDisponible() === 0">
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Aviso de stock máximo alcanzado -->
+                            <div class="mt-2" *ngIf="mostrarAvisoStock()">
+                                <div class="alert alert-warning alert-sm mb-0">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    Has alcanzado el stock máximo disponible ({{ getStockDisponible() }} unidades)
                                 </div>
                             </div>
 
@@ -44,7 +71,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Compra desde carrito -->
                     <div *ngIf="compra.esCompraCarrito">
                         <h5>Resumen de productos</h5>
@@ -59,6 +85,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <!-- Listado de productos en el carrito -->
                                     <tr *ngFor="let item of compra.productos">
                                         <td>
                                             <strong>{{ item.producto.nombre }}</strong><br>
@@ -76,7 +103,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Paso 2: Datos del cliente -->
                 <div *ngIf="paso === 2">
                     <form>
@@ -101,6 +127,7 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="region" class="form-label">Región *</label>
+                                <!-- Selección de región para despacho -->
                                 <select id="region" class="form-select" [(ngModel)]="datosCliente.region" name="region"
                                     required>
                                     <option value="">Seleccionar región</option>
@@ -126,6 +153,7 @@
                         <div class="mb-3">
                             <label class="form-label">Tipo de despacho:</label>
                             <div class="form-check">
+                                <!-- Opción para despacho a domicilio -->
                                 <input class="form-check-input" type="radio" id="domicilio" [(ngModel)]="tipoDespacho"
                                     name="tipoDespacho" value="domicilio">
                                 <label class="form-check-label" for="domicilio">
@@ -133,6 +161,7 @@
                                 </label>
                             </div>
                             <div class="form-check">
+                                <!-- Opción para retiro en tienda -->
                                 <input class="form-check-input" type="radio" id="retiro" [(ngModel)]="tipoDespacho"
                                     name="tipoDespacho" value="retiro">
                                 <label class="form-check-label" for="retiro">
@@ -142,7 +171,6 @@
                         </div>
                     </form>
                 </div>
-
                 <!-- Paso 3: Confirmación de pago -->
                 <div *ngIf="paso === 3">
                     <div class="card">
@@ -161,6 +189,7 @@
 
                             <!-- Compra desde carrito (múltiples productos) -->
                             <div *ngIf="compra.esCompraCarrito">
+                                <!-- Resumen de cada producto en el carrito -->
                                 <div class="d-flex justify-content-between mb-2" *ngFor="let item of compra.productos">
                                     <span>{{ item.producto.nombre }} (x{{ item.cantidad }})</span>
                                     <span>{{ (getPrecioActual(item.producto) * item.cantidad) | conversor }}</span>
@@ -186,9 +215,9 @@
                             {{ datosCliente.telefono }}</p>
                     </div>
                 </div>
-
                 <!-- Paso 4: Simulación de pago con Transbank -->
                 <div *ngIf="paso === 4">
+                    <!-- Componente para simular pago, recibe monto y número de orden -->
                     <app-simular-pago [monto]="getTotal()" [numeroOrden]="numeroOrden"
                         (pagoCompletado)="onPagoCompletado($event)">
                     </app-simular-pago>

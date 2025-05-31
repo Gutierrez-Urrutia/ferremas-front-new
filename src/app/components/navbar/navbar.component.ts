@@ -41,10 +41,12 @@ export class NavbarComponent implements OnInit {
     private marcaService: MarcaService,
     public authService: AuthService
   ) {
+    // Suscribe a los cambios de divisa seleccionada para actualizar el valor local
     this.divisaService.selectedDivisa$.subscribe(divisa => {
       this.selectedDivisa = divisa;
     });
 
+    // Suscribe a los cambios en las tasas de divisas disponibles
     this.divisaService.rates$.subscribe(rates => {
       this.availableDivisas = rates;
     });
@@ -55,15 +57,17 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Carga las categorías al inicializar el componente
     this.categoriaService.getCategorias().subscribe(categorias => {
       this.categorias = categorias;
     });
-
-    // Suscribirse a cambios en el carrito
+    
+    // Actualiza la cantidad de productos en el carrito cuando hay cambios
     this.carritoService.itemsCarrito$.subscribe(items => {
       this.cantidadCarrito = this.carritoService.obtenerCantidadTotal();
     });
 
+    // Carga las marcas disponibles al inicializar el componente
     this.marcaService.getMarcas().subscribe(marcas => {
       this.marcas = marcas;
       console.log('Marcas cargadas:', this.marcas);

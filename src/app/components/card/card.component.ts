@@ -20,12 +20,18 @@ export class CardComponent {
   ) { }
 
   onMostrar() {
-    this.compraService.iniciarCompra(this.producto);
+    // Solo permitir si hay stock disponible
+    if (this.producto.stock > 0) {
+      this.compraService.iniciarCompra(this.producto);
+    }
   }
 
   onAgregarAlCarrito() {
-    this.carritoService.agregarProducto(this.producto, 1);
-    this.mostrarNotificacion();
+    // Solo permitir si hay stock disponible
+    if (this.producto.stock > 0) {
+      this.carritoService.agregarProducto(this.producto, 1);
+      this.mostrarNotificacion();
+    }
   }
 
   getPrecioActual(): number {
@@ -35,8 +41,28 @@ export class CardComponent {
     return this.producto.precios[0].precio;
   }
 
+  tieneDescuento(): boolean {
+    return this.producto.descuento > 0;
+  }
+
+  // Nuevo método: verifica si el producto está agotado
+  estaAgotado(): boolean {
+    return this.producto.stock === 0;
+  }
+
+  // Nuevo método: verifica si quedan pocas unidades
+  pocasUnidades(): boolean {
+    return this.producto.stock > 0 && this.producto.stock <= 5;
+  }
+
+  // Nuevo método: obtiene el stock disponible
+  getStock(): number {
+    return this.producto.stock || 0;
+  }
+
+  /* Muestra una notificación visual tipo "toast" cuando se agrega un producto al carrito.
+   La notificación se elimina automáticamente después de mostrarse.*/
   private mostrarNotificacion() {
-    // Crear elemento de notificación
     const notificacion = document.createElement('div');
     notificacion.className = 'alert alert-success toast-notification';
     notificacion.innerHTML = `
@@ -46,12 +72,10 @@ export class CardComponent {
 
     document.body.appendChild(notificacion);
 
-    // Mostrar notificación
     setTimeout(() => {
       notificacion.classList.add('show');
-    }, 50);
+    }, 10);
 
-    // Ocultar y remover notificación
     setTimeout(() => {
       notificacion.classList.remove('show');
       setTimeout(() => {
@@ -59,7 +83,6 @@ export class CardComponent {
           document.body.removeChild(notificacion);
         }
       }, 300);
-    }, 2000);
+    }, 1000); //Tiempo que dura la notificación (1 segundo)
   }
-  
 }

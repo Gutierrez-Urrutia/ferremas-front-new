@@ -1,9 +1,8 @@
-/* Estilos para el carrusel */
+
 .carousel {
   margin-bottom: 40px;
 }
 
-/* Ajustar los indicadores para que se vean mejor */
 .carousel-indicators {
   bottom: -40px;
 }
@@ -16,10 +15,9 @@
 }
 
 .carousel-indicators button.active {
-  background-color: #0d6efd;
+  background-color: #29355fcb;
 }
 
-/* Hacer los controles más visibles */
 .carousel-control-prev,
 .carousel-control-next {
   width: 5%;
@@ -40,12 +38,10 @@
   right: -20px;
 }
 
-/* Espacio entre tarjetas */
 .carousel-item .col-md-3 {
   padding: 0 10px;
 }
 
-/* Ocultar elementos de relleno */
 .card.hidden-product {
   display: none;
 }

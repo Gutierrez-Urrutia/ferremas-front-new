@@ -6,12 +6,11 @@
 
 .main-content {
   flex: 1;
-  padding-top: 70px; /* Ajusta según la altura del navbar fixed */
-  width: 100%; /* Asegurar ancho completo */
-  overflow-x: hidden; /* Evitar scroll horizontal */
+  padding-top: 70px; 
+  width: 100%; 
+  overflow-x: hidden; 
 }
 
-/* Si el navbar es fixed-top, asegúrate de que el contenido no quede oculto */
 app-navbar {
   position: relative;
   z-index: 1030;

@@ -23,7 +23,6 @@ export class ModalCompraComponent implements OnInit {
   numeroOrden: string = '';
   valorDespacho: number = 3000;
 
-  // Datos del cliente
   datosCliente = {
     nombre: '',
     email: '',
@@ -43,11 +42,17 @@ export class ModalCompraComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // Suscribirse a los cambios en la compra actual y limpiar el formulario cuando sea necesario
     this.compraService.compraActual$.subscribe(compra => {
       if (compra) {
         this.compra = compra;
         if (!compra.esCompraCarrito && compra.productos.length > 0) {
           this.cantidad = compra.productos[0].cantidad;
+          // Verificar que la cantidad no exceda el stock disponible
+          if (this.cantidad > this.getStockDisponible()) {
+            this.cantidad = this.getStockDisponible();
+            this.actualizarCantidad();
+          }
         }
       }
     });
@@ -61,6 +66,35 @@ export class ModalCompraComponent implements OnInit {
       return 0;
     }
     return producto.precios[0].precio;
+  }
+
+  // Nuevo método: obtiene el stock disponible del producto
+  getStockDisponible(): number {
+    if (this.compra && !this.compra.esCompraCarrito && this.compra.productos.length > 0) {
+      return this.compra.productos[0].producto.stock || 0;
+    }
+    return 0;
+  }
+
+  // Nuevo método: verifica si mostrar el aviso de stock
+  mostrarAvisoStock(): boolean {
+    return !this.compra?.esCompraCarrito && this.cantidad >= this.getStockDisponible() && this.getStockDisponible() > 0;
+  }
+
+  // Nuevo método: aumentar cantidad
+  aumentarCantidad() {
+    if (this.cantidad < this.getStockDisponible()) {
+      this.cantidad++;
+      this.actualizarCantidad();
+    }
+  }
+
+  // Nuevo método: disminuir cantidad
+  disminuirCantidad() {
+    if (this.cantidad > 1) {
+      this.cantidad--;
+      this.actualizarCantidad();
+    }
   }
 
   limpiarFormularioCliente() {
@@ -78,6 +112,14 @@ export class ModalCompraComponent implements OnInit {
   }
 
   actualizarCantidad() {
+    // Asegurar que la cantidad esté dentro del rango válido
+    if (this.cantidad < 1) {
+      this.cantidad = 1;
+    }
+    if (this.cantidad > this.getStockDisponible()) {
+      this.cantidad = this.getStockDisponible();
+    }
+    
     if (this.cantidad >= 1 && this.compra && !this.compra.esCompraCarrito) {
       this.compraService.actualizarCantidad(this.cantidad);
     }
@@ -93,11 +135,19 @@ export class ModalCompraComponent implements OnInit {
       this.compraService.actualizarTipoDespacho(this.tipoDespacho);
       this.paso = 3;
     } else {
-      alert('Por favor, complete todos los campos obligatorios.');
+      // Alerta de validación con SweetAlert2 si faltan datos obligatorios
+      Swal.fire({
+        title: 'Datos incompletos',
+        text: 'Por favor, complete todos los campos obligatorios.',
+        icon: 'warning',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#ffc107'
+      });
     }
   }
 
   procesarPago() {
+    // Genera un número de orden aleatorio para la compra
     this.numeroOrden = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
     this.paso = 4;
   }
@@ -129,11 +179,19 @@ export class ModalCompraComponent implements OnInit {
         this.carritoService.vaciarCarrito();
       }
 
-      // Mostrar alerta PRIMERO, luego cerrar modal en el callback
+      // Mostrar alerta de éxito y cerrar modal en el callback
       this.mostrarAlertaExito();
     } else {
-      alert('Pago rechazado. Volviendo al resumen de compra.');
-      this.paso = 3;
+      // Alerta de pago rechazado con SweetAlert2 y volver al resumen
+      Swal.fire({
+        title: 'Pago rechazado',
+        text: 'Su pago no pudo ser procesado. Volviendo al resumen de compra.',
+        icon: 'error',
+        confirmButtonText: 'Reintentar',
+        confirmButtonColor: '#dc3545'
+      }).then(() => {
+        this.paso = 3;
+      });
       return;
     }
   }
@@ -159,7 +217,6 @@ export class ModalCompraComponent implements OnInit {
           console.log('Navegación exitosa:', success);
         }).catch(error => {
           console.error('Error en navegación:', error);
-          // Fallback: recargar la página en home
           window.location.href = '/';
         });
       }
@@ -185,10 +242,8 @@ export class ModalCompraComponent implements OnInit {
   }
 
   limpiarTodosLosDatos() {
-    // Vaciar carrito
+    // Vacía el carrito y limpia la compra actual
     this.carritoService.vaciarCarrito();
-
-    // Limpiar compra (esto automáticamente limpiará el formulario)
     this.compraService.limpiarCompra();
   }
 }

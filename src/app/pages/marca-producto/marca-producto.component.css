@@ -37,7 +37,6 @@ h1 {
   height: 3rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .container {
     padding-left: 15px;
