@@ -1,0 +1,37 @@
+/* Estilos para alertas pequeñas */
+.alert-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* Botones deshabilitados - más visible */
+.btn:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  background-color: #e9ecef !important;
+  border-color: #dee2e6 !important;
+  color: #6c757d !important;
+}
+
+/* Asegurar que los botones en input-group mantengan su tamaño */
+.input-group .btn {
+  flex: 0 0 auto;
+  min-width: 38px;
+}
+
+/* Centrar el texto en el input de cantidad */
+.input-group .form-control.text-center {
+  text-align: center;
+}
+
+/* Remover spinners de input number en Chrome, Safari, Edge */
+.input-group input[type="number"]::-webkit-outer-spin-button,
+.input-group input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remover spinners de input number en Firefox */
+.input-group input[type="number"] {
+  -moz-appearance: textfield;
+}

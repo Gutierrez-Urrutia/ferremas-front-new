@@ -48,6 +48,11 @@ export class ModalCompraComponent implements OnInit {
         this.compra = compra;
         if (!compra.esCompraCarrito && compra.productos.length > 0) {
           this.cantidad = compra.productos[0].cantidad;
+          // Verificar que la cantidad no exceda el stock disponible
+          if (this.cantidad > this.getStockDisponible()) {
+            this.cantidad = this.getStockDisponible();
+            this.actualizarCantidad();
+          }
         }
       }
     });
@@ -61,6 +66,35 @@ export class ModalCompraComponent implements OnInit {
       return 0;
     }
     return producto.precios[0].precio;
+  }
+
+  // Nuevo método: obtiene el stock disponible del producto
+  getStockDisponible(): number {
+    if (this.compra && !this.compra.esCompraCarrito && this.compra.productos.length > 0) {
+      return this.compra.productos[0].producto.stock || 0;
+    }
+    return 0;
+  }
+
+  // Nuevo método: verifica si mostrar el aviso de stock
+  mostrarAvisoStock(): boolean {
+    return !this.compra?.esCompraCarrito && this.cantidad >= this.getStockDisponible() && this.getStockDisponible() > 0;
+  }
+
+  // Nuevo método: aumentar cantidad
+  aumentarCantidad() {
+    if (this.cantidad < this.getStockDisponible()) {
+      this.cantidad++;
+      this.actualizarCantidad();
+    }
+  }
+
+  // Nuevo método: disminuir cantidad
+  disminuirCantidad() {
+    if (this.cantidad > 1) {
+      this.cantidad--;
+      this.actualizarCantidad();
+    }
   }
 
   limpiarFormularioCliente() {
@@ -78,6 +112,14 @@ export class ModalCompraComponent implements OnInit {
   }
 
   actualizarCantidad() {
+    // Asegurar que la cantidad esté dentro del rango válido
+    if (this.cantidad < 1) {
+      this.cantidad = 1;
+    }
+    if (this.cantidad > this.getStockDisponible()) {
+      this.cantidad = this.getStockDisponible();
+    }
+    
     if (this.cantidad >= 1 && this.compra && !this.compra.esCompraCarrito) {
       this.compraService.actualizarCantidad(this.cantidad);
     }

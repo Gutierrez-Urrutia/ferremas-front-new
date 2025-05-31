@@ -33,9 +33,35 @@
                                     <label for="cantidad" class="form-label">Cantidad:</label>
                                 </div>
                                 <div class="col-auto">
-                                    <!-- Input para seleccionar cantidad de producto -->
-                                    <input type="number" id="cantidad" class="form-control" [(ngModel)]="cantidad"
-                                        (ngModelChange)="actualizarCantidad()" min="1" style="width: 80px;">
+                                    <!-- Grupo de controles de cantidad -->
+                                    <div class="input-group input-group-sm" style="width: 140px;">
+                                        <!-- Botón - a la izquierda -->
+                                        <button type="button" class="btn btn-outline-secondary" 
+                                                (click)="disminuirCantidad()" 
+                                                [disabled]="cantidad <= 1">
+                                            -
+                                        </button>
+                                        <!-- Input de cantidad en el centro -->
+                                        <input type="number" id="cantidad" class="form-control text-center" 
+                                               [(ngModel)]="cantidad"
+                                               (ngModelChange)="actualizarCantidad()" 
+                                               [min]="1" 
+                                               [max]="getStockDisponible()">
+                                        <!-- Botón + a la derecha -->
+                                        <button type="button" class="btn btn-outline-secondary" 
+                                                (click)="aumentarCantidad()" 
+                                                [disabled]="cantidad >= getStockDisponible() || getStockDisponible() === 0">
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Aviso de stock máximo alcanzado -->
+                            <div class="mt-2" *ngIf="mostrarAvisoStock()">
+                                <div class="alert alert-warning alert-sm mb-0">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    Has alcanzado el stock máximo disponible ({{ getStockDisponible() }} unidades)
                                 </div>
                             </div>
 

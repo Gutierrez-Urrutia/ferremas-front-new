@@ -38,10 +38,62 @@ export class ModalCarritoComponent implements OnInit {
     return producto.precios[0].precio;
   }
 
+  // Método mejorado para actualizar cantidad con validación de stock
   actualizarCantidad(productoId: number, nuevaCantidad: number): void {
+    const item = this.items.find(item => item.producto.id === productoId);
+    if (!item) return;
+
+    // Validar que la cantidad esté dentro del rango permitido
+    if (nuevaCantidad < 1) {
+      nuevaCantidad = 1;
+    }
+    
+    const stockDisponible = item.producto.stock || 99;
+    if (nuevaCantidad > stockDisponible) {
+      nuevaCantidad = stockDisponible;
+      this.mostrarMensajeStockLimitado(stockDisponible);
+    }
+
     if (nuevaCantidad > 0) {
       this.carritoService.actualizarCantidad(productoId, nuevaCantidad);
     }
+  }
+
+  // Nuevo método: aumentar cantidad con validación de stock
+  aumentarCantidad(productoId: number, cantidadActual: number): void {
+    const item = this.items.find(item => item.producto.id === productoId);
+    if (!item) return;
+
+    const stockDisponible = item.producto.stock || 99;
+    if (cantidadActual < stockDisponible) {
+      this.carritoService.actualizarCantidad(productoId, cantidadActual + 1);
+    }
+  }
+
+  // Nuevo método: disminuir cantidad
+  disminuirCantidad(productoId: number, cantidadActual: number): void {
+    if (cantidadActual > 1) {
+      this.carritoService.actualizarCantidad(productoId, cantidadActual - 1);
+    }
+  }
+
+  // Nuevo método: verificar si mostrar aviso de stock
+  mostrarAvisoStock(item: ItemCarrito): boolean {
+    const stockDisponible = item.producto.stock || 0;
+    return item.cantidad >= stockDisponible && stockDisponible > 0;
+  }
+
+  // Nuevo método: mostrar mensaje cuando se alcanza el límite de stock
+  private mostrarMensajeStockLimitado(stock: number): void {
+    Swal.fire({
+      title: 'Stock limitado',
+      text: `Solo hay ${stock} unidades disponibles de este producto`,
+      icon: 'warning',
+      timer: 2000,
+      showConfirmButton: false,
+      toast: true,
+      position: 'top-end'
+    });
   }
 
   eliminarItem(productoId: number): void {
@@ -80,6 +132,43 @@ export class ModalCarritoComponent implements OnInit {
       return;
     }
 
+    // Verificar si hay productos agotados en el carrito
+    const productosAgotados = this.items.filter(item => item.producto.stock === 0);
+    if (productosAgotados.length > 0) {
+      Swal.fire({
+        title: 'Productos agotados',
+        text: 'Hay productos sin stock en tu carrito. Por favor, elimínalos antes de continuar.',
+        icon: 'warning',
+        confirmButtonText: 'Entendido'
+      });
+      return;
+    }
+
+    // Verificar si algún producto excede el stock disponible
+    const productosExcedidos = this.items.filter(item => 
+      item.cantidad > (item.producto.stock || 0) && item.producto.stock > 0
+    );
+    
+    if (productosExcedidos.length > 0) {
+      Swal.fire({
+        title: 'Cantidad excede stock',
+        text: 'Algunos productos tienen cantidades que exceden el stock disponible. Se ajustarán automáticamente.',
+        icon: 'info',
+        confirmButtonText: 'Continuar'
+      }).then(() => {
+        // Ajustar cantidades automáticamente
+        productosExcedidos.forEach(item => {
+          this.carritoService.actualizarCantidad(item.producto.id, item.producto.stock);
+        });
+        this.procederConCompra();
+      });
+      return;
+    }
+
+    this.procederConCompra();
+  }
+
+  private procederConCompra(): void {
     // Inicia el proceso de compra con los productos actuales del carrito
     this.compraService.iniciarCompraDesdeCarrito(this.items);
 
