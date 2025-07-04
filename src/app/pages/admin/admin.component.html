@@ -1,1 +1,127 @@
-<p>admin works!</p>
+<div class="admin-container">
+  <!-- Header -->
+  <div class="admin-header">
+    <h1 class="admin-title">Panel de Administración</h1>
+    <p class="admin-subtitle">Gestiona usuarios y roles del sistema</p>
+  </div>
+
+  <!-- Controles y filtros -->
+  <div class="controls-section">
+    <div class="search-controls">
+      <!-- Búsqueda -->
+      <div class="search-group">
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          placeholder="Buscar por nombre o email..."
+          class="search-input"
+        >
+      </div>
+
+      <!-- Filtro por rol -->
+      <div class="filter-group">
+        <select [(ngModel)]="selectedRole" class="role-filter">
+          <option value="">Todos los roles</option>
+          <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+        </select>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="action-buttons">
+        <button (click)="clearFilters()" class="btn btn-outline-secondary">
+          <i class="bi bi-x-circle"></i> Limpiar Filtros
+        </button>
+        <button (click)="addUser()" class="btn btn-outline-primary">
+          <i class="bi bi-person-plus"></i> Agregar Usuario
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando usuarios...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="error-state">
+    <div class="error-message">
+      <i class="error-icon">⚠️</i>
+      <p>{{ error }}</p>
+      <button (click)="refresh()" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-clockwise"></i> Reintentar
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla de usuarios -->
+  <div *ngIf="!loading && !error" class="table-container">
+    <!-- Información de resultados -->
+    <div class="results-info">
+      <p>Mostrando {{ filteredUsers.length }} de {{ usuarios.length }} usuarios</p>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-wrapper">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Cambiar Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of filteredUsers; trackBy: trackByUserId">
+            <td>{{ usuario.id }}</td>
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>
+              <span class="role-badge" [class]="'role-' + usuario.rol.toLowerCase()">
+                {{ usuario.rol }}
+              </span>
+            </td>
+            <td>
+              <select 
+                class="role-select" 
+                [value]="usuario.rol"
+                (change)="onRoleChange(usuario, $event)"
+              >
+                <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+              </select>
+            </td>
+            <td>
+              <div class="action-buttons-cell">
+                <button 
+                  (click)="deleteUser(usuario)" 
+                  class="btn btn-outline-danger btn-sm"
+                  title="Eliminar usuario"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Estado vacío -->
+      <div *ngIf="filteredUsers.length === 0" class="empty-state">
+        <div class="empty-message">
+          <i class="empty-icon">👥</i>
+          <h3>No se encontraron usuarios</h3>
+          <p *ngIf="searchTerm || selectedRole; else noUsersMessage">
+            Intenta ajustar los filtros de búsqueda
+          </p>
+          <ng-template #noUsersMessage>
+            <p>No hay usuarios registrados en el sistema</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
