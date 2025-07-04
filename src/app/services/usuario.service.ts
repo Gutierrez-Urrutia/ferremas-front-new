@@ -43,8 +43,8 @@ export class UsuarioService {
   }
 
   // Eliminar usuario
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.BASE_URL}/usuarios/${id}`, {
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete(`${this.BASE_URL}/usuarios/${id}`, {
       headers: this.getAuthHeaders()
     });
   }

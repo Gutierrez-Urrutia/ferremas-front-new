@@ -101,14 +101,36 @@ export class AdminComponent implements OnInit {
   deleteUser(usuario: Usuario): void {
     if (confirm(`¿Estás seguro de eliminar al usuario ${usuario.nombre}? Esta acción no se puede deshacer.`)) {
       this.usuarioService.deleteUser(usuario.id).subscribe({
-        next: () => {
-          // Remover usuario de la lista local
-          this.usuarios = this.usuarios.filter(u => u.id !== usuario.id);
+        next: (response) => {
+          console.log('Usuario eliminado exitosamente:', response);
           alert('Usuario eliminado exitosamente');
+          // Recargar la tabla automáticamente desde el servidor
+          this.loadUsers();
         },
         error: (err) => {
           console.error('Error eliminando usuario:', err);
-          alert('Error al eliminar el usuario');
+          
+          // Si el status es 200, tratarlo como éxito (problema común con algunos backends)
+          if (err.status === 200) {
+            console.log('Eliminación exitosa (status 200 reportado como error)');
+            alert('Usuario eliminado exitosamente');
+            // Recargar la tabla automáticamente desde el servidor
+            this.loadUsers();
+            return;
+          }
+          
+          // Manejar otros errores reales
+          if (err.status === 0) {
+            alert('Error de conexión. Verifica que el servidor esté funcionando.');
+          } else if (err.status === 403) {
+            alert('No tienes permisos para eliminar usuarios.');
+          } else if (err.status === 404) {
+            alert('Usuario no encontrado.');
+            // Aún así recargar para sincronizar con el servidor
+            this.loadUsers();
+          } else {
+            alert(`Error al eliminar el usuario. Código: ${err.status || 'Desconocido'}`);
+          }
         }
       });
     }
