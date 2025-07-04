@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { CategoriaService } from '../../services/categoria.service';
 import { CarritoService } from '../../services/carrito.service';
 import { Categoria } from '../../interfaces/categoria';
@@ -28,7 +28,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     private carritoService: CarritoService,
     private divisaService: DivisaService,
     private marcaService: MarcaService,
-    public authService: AuthService // Agregar AuthService como público
+    public authService: AuthService, // Agregar AuthService como público
+    private router: Router // Agregar Router
   ) {
     // Suscribe a los cambios de divisa seleccionada para actualizar el valor local
     this.divisaService.selectedDivisa$.subscribe(divisa => {
@@ -130,5 +131,46 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   logout(): void {
     this.authService.logout();
     this.closeAllDropdowns();
+  }
+
+  // Verificar si la navegación pública está permitida para el rol actual
+  isPublicNavigationAllowed(): boolean {
+    if (!this.authService.isAuthenticated()) {
+      return true; // Usuarios no autenticados pueden ver la navegación
+    }
+
+    const userRole = this.getUserRole();
+    // Solo ADMIN y CLIENTE pueden ver la navegación pública
+    return userRole === 'ADMIN' || userRole === 'CLIENTE' || !userRole;
+  }
+
+  // Obtener el título de la vista actual para roles restringidos
+  getCurrentViewTitle(): string {
+    const userRole = this.getUserRole();
+    const currentUrl = this.router.url;
+
+    if (currentUrl.includes('/ventas')) {
+      return 'Panel de Ventas';
+    } else if (currentUrl.includes('/bodega')) {
+      return 'Panel de Bodega';
+    } else if (currentUrl.includes('/auditor')) {
+      return 'Panel de Auditoría';
+    } else if (currentUrl.includes('/admin')) {
+      return 'Panel de Administración';
+    }
+
+    // Fallback basado en rol
+    switch (userRole) {
+      case 'VENDEDOR':
+        return 'Panel de Ventas';
+      case 'BODEGUERO':
+        return 'Panel de Bodega';
+      case 'AUDITOR':
+        return 'Panel de Auditoría';
+      case 'ADMIN':
+        return 'Panel de Administración';
+      default:
+        return 'Panel de Usuario';
+    }
   }
 }
