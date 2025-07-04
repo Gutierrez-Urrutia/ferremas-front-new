@@ -14,13 +14,13 @@
           type="text" 
           [(ngModel)]="searchTerm" 
           placeholder="Buscar por nombre o email..."
-          class="search-input"
+          class="form-control"
         >
       </div>
 
       <!-- Filtro por rol -->
       <div class="filter-group">
-        <select [(ngModel)]="selectedRole" class="role-filter">
+        <select [(ngModel)]="selectedRole" class="form-select">
           <option value="">Todos los roles</option>
           <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
         </select>
@@ -31,7 +31,7 @@
         <button (click)="clearFilters()" class="btn btn-outline-secondary">
           <i class="bi bi-x-circle"></i> Limpiar Filtros
         </button>
-        <button (click)="addUser()" class="btn btn-outline-primary">
+        <button (click)="addUser()" class="btn btn-outline-success">
           <i class="bi bi-person-plus"></i> Agregar Usuario
         </button>
       </div>
@@ -71,7 +71,6 @@
             <th>Nombre</th>
             <th>Email</th>
             <th>Rol</th>
-            <th>Cambiar Rol</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -86,16 +85,14 @@
               </span>
             </td>
             <td>
-              <select 
-                class="role-select" 
-                [value]="usuario.rol"
-                (change)="onRoleChange(usuario, $event)"
-              >
-                <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
-              </select>
-            </td>
-            <td>
               <div class="action-buttons-cell">
+                <button 
+                  (click)="editUser(usuario)" 
+                  class="btn btn-outline-primary btn-sm"
+                  title="Editar usuario"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
                 <button 
                   (click)="deleteUser(usuario)" 
                   class="btn btn-outline-danger btn-sm"
@@ -210,12 +207,100 @@
         </button>
         <button 
           (click)="createUser()" 
-          class="btn btn-outline-primary"
+          class="btn btn-outline-success"
           [disabled]="modalLoading"
         >
           <span *ngIf="modalLoading" class="spinner-border spinner-border-sm me-2"></span>
           <i *ngIf="!modalLoading" class="bi bi-person-plus"></i>
           {{ modalLoading ? 'Creando...' : 'Crear Usuario' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para editar usuario -->
+  <div *ngIf="showEditModal" class="modal-overlay" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Editar Usuario</h2>
+        <button (click)="closeEditModal()" class="btn-close" aria-label="Cerrar">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form (ngSubmit)="updateUser()" #editUserForm="ngForm">
+          <!-- Nombre -->
+          <div class="form-group">
+            <label for="editNombre">Nombre completo *</label>
+            <input 
+              type="text" 
+              id="editNombre"
+              [(ngModel)]="editUserData.nombre" 
+              name="editNombre"
+              class="form-control"
+              placeholder="Ingresa el nombre completo"
+              required
+              [disabled]="modalLoading"
+            >
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label for="editEmail">Email *</label>
+            <input 
+              type="email" 
+              id="editEmail"
+              [(ngModel)]="editUserData.email" 
+              name="editEmail"
+              class="form-control"
+              placeholder="usuario@email.com"
+              required
+              [disabled]="modalLoading"
+            >
+          </div>
+
+          <!-- Rol -->
+          <div class="form-group">
+            <label for="editRol">Rol *</label>
+            <select 
+              id="editRol"
+              [(ngModel)]="editUserData.rol" 
+              name="editRol"
+              class="form-control"
+              required
+              [disabled]="modalLoading"
+            >
+              <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+            </select>
+          </div>
+
+          <!-- Nota sobre contraseña -->
+          <div class="form-group">
+            <small class="text-muted">
+              <i class="bi bi-info-circle"></i>
+              La contraseña no se puede editar desde este formulario
+            </small>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button 
+          (click)="closeEditModal()" 
+          class="btn btn-outline-secondary"
+          [disabled]="modalLoading"
+        >
+          <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button 
+          (click)="updateUser()" 
+          class="btn btn-outline-success"
+          [disabled]="modalLoading"
+        >
+          <span *ngIf="modalLoading" class="spinner-border spinner-border-sm me-2"></span>
+          <i *ngIf="!modalLoading" class="bi bi-pencil-square"></i>
+          {{ modalLoading ? 'Actualizando...' : 'Actualizar Usuario' }}
         </button>
       </div>
     </div>

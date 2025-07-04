@@ -37,7 +37,7 @@ export class UsuarioService {
 
   // Actualizar usuario
   updateUser(id: number, usuario: Partial<Usuario>): Observable<Usuario> {
-    return this.http.put<Usuario>(`${this.BASE_URL}/usuarios/${id}`, usuario, {
+    return this.http.patch<Usuario>(`${this.BASE_URL}/usuarios/${id}`, usuario, {
       headers: this.getAuthHeaders()
     });
   }

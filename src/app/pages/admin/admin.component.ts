@@ -32,6 +32,15 @@ export class AdminComponent implements OnInit {
   };
   modalLoading: boolean = false;
 
+  // Modal para editar usuario
+  showEditModal: boolean = false;
+  editingUser: Usuario | null = null;
+  editUserData = {
+    nombre: '',
+    email: '',
+    rol: 'CLIENTE'
+  };
+
   constructor(private usuarioService: UsuarioService) { }
 
   ngOnInit(): void {
@@ -209,6 +218,79 @@ export class AdminComponent implements OnInit {
           alert('Datos inválidos. Verifica la información ingresada');
         } else {
           alert('Error al crear el usuario. Intenta nuevamente');
+        }
+      }
+    });
+  }
+
+  // Editar usuario
+  editUser(usuario: Usuario): void {
+    this.editingUser = usuario;
+    this.editUserData = {
+      nombre: usuario.nombre,
+      email: usuario.email,
+      rol: usuario.rol
+    };
+    this.showEditModal = true;
+  }
+
+  // Cerrar modal de edición
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.editingUser = null;
+    this.resetEditForm();
+  }
+
+  // Resetear formulario de edición
+  resetEditForm(): void {
+    this.editUserData = {
+      nombre: '',
+      email: '',
+      rol: 'CLIENTE'
+    };
+    this.modalLoading = false;
+  }
+
+  // Actualizar usuario
+  updateUser(): void {
+    if (!this.editingUser) return;
+
+    // Validaciones básicas
+    if (!this.editUserData.nombre.trim()) {
+      alert('El nombre es requerido');
+      return;
+    }
+    if (!this.editUserData.email.trim()) {
+      alert('El email es requerido');
+      return;
+    }
+
+    this.modalLoading = true;
+
+    this.usuarioService.updateUser(this.editingUser.id, this.editUserData).subscribe({
+      next: (usuario) => {
+        // Actualizar el usuario en la lista
+        const index = this.usuarios.findIndex(u => u.id === this.editingUser!.id);
+        if (index !== -1) {
+          this.usuarios[index] = usuario;
+        }
+        alert('Usuario actualizado exitosamente');
+        this.closeEditModal();
+      },
+      error: (err) => {
+        console.error('Error actualizando usuario:', err);
+        this.modalLoading = false;
+        
+        // Manejar errores específicos
+        if (err.status === 409) {
+          alert('El email ya está registrado por otro usuario');
+        } else if (err.status === 400) {
+          alert('Datos inválidos. Verifica la información ingresada');
+        } else if (err.status === 404) {
+          alert('Usuario no encontrado');
+          this.loadUsers(); // Recargar lista
+        } else {
+          alert('Error al actualizar el usuario. Intenta nuevamente');
         }
       }
     });
