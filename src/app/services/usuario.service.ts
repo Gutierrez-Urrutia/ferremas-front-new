@@ -56,4 +56,11 @@ export class UsuarioService {
       { headers: this.getAuthHeaders() }
     );
   }
+
+  // Crear nuevo usuario
+  createUser(userData: { nombre: string; email: string; password: string; rol: string }): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.BASE_URL}/usuarios/registro`, userData, {
+      headers: this.getAuthHeaders()
+    });
+  }
 }

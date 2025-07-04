@@ -22,6 +22,16 @@ export class AdminComponent implements OnInit {
   // Roles disponibles
   roles: string[] = ['CLIENTE', 'VENDEDOR', 'BODEGUERO', 'AUDITOR', 'ADMIN'];
 
+  // Modal para agregar usuario
+  showAddModal: boolean = false;
+  newUser = {
+    nombre: '',
+    email: '',
+    password: '',
+    rol: 'CLIENTE'
+  };
+  modalLoading: boolean = false;
+
   constructor(private usuarioService: UsuarioService) { }
 
   ngOnInit(): void {
@@ -117,9 +127,69 @@ export class AdminComponent implements OnInit {
 
   // Agregar nuevo usuario
   addUser(): void {
-    // Por ahora mostrar alerta - se puede implementar modal o redirección
-    alert('Funcionalidad de agregar usuario próximamente. Aquí se abriría un formulario para crear un nuevo usuario.');
-    // TODO: Implementar modal o redirección a formulario de creación de usuario
+    this.showAddModal = true;
+  }
+
+  // Cerrar modal
+  closeModal(): void {
+    this.showAddModal = false;
+    this.resetForm();
+  }
+
+  // Resetear formulario
+  resetForm(): void {
+    this.newUser = {
+      nombre: '',
+      email: '',
+      password: '',
+      rol: 'CLIENTE'
+    };
+    this.modalLoading = false;
+  }
+
+  // Crear usuario
+  createUser(): void {
+    // Validaciones básicas
+    if (!this.newUser.nombre.trim()) {
+      alert('El nombre es requerido');
+      return;
+    }
+    if (!this.newUser.email.trim()) {
+      alert('El email es requerido');
+      return;
+    }
+    if (!this.newUser.password.trim()) {
+      alert('La contraseña es requerida');
+      return;
+    }
+    if (this.newUser.password.length < 6) {
+      alert('La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+
+    this.modalLoading = true;
+
+    this.usuarioService.createUser(this.newUser).subscribe({
+      next: (usuario) => {
+        // Agregar el nuevo usuario a la lista
+        this.usuarios.push(usuario);
+        alert('Usuario creado exitosamente');
+        this.closeModal();
+      },
+      error: (err) => {
+        console.error('Error creando usuario:', err);
+        this.modalLoading = false;
+        
+        // Manejar errores específicos
+        if (err.status === 409) {
+          alert('El email ya está registrado en el sistema');
+        } else if (err.status === 400) {
+          alert('Datos inválidos. Verifica la información ingresada');
+        } else {
+          alert('Error al crear el usuario. Intenta nuevamente');
+        }
+      }
+    });
   }
 
   // TrackBy function para mejorar rendimiento de la tabla
