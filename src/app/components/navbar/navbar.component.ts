@@ -103,28 +103,27 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   // Método para obtener el nombre del usuario
   getUserName(): string {
-    const user = this.authService.getCurrentUser();
-
-    if (user) {
-      // Priorizar nombre y apellido
-      if (user.nombre) {
-        return `${user.nombre}`;
-      }
-      // Si solo tiene nombre
-      if (user.nombre) {
-        return user.nombre;
-      }
-      // Si solo tiene apellido
-      if (user.apellido) {
-        return user.apellido;
-      }
-      // Fallback al email si no tiene nombre/apellido
-      if (user.email) {
-        return user.email;
-      }
+    try {
+      const user = this.authService.getCurrentUser();
+      
+      if (!user) return 'Usuario';
+      
+      // Retornar el nombre del usuario o email como fallback
+      return user.nombre || user.email || 'Usuario';
+    } catch (error) {
+      console.error('Error obteniendo nombre de usuario:', error);
+      return 'Usuario';
     }
+  }
 
-    return 'Usuario';
+  // Método para obtener el rol del usuario
+  getUserRole(): string {
+    try {
+      return this.authService.getUserRole() || '';
+    } catch (error) {
+      console.error('Error obteniendo rol de usuario:', error);
+      return '';
+    }
   }
 
   // Método para cerrar sesión

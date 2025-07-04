@@ -21,7 +21,8 @@ export class LoginComponent {
   onLogin() {
     this.authService.login(this.login.email, this.login.password).subscribe({
       next: () => {
-        this.router.navigate(['/']);
+        // La redirección se maneja automáticamente en el AuthService según el rol
+        console.log('Login exitoso, redirigiendo según rol...');
       },
       error: (err) => {
         console.error('Error en el login:', err);
