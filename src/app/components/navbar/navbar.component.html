@@ -110,6 +110,41 @@
                                     <strong>Bienvenido {{ getUserName() }}</strong>
                                 </span>
                             </li>
+                            
+                            <!-- Enlaces de administración solo para ADMIN -->
+                            <ng-container *ngIf="getUserRole() === 'ADMIN'">
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <h6 class="dropdown-header">
+                                        <i class="fas fa-cog me-2"></i>Panel de Administración
+                                    </h6>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" [routerLink]="['/admin']">
+                                        <i class="fas fa-users-cog me-2 text-primary"></i>
+                                        Gestión de Usuarios
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" [routerLink]="['/ventas']">
+                                        <i class="fas fa-chart-line me-2 text-success"></i>
+                                        Vista Ventas
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" [routerLink]="['/bodega']">
+                                        <i class="fas fa-warehouse me-2 text-warning"></i>
+                                        Vista Bodega
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" [routerLink]="['/auditor']">
+                                        <i class="fas fa-search me-2 text-info"></i>
+                                        Vista Auditor
+                                    </a>
+                                </li>
+                            </ng-container>
+                            
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="#" (click)="logout(); $event.preventDefault()">

@@ -38,7 +38,7 @@
   background: white;
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 }
 
@@ -90,6 +90,36 @@
   color: white;
 }
 
+/* Botón de edición - color warning - selectores múltiples para mayor especificidad */
+.admin-container .btn-outline-warning,
+.admin-container .action-buttons-cell .btn-outline-warning,
+.admin-container .btn.btn-outline-warning {
+  border-color: #ffc107 !important;
+  color: #ffc107 !important;
+  background-color: transparent !important;
+}
+
+.admin-container .btn-outline-warning:hover,
+.admin-container .action-buttons-cell .btn-outline-warning:hover,
+.admin-container .btn.btn-outline-warning:hover {
+  border-color: #ffca2c !important;
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+/* Forzar estilos específicos para el botón de edición */
+.action-buttons-cell button.btn-outline-warning {
+  border: 1px solid #ffc107 !important;
+  color: #ffc107 !important;
+  background: transparent !important;
+}
+
+.action-buttons-cell button.btn-outline-warning:hover {
+  border-color: #ffca2c !important;
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
 /* Loading State */
 .loading-state {
   text-align: center;
@@ -107,8 +137,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Error State */
@@ -136,7 +170,7 @@
 .table-container {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
@@ -202,11 +236,26 @@
   text-align: center;
 }
 
-.role-cliente { background: #dbeafe; color: #1e40af; }
-.role-vendedor { background: #d1fae5; color: #059669; }
-.role-bodeguero { background: #fef3c7; color: #d97706; }
-.role-auditor { background: #e0e7ff; color: #5b21b6; }
-.role-admin { background: #fecaca; color: #dc2626; }
+.role-cliente {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.role-vendedor {
+  background: #d1fae5;
+  color: #059669;
+}
+.role-bodeguero {
+  background: #fef3c7;
+  color: #d97706;
+}
+.role-auditor {
+  background: #e0e7ff;
+  color: #5b21b6;
+}
+.role-admin {
+  background: #fecaca;
+  color: #dc2626;
+}
 
 /* Action Buttons Cell centrado */
 .action-buttons-cell {
@@ -370,21 +419,21 @@
     width: 95%;
     margin: 1rem;
   }
-  
+
   .modal-header,
   .modal-body,
   .modal-footer {
     padding: 1rem;
   }
-  
+
   .modal-header h2 {
     font-size: 1.25rem;
   }
-  
+
   .modal-footer {
     flex-direction: column;
   }
-  
+
   .modal-footer .btn {
     min-width: auto;
     width: 100%;
@@ -396,45 +445,45 @@
   .admin-container {
     padding: 1rem;
   }
-  
+
   .admin-title {
     font-size: 2rem;
   }
-  
+
   .search-controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .search-group,
   .filter-group {
     min-width: unset;
   }
-  
+
   .action-buttons {
     justify-content: center;
   }
-  
+
   .action-buttons-cell {
     flex-direction: column;
     gap: 5px;
   }
-  
+
   .users-table {
     font-size: 12px;
   }
-  
+
   .users-table th,
   .users-table td {
     padding: 10px 8px;
     text-align: center; /* Mantener centrado en móviles */
   }
-  
+
   .role-select {
     max-width: 90px;
     font-size: 11px;
   }
-  
+
   .role-badge {
     min-width: 70px;
     font-size: 10px;
@@ -444,31 +493,32 @@
 
 /* Animaciones suaves */
 .users-table tbody tr {
-/* Transiciones y animaciones - no sobreescribir estilos de botones de Lux */
-.modal-content,
-.table,
-.role-badge {
-  transition: all 0.2s ease;
-}
+  /* Transiciones y animaciones - no sobreescribir estilos de botones de Lux */
+  .modal-content,
+  .table,
+  .role-badge {
+    transition: all 0.2s ease;
+  }
 
-/* Iconos Bootstrap */
-.bi {
-  font-size: 14px;
-  vertical-align: middle;
-  margin-right: 4px;
-}
+  /* Iconos Bootstrap */
+  .bi {
+    font-size: 14px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
 
-.btn-sm .bi {
-  font-size: 12px;
-  margin-right: 0;
-}
+  .btn-sm .bi {
+    font-size: 12px;
+    margin-right: 0;
+  }
 
-/* Icono de eliminar más grande */
-.btn-sm .bi-trash {
-  font-size: 16px;
-}
+  /* Icono de eliminar más grande */
+  .btn-sm .bi-trash {
+    font-size: 16px;
+  }
 
-/* Icono de editar más grande */
-.btn-sm .bi-pencil {
-  font-size: 15px;
+  /* Icono de editar más grande */
+  .btn-sm .bi-pencil {
+    font-size: 15px;
+  }
 }
