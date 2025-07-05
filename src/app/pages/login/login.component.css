@@ -1,0 +1,48 @@
+/* Estilos para el componente de login */
+.container {
+  max-width: 500px;
+}
+
+/* Mensaje de error personalizado */
+.alert-danger {
+  border-left: 4px solid #dc3545;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Botón con estado de carga */
+.btn[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Estilo para el spinner */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Mejoras en los inputs */
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    width: 90% !important;
+  }
+}
