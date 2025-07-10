@@ -110,12 +110,12 @@
                             <div class="col-md-6 mb-3">
                                 <label for="nombre" class="form-label">Nombre completo *</label>
                                 <input type="text" id="nombre" class="form-control" [(ngModel)]="datosCliente.nombre"
-                                    name="nombre" required>
+                                    name="nombre" required [readonly]="datosUsuarioPrecompletados">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="email" class="form-label">Email *</label>
                                 <input type="email" id="email" class="form-control" [(ngModel)]="datosCliente.email"
-                                    name="email" required>
+                                    name="email" required [readonly]="datosUsuarioPrecompletados">
                             </div>
                         </div>
 

@@ -35,6 +35,7 @@ export class ModalCompraComponent implements OnInit {
 
   tipoDespacho: string = 'domicilio';
   costoDespacho: number = 3000;
+  datosUsuarioPrecompletados: boolean = false; // Nueva propiedad para controlar readonly
 
   constructor(
     private compraService: CompraService,
@@ -100,6 +101,19 @@ export class ModalCompraComponent implements OnInit {
   }
 
   limpiarFormularioCliente() {
+    // Limpiar solo los campos que no son del usuario
+    this.datosCliente.telefono = '';
+    this.datosCliente.direccion = '';
+    this.datosCliente.ciudad = '';
+    this.datosCliente.region = '';
+    this.tipoDespacho = 'domicilio';
+    this.cantidad = 1;
+    this.paso = 1;
+    this.datosUsuarioPrecompletados = false; // Resetear bandera
+  }
+
+  // Método para limpiar completamente el formulario (incluye datos del usuario)
+  limpiarFormularioCompleto() {
     this.datosCliente = {
       nombre: '',
       email: '',
@@ -111,6 +125,7 @@ export class ModalCompraComponent implements OnInit {
     this.tipoDespacho = 'domicilio';
     this.cantidad = 1;
     this.paso = 1;
+    this.datosUsuarioPrecompletados = false; // Resetear bandera
   }
 
   actualizarCantidad() {
@@ -134,8 +149,28 @@ export class ModalCompraComponent implements OnInit {
       return;
     }
     
+    // Pre-completar datos del usuario logueado
+    this.precompletarDatosUsuario();
+    
     // Si está autenticado, continúa al paso 2
     this.paso = 2;
+  }
+
+  // Pre-completar formulario con datos del usuario logueado
+  private precompletarDatosUsuario() {
+    const usuario = this.authService.getCurrentUser();
+    if (usuario) {
+      // Pre-completar nombre y email del usuario logueado
+      this.datosCliente.nombre = usuario.nombre || '';
+      this.datosCliente.email = usuario.email || '';
+      this.datosUsuarioPrecompletados = true; // Marcar que los datos están pre-completados
+      
+      // Mantener otros campos vacíos para que el usuario los complete
+      // this.datosCliente.telefono permanece vacío
+      // this.datosCliente.direccion permanece vacío
+      // this.datosCliente.ciudad permanece vacío
+      // this.datosCliente.region permanece vacío
+    }
   }
 
   // Mostrar modal invitando al usuario a registrarse

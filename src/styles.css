@@ -106,3 +106,17 @@
   text-align: center !important;
   margin: 1rem 0 !important;
 }
+
+/* Estilos para campos readonly en formularios */
+.form-control[readonly] {
+  background-color: #f8f9fa !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  border-color: #dee2e6 !important;
+}
+
+.form-control[readonly]:focus {
+  background-color: #f8f9fa !important;
+  border-color: #dee2e6 !important;
+  box-shadow: none !important;
+}
