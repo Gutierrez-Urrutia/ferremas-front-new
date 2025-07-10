@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { CompraService } from '../../services/compra.service';
 import { DatosCompra } from '../../interfaces/datos-compra';
 import { CarritoService } from '../../services/carrito.service';
+import { AuthService } from '../../services/auth.service';
 import { SimularPagoComponent } from '../../pages/simular-pago/simular-pago.component';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
 import Swal from 'sweetalert2';
@@ -38,6 +39,7 @@ export class ModalCompraComponent implements OnInit {
   constructor(
     private compraService: CompraService,
     private carritoService: CarritoService,
+    private authService: AuthService,
     private router: Router
   ) { }
 
@@ -126,7 +128,46 @@ export class ModalCompraComponent implements OnInit {
   }
 
   continuarPaso2() {
+    // Validar si el usuario está autenticado antes de continuar
+    if (!this.authService.isAuthenticated()) {
+      this.mostrarModalRegistro();
+      return;
+    }
+    
+    // Si está autenticado, continúa al paso 2
     this.paso = 2;
+  }
+
+  // Mostrar modal invitando al usuario a registrarse
+  private mostrarModalRegistro() {
+    Swal.fire({
+      title: 'Inicia sesión para continuar',
+      text: 'Para continuar con tu compra necesitas tener una cuenta en Ferremas',
+      icon: 'info',
+      showCancelButton: true,
+      showDenyButton: false,
+      confirmButtonText: 'Iniciar sesión',
+      cancelButtonText: 'Registrarse',
+      reverseButtons: true,
+      allowOutsideClick: true,
+      allowEscapeKey: true,
+      customClass: {
+        container: 'swal-auth-modal',
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-secondary'
+      }
+    }).then((result) => {
+      // Cerrar el modal de compra primero
+      this.cerrarModal();
+      
+      if (result.isConfirmed) {
+        // Usuario quiere iniciar sesión
+        this.router.navigate(['/login']);
+      } else if (result.isDismissed && result.dismiss === Swal.DismissReason.cancel) {
+        // Usuario quiere registrarse
+        this.router.navigate(['/registro']);
+      }
+    });
   }
 
   continuarPaso3() {

@@ -3,8 +3,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalCompraLabel">
-                    <!-- Título dinámico según el paso actual -->
-                    <span *ngIf="paso === 1">Seleccionar Cantidad</span>
+                    <!-- Título dinámico según el paso actual y tipo de compra -->
+                    <span *ngIf="paso === 1 && !compra?.esCompraCarrito">Seleccionar Cantidad</span>
+                    <span *ngIf="paso === 1 && compra?.esCompraCarrito">Resumen de Productos</span>
                     <span *ngIf="paso === 2">Datos de Entrega</span>
                     <span *ngIf="paso === 3">Confirmar Pago</span>
                     <span *ngIf="paso === 4"></span>
@@ -73,7 +74,6 @@
                     </div>
                     <!-- Compra desde carrito -->
                     <div *ngIf="compra.esCompraCarrito">
-                        <h5>Resumen de productos</h5>
                         <div class="table-responsive">
                             <table class="table table-sm">
                                 <thead>

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CarritoService, ItemCarrito } from '../../services/carrito.service';
 import { CompraService } from '../../services/compra.service';
+import { AuthService } from '../../services/auth.service';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
 import { Producto } from '../../interfaces/producto';
 import Swal from 'sweetalert2';
@@ -19,7 +21,9 @@ export class ModalCarritoComponent implements OnInit {
 
   constructor(
     private carritoService: CarritoService,
-    private compraService: CompraService
+    private compraService: CompraService,
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -128,7 +132,21 @@ export class ModalCarritoComponent implements OnInit {
 
   procederACompra(): void {
     if (this.items.length === 0) {
-      alert('No hay productos en el carrito');
+      Swal.fire({
+        title: 'Carrito vacío',
+        text: 'No hay productos en el carrito',
+        icon: 'warning',
+        confirmButtonText: 'Entendido',
+        customClass: {
+          confirmButton: 'btn btn-primary'
+        }
+      });
+      return;
+    }
+
+    // VALIDACIÓN DE AUTENTICACIÓN PRIMERO
+    if (!this.authService.isAuthenticated()) {
+      this.mostrarModalRegistroCarrito();
       return;
     }
 
@@ -187,5 +205,44 @@ export class ModalCarritoComponent implements OnInit {
 
   trackByProductoId(index: number, item: ItemCarrito): number {
     return item.producto.id;
+  }
+
+  // Método para mostrar modal de autenticación cuando el usuario no está logueado
+  private mostrarModalRegistroCarrito(): void {
+    Swal.fire({
+      title: 'Inicia sesión para continuar',
+      text: 'Necesitas estar registrado para proceder con la compra',
+      icon: 'info',
+      showCancelButton: true,
+      showDenyButton: false,
+      confirmButtonText: 'Iniciar sesión',
+      cancelButtonText: 'Registrarse',
+      reverseButtons: true,
+      allowOutsideClick: true,
+      allowEscapeKey: true,
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-secondary'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Cerrar modal del carrito y redirigir a login
+        this.cerrarModalCarrito();
+        this.router.navigate(['/login']);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        // Cerrar modal del carrito y redirigir a registro
+        this.cerrarModalCarrito();
+        this.router.navigate(['/registro']);
+      }
+    });
+  }
+
+  // Método auxiliar para cerrar el modal del carrito
+  private cerrarModalCarrito(): void {
+    const modalElement = document.getElementById('modalCarrito');
+    const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+      modal.hide();
+    }
   }
 }

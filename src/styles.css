@@ -28,3 +28,81 @@
     min-width: auto;
   }
 }
+
+/* Estilos para modales de SweetAlert2 con tema Lux */
+.swal2-popup .swal2-actions button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  vertical-align: middle !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  border: 1px solid transparent !important;
+  padding: 0.5rem 1.25rem !important;
+  font-size: 1rem !important;
+  border-radius: 0 !important;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+  margin: 0 0.25rem !important;
+  min-height: 2.5rem !important;
+}
+
+.swal2-popup .swal2-actions .btn-primary {
+  color: #fff !important;
+  background-color: #1a1a1a !important;
+  border-color: #1a1a1a !important;
+}
+
+.swal2-popup .swal2-actions .btn-primary:hover {
+  color: #fff !important;
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+.swal2-popup .swal2-actions .btn-primary:focus {
+  color: #fff !important;
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  box-shadow: 0 0 0 0.2rem rgba(26, 26, 26, 0.25) !important;
+}
+
+.swal2-popup .swal2-actions .btn-secondary {
+  color: #000 !important;
+  background-color: #fff !important;
+  border-color: transparent !important;
+}
+
+.swal2-popup .swal2-actions .btn-secondary:hover {
+  color: #000 !important;
+  background-color: #f0f1f2 !important;
+  border-color: transparent !important;
+}
+
+.swal2-popup .swal2-actions .btn-secondary:focus {
+  color: #000 !important;
+  background-color: #f0f1f2 !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 0 0.2rem rgba(222, 226, 230, 0.5) !important;
+}
+
+/* Ocultar botón deny (No) en modales de SweetAlert2 */
+.swal2-popup .swal2-actions .swal2-deny {
+  display: none !important;
+}
+
+/* Mejorar centrado vertical del contenido en modales de SweetAlert2 */
+.swal2-popup .swal2-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  margin-top: 1.5rem !important;
+}
+
+.swal2-popup .swal2-content {
+  text-align: center !important;
+  margin: 1rem 0 !important;
+}
