@@ -5,6 +5,5 @@ export interface DatosCliente {
   calle: string;
   numero: string;
   comuna: string;
-  ciudad: string;
   region: string;
 }

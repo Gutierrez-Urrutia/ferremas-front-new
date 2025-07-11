@@ -132,32 +132,17 @@
                                 <label for="region" class="form-label">Región *</label>
                                 <!-- Selección de región para despacho -->
                                 <select id="region" class="form-select" [(ngModel)]="datosCliente.region" name="region"
-                                    required>
+                                    required (change)="onRegionChange()">
                                     <option value="">Seleccionar región</option>
-                                    <option value="rm">Región Metropolitana</option>
-                                    <option value="valparaiso">Valparaíso</option>
-                                    <option value="biobio">Biobío</option>
+                                    <option *ngFor="let region of regiones" [value]="region.id">{{ region.nombre }}</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="comuna" class="form-label">Comuna *</label>
                                 <select id="comuna" class="form-select" [(ngModel)]="datosCliente.comuna" name="comuna"
-                                    required>
+                                    required [disabled]="comunaDisabled">
                                     <option value="">Seleccionar comuna</option>
-                                    <option value="las-condes">Las Condes</option>
-                                    <option value="vitacura">Vitacura</option>
-                                    <option value="providencia">Providencia</option>
-                                    <option value="santiago">Santiago Centro</option>
-                                    <option value="ñuñoa">Ñuñoa</option>
-                                    <option value="la-reina">La Reina</option>
-                                    <option value="maipu">Maipú</option>
-                                    <option value="pudahuel">Pudahuel</option>
-                                    <option value="cerrillos">Cerrillos</option>
-                                    <option value="san-miguel">San Miguel</option>
-                                    <option value="la-florida">La Florida</option>
-                                    <option value="puente-alto">Puente Alto</option>
-                                    <option value="san-bernardo">San Bernardo</option>
-                                    <option value="melipilla">Melipilla</option>
+                                    <option *ngFor="let comuna of comunas" [value]="comuna.id">{{ comuna.nombre }}</option>
                                 </select>
                             </div>
                         </div>

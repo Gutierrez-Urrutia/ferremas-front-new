@@ -10,6 +10,8 @@ import { SimularPagoComponent } from '../../pages/simular-pago/simular-pago.comp
 import { ConversorPipe } from '../../pipes/conversor.pipe';
 import Swal from 'sweetalert2';
 import { Producto } from '../../interfaces/producto';
+import { RegionComunaService } from '../../services/region-comuna.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-modal-compra',
@@ -31,19 +33,22 @@ export class ModalCompraComponent implements OnInit {
     calle: '',
     numero: '',
     comuna: '',
-    ciudad: '',
     region: ''
   };
 
   tipoDespacho: string = 'domicilio';
   costoDespacho: number = 3000;
   datosUsuarioPrecompletados: boolean = false; // Nueva propiedad para controlar readonly
+  regiones: any[] = [];
+  comunas: any[] = [];
+  comunaDisabled: boolean = true;
 
   constructor(
     private compraService: CompraService,
     private carritoService: CarritoService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private regionComunaService: RegionComunaService
   ) { }
 
   ngOnInit() {
@@ -64,6 +69,41 @@ export class ModalCompraComponent implements OnInit {
     this.compraService.limpiarFormulario$.subscribe(() => {
       this.limpiarFormularioCliente();
     });
+    this.cargarRegiones();
+  }
+
+  cargarRegiones() {
+    this.regionComunaService.getRegiones().subscribe({
+      next: (regiones) => {
+        this.regiones = regiones;
+      },
+      error: (err) => {
+        console.error('Error cargando regiones', err);
+        this.regiones = [];
+      }
+    });
+  }
+
+  onRegionChange() {
+    if (this.datosCliente.region) {
+      this.comunaDisabled = true;
+      this.comunas = [];
+      this.regionComunaService.getComunasPorRegion(Number(this.datosCliente.region)).subscribe({
+        next: (comunas) => {
+          this.comunas = comunas;
+          this.comunaDisabled = false;
+        },
+        error: (err) => {
+          console.error('Error cargando comunas', err);
+          this.comunas = [];
+          this.comunaDisabled = true;
+        }
+      });
+    } else {
+      this.comunas = [];
+      this.comunaDisabled = true;
+      this.datosCliente.comuna = '';
+    }
   }
 
   getPrecioActual(producto: Producto): number {
@@ -108,8 +148,9 @@ export class ModalCompraComponent implements OnInit {
     this.datosCliente.calle = '';
     this.datosCliente.numero = '';
     this.datosCliente.comuna = '';
-    this.datosCliente.ciudad = '';
     this.datosCliente.region = '';
+    this.comunas = [];
+    this.comunaDisabled = true;
     this.tipoDespacho = 'domicilio';
     this.cantidad = 1;
     this.paso = 1;
@@ -125,13 +166,14 @@ export class ModalCompraComponent implements OnInit {
       calle: '',
       numero: '',
       comuna: '',
-      ciudad: '',
       region: ''
     };
     this.tipoDespacho = 'domicilio';
     this.cantidad = 1;
     this.paso = 1;
     this.datosUsuarioPrecompletados = false; // Resetear bandera
+    this.comunas = [];
+    this.comunaDisabled = true;
   }
 
   actualizarCantidad() {
@@ -231,11 +273,10 @@ export class ModalCompraComponent implements OnInit {
       console.log('Email:', this.datosCliente.email);
       console.log('Teléfono:', this.datosCliente.telefono);
       console.log('Región:', this.datosCliente.region);
-      console.log('Ciudad:', this.datosCliente.ciudad);
       console.log('Comuna:', this.datosCliente.comuna);
       console.log('Calle:', this.datosCliente.calle);
       console.log('Número:', this.datosCliente.numero);
-      console.log('Dirección completa:', `${this.datosCliente.calle} ${this.datosCliente.numero}, ${this.datosCliente.comuna}, ${this.datosCliente.ciudad}, ${this.datosCliente.region}`);
+      console.log('Dirección completa:', `${this.datosCliente.calle} ${this.datosCliente.numero}, ${this.datosCliente.comuna}, ${this.datosCliente.region}`);
       console.log('Tipo de despacho:', this.tipoDespacho);
       console.log('Costo de despacho:', this.costoDespacho);
       console.log('Datos pre-completados del usuario:', this.datosUsuarioPrecompletados);
@@ -341,7 +382,6 @@ export class ModalCompraComponent implements OnInit {
       this.datosCliente.calle.trim() !== '' &&
       this.datosCliente.numero.trim() !== '' &&
       this.datosCliente.comuna.trim() !== '' &&
-      this.datosCliente.ciudad.trim() !== '' &&
       this.datosCliente.region.trim() !== '';
   }
 
