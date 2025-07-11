@@ -125,6 +125,9 @@
                                 <input type="tel" id="telefono" class="form-control" [(ngModel)]="datosCliente.telefono"
                                     name="telefono" required placeholder="Ej: +56 9 1234 5678">
                             </div>
+                            <div class="col-md-6 mb-3"></div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="region" class="form-label">Región *</label>
                                 <!-- Selección de región para despacho -->
@@ -134,31 +137,6 @@
                                     <option value="rm">Región Metropolitana</option>
                                     <option value="valparaiso">Valparaíso</option>
                                     <option value="biobio">Biobío</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Ciudad y Comuna -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="ciudad" class="form-label">Ciudad *</label>
-                                <select id="ciudad" class="form-select" [(ngModel)]="datosCliente.ciudad" name="ciudad"
-                                    required>
-                                    <option value="">Seleccionar ciudad</option>
-                                    <option value="santiago">Santiago</option>
-                                    <option value="valparaiso">Valparaíso</option>
-                                    <option value="viña-del-mar">Viña del Mar</option>
-                                    <option value="concepcion">Concepción</option>
-                                    <option value="talcahuano">Talcahuano</option>
-                                    <option value="antofagasta">Antofagasta</option>
-                                    <option value="temuco">Temuco</option>
-                                    <option value="rancagua">Rancagua</option>
-                                    <option value="arica">Arica</option>
-                                    <option value="iquique">Iquique</option>
-                                    <option value="chillan">Chillán</option>
-                                    <option value="valdivia">Valdivia</option>
-                                    <option value="osorno">Osorno</option>
-                                    <option value="puerto-montt">Puerto Montt</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -260,7 +238,7 @@
                         <h6>Datos de entrega:</h6>
                         <p><strong>{{ datosCliente.nombre }}</strong><br>
                             {{ datosCliente.calle }} {{ datosCliente.numero }}, {{ datosCliente.comuna }}<br>
-                            {{ datosCliente.ciudad }}, {{ datosCliente.region }}<br>
+                            {{ datosCliente.region }}<br>
                             {{ datosCliente.telefono }}</p>
                     </div>
                 </div>
@@ -274,7 +252,7 @@
             </div>
 
             <div class="modal-footer" *ngIf="paso < 4">
-                <button type="button" class="btn btn-secondary" *ngIf="paso > 1" (click)="volver()">Volver</button>
+                <button type="button" class="btn btn-secondary" *ngIf="paso > 1 && paso !== 2" (click)="volver()">Volver</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                     (click)="cerrarModal()">Cancelar</button>
                 <button type="button" class="btn btn-primary" *ngIf="paso === 1"
