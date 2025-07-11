@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, BehaviorSubject } from 'rxjs';
-import { LoginResponse, Usuario } from '../interfaces/usuario';
+import { LoginResponse, Usuario, Direccion } from '../interfaces/usuario';
 import { CarritoService } from './carrito.service';
 
 @Injectable({
@@ -184,5 +184,50 @@ export class AuthService {
     } else {
       this.router.navigate(['/']);
     }
+  }
+
+  // Método para actualizar teléfono del usuario
+  updateTelefono(telefono: string): Observable<Usuario> {
+    const userId = this.getCurrentUser()?.id;
+    return this.http.patch<Usuario>(`${this.BASE_URL}/${userId}`, { telefono }).pipe(
+      tap(updatedUser => {
+        // Actualizar el usuario en localStorage
+        localStorage.setItem(this.USER_KEY, JSON.stringify(updatedUser));
+      })
+    );
+  }
+
+  // Método para agregar nueva dirección
+  addDireccion(direccionData: any): Observable<any> {
+    const usuario = this.getCurrentUser();
+    
+    // Enviar la dirección al endpoint del usuario
+    const direccion = {
+      calle: direccionData.calle,
+      numero: direccionData.numero,
+      region: direccionData.region,
+      comuna: direccionData.comuna
+    };
+    
+    console.log('Enviando dirección al backend:', direccion);
+    // Usar el endpoint POST /usuarios/{id}/direcciones
+    return this.http.post<any>(`${this.BASE_URL}/${usuario?.id}/direcciones`, direccion);
+  }
+
+  // Método para obtener direcciones del usuario
+  getDireccionesUsuario(): Observable<any[]> {
+    const userId = this.getCurrentUser()?.id;
+    return this.http.get<any[]>(`http://localhost:8090/api/v1/direcciones/usuario/${userId}`);
+  }
+
+  // Método para actualizar datos adicionales del usuario (solo teléfono)
+  updateDatosAdicionales(datos: { telefono?: string }): Observable<Usuario> {
+    const userId = this.getCurrentUser()?.id;
+    return this.http.patch<Usuario>(`${this.BASE_URL}/${userId}`, datos).pipe(
+      tap(updatedUser => {
+        // Actualizar el usuario en localStorage
+        localStorage.setItem(this.USER_KEY, JSON.stringify(updatedUser));
+      })
+    );
   }
 }

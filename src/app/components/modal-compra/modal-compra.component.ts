@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 import { Producto } from '../../interfaces/producto';
 import { RegionComunaService } from '../../services/region-comuna.service';
 import { HttpClient } from '@angular/common/http';
+import { Usuario, Direccion } from '../../interfaces/usuario';
 
 @Component({
   selector: 'app-modal-compra',
@@ -42,6 +43,12 @@ export class ModalCompraComponent implements OnInit {
   regiones: any[] = [];
   comunas: any[] = [];
   comunaDisabled: boolean = true;
+  
+  // Nuevas propiedades para manejo de direcciones
+  direccionesUsuario: Direccion[] = [];
+  direccionSeleccionada: string = ''; // 'nueva' o id de dirección existente
+  mostrarFormularioDireccion: boolean = false;
+  telefonoModificado: boolean = false;
 
   constructor(
     private compraService: CompraService,
@@ -214,10 +221,28 @@ export class ModalCompraComponent implements OnInit {
       // Pre-completar nombre y email del usuario logueado
       this.datosCliente.nombre = usuario.nombre || '';
       this.datosCliente.email = usuario.email || '';
-      this.datosUsuarioPrecompletados = true; // Marcar que los datos están pre-completados
+      this.datosUsuarioPrecompletados = true;
       
-      console.log('Nombre pre-completado:', this.datosCliente.nombre);
-      console.log('Email pre-completado:', this.datosCliente.email);
+      // Manejar teléfono
+      if (usuario.telefono) {
+        this.datosCliente.telefono = usuario.telefono;
+      }
+      
+      // Manejar direcciones
+      if (usuario.direcciones && usuario.direcciones.length > 0) {
+        this.direccionesUsuario = usuario.direcciones;
+        // Seleccionar la dirección principal por defecto, o la primera
+        const direccionPrincipal = usuario.direcciones.find(d => d.esPrincipal) || usuario.direcciones[0];
+        this.direccionSeleccionada = direccionPrincipal.id?.toString() || '';
+        this.aplicarDireccionSeleccionada();
+      } else {
+        // No tiene direcciones, mostrar formulario manual
+        this.direccionSeleccionada = 'nueva';
+        this.mostrarFormularioDireccion = true;
+      }
+      
+      console.log('Teléfono pre-completado:', this.datosCliente.telefono);
+      console.log('Direcciones disponibles:', this.direccionesUsuario.length);
       console.log('datosUsuarioPrecompletados:', this.datosUsuarioPrecompletados);
       console.log('=========================================');
       
@@ -226,10 +251,140 @@ export class ModalCompraComponent implements OnInit {
       // this.datosCliente.calle permanece vacío
       // this.datosCliente.numero permanece vacío
       // this.datosCliente.comuna permanece vacío
-      // this.datosCliente.ciudad permanece vacío
       // this.datosCliente.region permanece vacío
     } else {
       console.log('No hay usuario logueado para pre-completar datos');
+    }
+  }
+
+  // Aplicar dirección seleccionada al formulario
+  aplicarDireccionSeleccionada() {
+    if (this.direccionSeleccionada === 'nueva') {
+      this.mostrarFormularioDireccion = true;
+      this.limpiarCamposDireccion();
+    } else {
+      this.mostrarFormularioDireccion = false;
+      const direccion = this.direccionesUsuario.find(d => d.id?.toString() === this.direccionSeleccionada);
+      if (direccion) {
+        this.datosCliente.calle = direccion.calle;
+        this.datosCliente.numero = direccion.numero;
+        this.datosCliente.comuna = direccion.comunaId?.toString() || direccion.comuna;
+        this.datosCliente.region = direccion.regionId?.toString() || direccion.region;
+        
+        // Cargar comunas si se tiene regionId
+        if (direccion.regionId) {
+          this.onRegionChange();
+        }
+      }
+    }
+  }
+
+  // Limpiar campos de dirección manual
+  limpiarCamposDireccion() {
+    this.datosCliente.calle = '';
+    this.datosCliente.numero = '';
+    this.datosCliente.comuna = '';
+    this.datosCliente.region = '';
+    this.comunas = [];
+    this.comunaDisabled = true;
+  }
+
+  // Evento cuando cambia la selección de dirección
+  onDireccionChange() {
+    this.aplicarDireccionSeleccionada();
+  }
+
+  // Marcar que el teléfono fue modificado
+  onTelefonoChange() {
+    this.telefonoModificado = true;
+  }
+
+  continuarPaso3() {
+    if (this.validarDatosCliente()) {
+      // Actualizar datos del usuario si es necesario antes de continuar
+      this.actualizarDatosUsuario().then(() => {
+        // Mostrar todos los datos del formulario en la consola
+        console.log('=== DATOS DE ENTREGA CAPTURADOS ===');
+        console.log('Nombre completo:', this.datosCliente.nombre);
+        console.log('Email:', this.datosCliente.email);
+        console.log('Teléfono:', this.datosCliente.telefono);
+        console.log('Región:', this.datosCliente.region);
+        console.log('Comuna:', this.datosCliente.comuna);
+        console.log('Calle:', this.datosCliente.calle);
+        console.log('Número:', this.datosCliente.numero);
+        console.log('Dirección completa:', `${this.datosCliente.calle} ${this.datosCliente.numero}, ${this.datosCliente.comuna}, ${this.datosCliente.region}`);
+        console.log('Tipo de despacho:', this.tipoDespacho);
+        console.log('Costo de despacho:', this.costoDespacho);
+        console.log('Datos pre-completados del usuario:', this.datosUsuarioPrecompletados);
+        console.log('Objeto completo datosCliente:', this.datosCliente);
+        console.log('=====================================');
+        
+        this.compraService.actualizarDatosCliente(this.datosCliente);
+        this.compraService.actualizarTipoDespacho(this.tipoDespacho);
+        this.paso = 3;
+      }).catch(error => {
+        console.error('Error actualizando datos del usuario:', error);
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudieron actualizar los datos. Inténtelo nuevamente.',
+          icon: 'error',
+          confirmButtonText: 'Entendido'
+        });
+      });
+    } else {
+      // Alerta de validación con SweetAlert2 si faltan datos obligatorios
+      Swal.fire({
+        title: 'Datos incompletos',
+        text: 'Por favor, complete todos los campos obligatorios.',
+        icon: 'warning',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#ffc107'
+      });
+    }
+  }
+
+  // Actualizar datos del usuario en el backend si es necesario
+  private async actualizarDatosUsuario(): Promise<void> {
+    const usuario = this.authService.getCurrentUser();
+    if (!usuario) return;
+
+    try {
+      // 1. Actualizar teléfono si fue modificado o es nuevo
+      if (this.telefonoModificado || !usuario.telefono) {
+        await this.authService.updateDatosAdicionales({ 
+          telefono: this.datosCliente.telefono 
+        }).toPromise();
+      }
+
+      // 2. Agregar nueva dirección si es necesario
+      if (this.direccionSeleccionada === 'nueva' && this.mostrarFormularioDireccion) {
+        // Obtener objetos completos de región y comuna
+        const regionCompleta = this.regiones.find(r => r.id.toString() === this.datosCliente.region);
+        const comunaCompleta = this.comunas.find(c => c.id.toString() === this.datosCliente.comuna);
+        
+        if (!regionCompleta || !comunaCompleta) {
+          throw new Error('Región o comuna no encontrada');
+        }
+        
+        const nuevaDireccion = {
+          calle: this.datosCliente.calle,
+          numero: this.datosCliente.numero,
+          region: regionCompleta, // Objeto Region completo
+          comuna: comunaCompleta  // Objeto Comuna completo
+        };
+        
+        console.log('Creando nueva dirección:', nuevaDireccion);
+        await this.authService.addDireccion(nuevaDireccion).toPromise();
+        
+        // Recargar direcciones del usuario después de agregar la nueva
+        const direccionesActualizadas = await this.authService.getDireccionesUsuario().toPromise();
+        const usuarioActualizado = { ...usuario, direcciones: direccionesActualizadas };
+        localStorage.setItem('ferremas_user', JSON.stringify(usuarioActualizado));
+        this.direccionesUsuario = direccionesActualizadas || [];
+      }
+    } catch (error) {
+      console.error('Error detallado:', error);
+      throw new Error('Error actualizando datos del usuario');
     }
   }
 
@@ -263,39 +418,6 @@ export class ModalCompraComponent implements OnInit {
         this.router.navigate(['/registro']);
       }
     });
-  }
-
-  continuarPaso3() {
-    if (this.validarDatosCliente()) {
-      // Mostrar todos los datos del formulario en la consola
-      console.log('=== DATOS DE ENTREGA CAPTURADOS ===');
-      console.log('Nombre completo:', this.datosCliente.nombre);
-      console.log('Email:', this.datosCliente.email);
-      console.log('Teléfono:', this.datosCliente.telefono);
-      console.log('Región:', this.datosCliente.region);
-      console.log('Comuna:', this.datosCliente.comuna);
-      console.log('Calle:', this.datosCliente.calle);
-      console.log('Número:', this.datosCliente.numero);
-      console.log('Dirección completa:', `${this.datosCliente.calle} ${this.datosCliente.numero}, ${this.datosCliente.comuna}, ${this.datosCliente.region}`);
-      console.log('Tipo de despacho:', this.tipoDespacho);
-      console.log('Costo de despacho:', this.costoDespacho);
-      console.log('Datos pre-completados del usuario:', this.datosUsuarioPrecompletados);
-      console.log('Objeto completo datosCliente:', this.datosCliente);
-      console.log('=====================================');
-      
-      this.compraService.actualizarDatosCliente(this.datosCliente);
-      this.compraService.actualizarTipoDespacho(this.tipoDespacho);
-      this.paso = 3;
-    } else {
-      // Alerta de validación con SweetAlert2 si faltan datos obligatorios
-      Swal.fire({
-        title: 'Datos incompletos',
-        text: 'Por favor, complete todos los campos obligatorios.',
-        icon: 'warning',
-        confirmButtonText: 'Entendido',
-        confirmButtonColor: '#ffc107'
-      });
-    }
   }
 
   procesarPago() {
