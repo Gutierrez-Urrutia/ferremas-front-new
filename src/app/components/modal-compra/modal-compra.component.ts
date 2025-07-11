@@ -28,7 +28,9 @@ export class ModalCompraComponent implements OnInit {
     nombre: '',
     email: '',
     telefono: '',
-    direccion: '',
+    calle: '',
+    numero: '',
+    comuna: '',
     ciudad: '',
     region: ''
   };
@@ -103,7 +105,9 @@ export class ModalCompraComponent implements OnInit {
   limpiarFormularioCliente() {
     // Limpiar solo los campos que no son del usuario
     this.datosCliente.telefono = '';
-    this.datosCliente.direccion = '';
+    this.datosCliente.calle = '';
+    this.datosCliente.numero = '';
+    this.datosCliente.comuna = '';
     this.datosCliente.ciudad = '';
     this.datosCliente.region = '';
     this.tipoDespacho = 'domicilio';
@@ -118,7 +122,9 @@ export class ModalCompraComponent implements OnInit {
       nombre: '',
       email: '',
       telefono: '',
-      direccion: '',
+      calle: '',
+      numero: '',
+      comuna: '',
       ciudad: '',
       region: ''
     };
@@ -160,16 +166,28 @@ export class ModalCompraComponent implements OnInit {
   private precompletarDatosUsuario() {
     const usuario = this.authService.getCurrentUser();
     if (usuario) {
+      console.log('=== PRE-COMPLETANDO DATOS DEL USUARIO ===');
+      console.log('Usuario logueado:', usuario);
+      
       // Pre-completar nombre y email del usuario logueado
       this.datosCliente.nombre = usuario.nombre || '';
       this.datosCliente.email = usuario.email || '';
       this.datosUsuarioPrecompletados = true; // Marcar que los datos están pre-completados
       
+      console.log('Nombre pre-completado:', this.datosCliente.nombre);
+      console.log('Email pre-completado:', this.datosCliente.email);
+      console.log('datosUsuarioPrecompletados:', this.datosUsuarioPrecompletados);
+      console.log('=========================================');
+      
       // Mantener otros campos vacíos para que el usuario los complete
       // this.datosCliente.telefono permanece vacío
-      // this.datosCliente.direccion permanece vacío
+      // this.datosCliente.calle permanece vacío
+      // this.datosCliente.numero permanece vacío
+      // this.datosCliente.comuna permanece vacío
       // this.datosCliente.ciudad permanece vacío
       // this.datosCliente.region permanece vacío
+    } else {
+      console.log('No hay usuario logueado para pre-completar datos');
     }
   }
 
@@ -207,6 +225,23 @@ export class ModalCompraComponent implements OnInit {
 
   continuarPaso3() {
     if (this.validarDatosCliente()) {
+      // Mostrar todos los datos del formulario en la consola
+      console.log('=== DATOS DE ENTREGA CAPTURADOS ===');
+      console.log('Nombre completo:', this.datosCliente.nombre);
+      console.log('Email:', this.datosCliente.email);
+      console.log('Teléfono:', this.datosCliente.telefono);
+      console.log('Región:', this.datosCliente.region);
+      console.log('Ciudad:', this.datosCliente.ciudad);
+      console.log('Comuna:', this.datosCliente.comuna);
+      console.log('Calle:', this.datosCliente.calle);
+      console.log('Número:', this.datosCliente.numero);
+      console.log('Dirección completa:', `${this.datosCliente.calle} ${this.datosCliente.numero}, ${this.datosCliente.comuna}, ${this.datosCliente.ciudad}, ${this.datosCliente.region}`);
+      console.log('Tipo de despacho:', this.tipoDespacho);
+      console.log('Costo de despacho:', this.costoDespacho);
+      console.log('Datos pre-completados del usuario:', this.datosUsuarioPrecompletados);
+      console.log('Objeto completo datosCliente:', this.datosCliente);
+      console.log('=====================================');
+      
       this.compraService.actualizarDatosCliente(this.datosCliente);
       this.compraService.actualizarTipoDespacho(this.tipoDespacho);
       this.paso = 3;
@@ -303,7 +338,9 @@ export class ModalCompraComponent implements OnInit {
     return this.datosCliente.nombre.trim() !== '' &&
       this.datosCliente.email.trim() !== '' &&
       this.datosCliente.telefono.trim() !== '' &&
-      this.datosCliente.direccion.trim() !== '' &&
+      this.datosCliente.calle.trim() !== '' &&
+      this.datosCliente.numero.trim() !== '' &&
+      this.datosCliente.comuna.trim() !== '' &&
       this.datosCliente.ciudad.trim() !== '' &&
       this.datosCliente.region.trim() !== '';
   }

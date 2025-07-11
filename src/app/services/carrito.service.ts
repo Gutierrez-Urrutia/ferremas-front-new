@@ -19,9 +19,16 @@ export class CarritoService {
   itemsCarrito$ = this.itemsCarritoSource.asObservable();
 
   private readonly CARRITO_KEY = 'carrito_ferremas';
+  private readonly CARRITO_USER_PREFIX = 'carrito_user_';
 
   constructor() {
-    this.cargarCarritoDesdeStorage();
+    // Solo cargar carrito inicial si no hay usuario autenticado
+    const usuarioActual = this.getUsuarioActual();
+    if (!usuarioActual) {
+      // Cargar carrito anónimo
+      this.cargarCarritoDesdeStorage();
+    }
+    // Si hay usuario, el AuthService se encargará de cargar su carrito específico
   }
 
   /* Obtiene el precio del producto desde el primer elemento del arreglo de precios.
@@ -33,29 +40,63 @@ export class CarritoService {
     return producto.precios[0].precio;
   }
 
+  /* Obtiene la clave de almacenamiento específica para el usuario actual */
+  private getCarritoKey(usuario?: any): string {
+    if (usuario && usuario.id) {
+      return `${this.CARRITO_USER_PREFIX}${usuario.id}`;
+    }
+    return this.CARRITO_KEY; // Fallback para usuarios no autenticados
+  }
+
+  /* Helper para obtener el usuario actual desde localStorage sin crear dependencia circular */
+  private getUsuarioActual(): any {
+    try {
+      const userData = localStorage.getItem('ferremas_user');
+      if (userData && userData !== 'undefined' && userData !== 'null') {
+        return JSON.parse(userData);
+      }
+    } catch (error) {
+      console.warn('Error al obtener usuario actual:', error);
+    }
+    return null;
+  }
+
   /* Carga el carrito desde localStorage y recalcula los subtotales
   en caso de que el precio del producto haya cambiado.*/
-  private cargarCarritoDesdeStorage(): void {
+  private cargarCarritoDesdeStorage(usuario?: any): void {
     try {
-      const carritoGuardado = localStorage.getItem(this.CARRITO_KEY);
+      const carritoKey = this.getCarritoKey(usuario);
+      console.log('Cargando carrito con clave:', carritoKey);
+      
+      const carritoGuardado = localStorage.getItem(carritoKey);
       if (carritoGuardado) {
         const items = JSON.parse(carritoGuardado);
+        console.log('Items encontrados:', items.length);
         
         items.forEach((item: ItemCarrito) => {
           item.subtotal = this.getPrecioProducto(item.producto) * item.cantidad;
         });
         this.itemsCarritoSource.next(items);
+      } else {
+        console.log('No se encontró carrito para la clave:', carritoKey);
+        // Si no hay carrito guardado, mostrar carrito vacío
+        this.itemsCarritoSource.next([]);
       }
     } catch (error) {
       console.error('Error al cargar carrito desde localStorage:', error);
+      this.itemsCarritoSource.next([]);
     }
   }
 
   /* Guarda el estado actual del carrito en localStorage. */
-  private guardarCarritoEnStorage(): void {
+  private guardarCarritoEnStorage(usuario?: any): void {
     try {
       const items = this.itemsCarritoSource.value;
-      localStorage.setItem(this.CARRITO_KEY, JSON.stringify(items));
+      // Si no se especifica usuario, usar el actual
+      const usuarioActual = usuario || this.getUsuarioActual();
+      const carritoKey = this.getCarritoKey(usuarioActual);
+      console.log('Guardando carrito con clave:', carritoKey);
+      localStorage.setItem(carritoKey, JSON.stringify(items));
     } catch (error) {
       console.error('Error al guardar carrito en localStorage:', error);
     }
@@ -103,9 +144,15 @@ export class CarritoService {
     this.guardarCarritoEnStorage();
   }
 
-  vaciarCarrito(): void {
+  vaciarCarrito(usuario?: any): void {
     this.itemsCarritoSource.next([]);
-    localStorage.removeItem(this.CARRITO_KEY);
+    const carritoKey = this.getCarritoKey(usuario);
+    localStorage.removeItem(carritoKey);
+  }
+
+  /* Método para limpiar solo la UI sin afectar el localStorage */
+  limpiarUI(): void {
+    this.itemsCarritoSource.next([]);
   }
 
   obtenerCantidadTotal(): number {
@@ -124,5 +171,74 @@ export class CarritoService {
 
   obtenerItems(): ItemCarrito[] {
     return this.itemsCarritoSource.value;
+  }
+
+  /* Método público para recargar el carrito cuando cambie el usuario */
+  recargarCarritoParaUsuario(usuario?: any): void {
+    console.log('Recargando carrito para usuario:', usuario);
+    if (usuario) {
+      // Usuario específico: cargar su carrito
+      this.cargarCarritoDesdeStorage(usuario);
+    } else {
+      // Sin usuario: cargar carrito anónimo
+      this.cargarCarritoDesdeStorage();
+    }
+  }
+
+  /* Método para migrar carrito anónimo a usuario autenticado */
+  migrarCarritoAnonimo(usuario: any): void {
+    try {
+      // Obtener carrito anónimo
+      const carritoAnonimo = localStorage.getItem(this.CARRITO_KEY);
+      
+      if (carritoAnonimo && usuario && usuario.id) {
+        const carritoUserKey = `${this.CARRITO_USER_PREFIX}${usuario.id}`;
+        const carritoUsuarioExistente = localStorage.getItem(carritoUserKey);
+        
+        if (!carritoUsuarioExistente) {
+          // Migrar carrito anónimo al usuario
+          localStorage.setItem(carritoUserKey, carritoAnonimo);
+          console.log('Carrito anónimo migrado al usuario:', usuario.id);
+        } else {
+          // Si el usuario ya tiene carrito, combinar ambos
+          const itemsAnonimos = JSON.parse(carritoAnonimo);
+          const itemsUsuario = JSON.parse(carritoUsuarioExistente);
+          const itemsCombinados = this.combinarCarritos(itemsUsuario, itemsAnonimos);
+          localStorage.setItem(carritoUserKey, JSON.stringify(itemsCombinados));
+          console.log('Carritos combinados para usuario:', usuario.id);
+        }
+        
+        // Limpiar carrito anónimo
+        localStorage.removeItem(this.CARRITO_KEY);
+        
+        // Recargar carrito del usuario
+        this.recargarCarritoParaUsuario(usuario);
+      }
+    } catch (error) {
+      console.error('Error al migrar carrito anónimo:', error);
+    }
+  }
+
+  /* Combina dos carritos, sumando cantidades de productos duplicados */
+  private combinarCarritos(carritoBase: ItemCarrito[], carritoNuevo: ItemCarrito[]): ItemCarrito[] {
+    const carritoResultado = [...carritoBase];
+    
+    carritoNuevo.forEach(itemNuevo => {
+      const itemExistente = carritoResultado.find(item => item.producto.id === itemNuevo.producto.id);
+      
+      if (itemExistente) {
+        // Sumar cantidades
+        itemExistente.cantidad += itemNuevo.cantidad;
+        itemExistente.subtotal = this.getPrecioProducto(itemExistente.producto) * itemExistente.cantidad;
+      } else {
+        // Agregar nuevo item
+        carritoResultado.push({
+          ...itemNuevo,
+          subtotal: this.getPrecioProducto(itemNuevo.producto) * itemNuevo.cantidad
+        });
+      }
+    });
+    
+    return carritoResultado;
   }
 }

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { LoginResponse, Usuario } from '../interfaces/usuario';
+import { CarritoService } from './carrito.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,25 @@ export class AuthService {
   private readonly USER_KEY = 'ferremas_user';
   private readonly BASE_URL = 'http://localhost:8090/api/v1/usuarios'; // tu backend
 
-  constructor(private http: HttpClient, private router: Router) {
+  // Subject para manejar el estado de autenticación
+  private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  public authStatus$ = this.authStatusSubject.asObservable();
+
+  constructor(private http: HttpClient, private router: Router, private carritoService: CarritoService) {
     // Validar y limpiar datos corruptos al inicializar el servicio
     this.validateAndCleanStorage();
+    
+    // Suscribirse a cambios en el estado de autenticación para actualizar carrito
+    this.authStatus$.subscribe((isAuthenticated) => {
+      if (isAuthenticated) {
+        // Usuario se autentica: cargar su carrito específico
+        const usuario = this.getCurrentUser();
+        this.carritoService.recargarCarritoParaUsuario(usuario);
+      } else {
+        // Usuario se desautentica: limpiar UI pero mantener datos guardados
+        this.carritoService.limpiarUI();
+      }
+    });
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
@@ -24,8 +41,14 @@ export class AuthService {
         // Guardar el usuario completo que viene del backend
         localStorage.setItem(this.USER_KEY, JSON.stringify(response.usuario));
         
+        // Migrar carrito anónimo al usuario autenticado
+        this.carritoService.migrarCarritoAnonimo(response.usuario);
+        
         // Redirigir automáticamente según el rol del usuario
         this.redirectUserByRole(response.usuario.rol);
+
+        // Notificar cambio de estado de autenticación
+        this.authStatusSubject.next(true);
       })
     );
   }
@@ -37,6 +60,13 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
+    
+    // Limpiar la UI del carrito pero NO eliminar el carrito guardado del usuario
+    this.carritoService.limpiarUI();
+    
+    // Actualizar el estado de autenticación
+    this.authStatusSubject.next(false);
+    
     this.router.navigate(['/']);
   }
 
