@@ -33,7 +33,7 @@
       <tbody>
         <tr *ngFor="let pedido of pagedPedidos">
           <td>{{ pedido.numeroOrden }}</td>
-          <td><span class="badge bg-warning text-dark">{{ traducirEstado(pedido.estado).toUpperCase() }}</span></td>
+          <td><span [class]="obtenerClaseEstado(pedido.estado)">{{ traducirEstado(pedido.estado).toUpperCase() }}</span></td>
           <td>{{ pedido.fechaCreacion | date:'short' }}</td>
           <td>{{ pedido.usuario?.nombre }}</td>
           <td>{{ pedido.usuario?.email }}</td>
@@ -42,7 +42,7 @@
             {{ pedido.direccionEntrega?.calle }} {{ pedido.direccionEntrega?.numero }}<br>
             {{ pedido.direccionEntrega?.nombreComuna }}, {{ pedido.direccionEntrega?.nombreRegion }}
           </td>
-          <td>${{ pedido.total | number:'1.0-0' }}</td>
+          <td>{{ pedido.total | conversor }}</td>
           <td>
             <ng-container *ngIf="pedido.items.length === 1; else multipleItems">
               <ul class="list-unstyled mb-0">
@@ -70,10 +70,18 @@
           </td>
           <td>
             <div class="d-flex gap-2 justify-content-center">
-              <button class="btn btn-icon btn-outline-success btn-sm" title="Preparar pedido" (click)="prepararPedido(pedido)" [disabled]="pedido.estado === 'CANCELADO' || pedido.estado === 'EN_PREPARACION'">
+              <button 
+                [class]="pedido.estado === 'ENTREGADO' ? 'btn btn-icon btn-secondary btn-sm' : 'btn btn-icon btn-outline-primary btn-sm'"
+                title="Preparar pedido" 
+                (click)="prepararPedido(pedido)" 
+                [disabled]="pedido.estado === 'CANCELADO' || pedido.estado === 'EN_PREPARACION' || pedido.estado === 'ENTREGADO'">
                 <i class="bi bi-box-seam"></i>
               </button>
-              <button class="btn btn-icon btn-outline-danger btn-sm" title="Cancelar pedido" (click)="cancelarPedido(pedido)" [disabled]="pedido.estado === 'CANCELADO'">
+              <button 
+                [class]="pedido.estado === 'ENTREGADO' ? 'btn btn-icon btn-secondary btn-sm' : 'btn btn-icon btn-outline-danger btn-sm'"
+                title="Cancelar pedido" 
+                (click)="cancelarPedido(pedido)" 
+                [disabled]="pedido.estado === 'CANCELADO' || pedido.estado === 'ENTREGADO'">
                 <i class="bi bi-slash-circle"></i>
               </button>
             </div>

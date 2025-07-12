@@ -1,0 +1,182 @@
+/* Auditor Container - usando theme Lux igual que admin */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+/* Header */
+.auditor-header {
+  text-align: center;
+  margin-top: 2.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  /* Fondo claro para que el título azul oscuro sea visible */
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+  border: 2px solid #f7931e; /* Borde naranja Ferremas */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(247, 147, 30, 0.2);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.auditor-title {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #173856;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.auditor-subtitle {
+  font-size: 1.1rem;
+  margin: 0;
+  color: #6c757d; /* Gris para que combine con el fondo claro */
+  opacity: 0.9;
+}
+
+/* Controls Section - idéntico al admin */
+.controls-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.search-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Botones - solo hover effect para mantener la interactividad, sin interferir con estilos de Lux */
+.container .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Ajustes específicos para botones - bordes más delgados */
+.container .btn {
+  border-width: 1px;
+}
+
+/* Botón "Limpiar" - borde más oscuro y visible */
+.container .btn-outline-secondary {
+  border-color: #6c757d;
+  color: #6c757d;
+}
+
+.container .btn-outline-secondary:hover {
+  border-color: #5c636a;
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Botón "Generar Informe" - estilo outline success */
+.container .btn-outline-success {
+  border-color: #28a745;
+  color: #28a745;
+  background: transparent;
+}
+
+.container .btn-outline-success:hover {
+  border-color: #1e7e34;
+  background-color: #28a745;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Labels */
+.form-label {
+  font-weight: 500;
+  color: #173856;
+  margin-bottom: 0.5rem;
+}
+
+.form-control:focus {
+  border-color: #f7931e;
+  box-shadow: 0 0 0 0.2rem rgba(247, 147, 30, 0.25);
+}
+/* Tabla de auditoría */
+.auditor-table-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.auditor-table {
+  min-width: 900px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Estilos de tabla */
+h2 {
+  font-weight: 600;
+}
+
+table {
+  font-size: 0.95rem;
+}
+
+thead th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+tbody td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+td ul {
+  padding-left: 0;
+}
+
+img.me-2 {
+  vertical-align: middle;
+}
+
+.badge {
+  font-size: 0.9em;
+}
+
+/* Botón de éxito (Generar Informe) - outline version */
+.btn-outline-success {
+  border-color: #28a745;
+  color: #28a745;
+  background: transparent;
+  font-weight: 500;
+}
+
+.btn-outline-success:hover, .btn-outline-success:focus {
+  border-color: #1e7e34;
+  background-color: #28a745;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-outline-success i {
+  font-size: 1.1rem;
+}
+
+.text-muted {
+  font-size: 0.9rem;
+}

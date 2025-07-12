@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { PedidoService } from '../../services/pedido.service';
+import { ConversorPipe } from '../../pipes/conversor.pipe';
 
 @Component({
   selector: 'app-ventas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ConversorPipe],
   templateUrl: './ventas.component.html',
   styleUrl: './ventas.component.css'
 })
@@ -49,9 +50,9 @@ export class VentasComponent implements OnInit {
 
   prepararPedido(pedido: any) {
     const estadoAnterior = pedido.estado;
-    this.http.patch(`http://localhost:8090/api/v1/pedidos/${pedido.id}`, { estado: 'EN_PREPARACION' }).subscribe({
+    this.pedidoService.actualizarEstadoPedido(pedido.id, 'EN_PREPARACION').subscribe({
       next: () => {
-        pedido.estado = 'En Preparación';
+        pedido.estado = 'EN_PREPARACION';
       },
       error: () => {
         pedido.estado = estadoAnterior;
@@ -62,7 +63,7 @@ export class VentasComponent implements OnInit {
 
   cancelarPedido(pedido: any) {
     const estadoAnterior = pedido.estado;
-    this.http.patch(`http://localhost:8090/api/v1/pedidos/${pedido.id}`, { estado: 'CANCELADO' }).subscribe({
+    this.pedidoService.actualizarEstadoPedido(pedido.id, 'CANCELADO').subscribe({
       next: () => {
         pedido.estado = 'CANCELADO';
       },
@@ -79,10 +80,22 @@ export class VentasComponent implements OnInit {
       PENDIENTE: 'Pendiente',
       CONFIRMADO: 'Confirmado',
       EN_PREPARACION: 'En Preparación',
-      EN_CAMINO: 'En Camino',
+      DESPACHADO: 'Despachado',
       ENTREGADO: 'Entregado',
       CANCELADO: 'Cancelado'
     };
     return estadosMap[estado] || estado.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase().toLowerCase());
+  }
+
+  obtenerClaseEstado(estado: string): string {
+    const clasesMap: { [key: string]: string } = {
+      PENDIENTE: 'badge bg-warning text-dark',
+      CONFIRMADO: 'badge bg-info text-white',
+      EN_PREPARACION: 'badge bg-warning text-dark',
+      DESPACHADO: 'badge bg-warning text-dark',
+      ENTREGADO: 'badge bg-success text-white',
+      CANCELADO: 'badge bg-danger text-white'
+    };
+    return clasesMap[estado] || 'badge bg-secondary text-white';
   }
 }

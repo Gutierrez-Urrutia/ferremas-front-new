@@ -100,3 +100,37 @@ img.me-2 {
   background: #e6f4ea;
   color: #155724;
 }
+
+/* Botones deshabilitados para pedidos entregados */
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:disabled {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Botones outline deshabilitados */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}

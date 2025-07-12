@@ -61,4 +61,30 @@ export class PedidoService {
   obtenerPedidoPorId(id: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/${id}`);
   }
+
+  /**
+   * Actualiza el estado de un pedido
+   */
+  actualizarEstadoPedido(id: number, estado: string): Observable<any> {
+    console.log(`=== ACTUALIZANDO PEDIDO ${id} ===`);
+    console.log('Estado enviado:', estado);
+    console.log('Longitud del estado:', estado.length);
+    console.log('URL completa:', `${this.baseUrl}/${id}/estado?estado=${estado}`);
+    
+    return this.http.patch<any>(`${this.baseUrl}/${id}/estado`, null, {
+      params: { estado: estado }
+    }).pipe(
+      catchError((error) => {
+        console.error('=== ERROR AL ACTUALIZAR ESTADO ===');
+        console.error('Error completo:', error);
+        if (error.error) {
+          console.error('Detalle error backend:', error.error);
+        }
+        if (error.status) {
+          console.error('Status HTTP:', error.status);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
 }

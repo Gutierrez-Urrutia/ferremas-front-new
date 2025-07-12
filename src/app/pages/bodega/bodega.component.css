@@ -1,0 +1,60 @@
+/* Copio el estilo de ventas para el header de bodega */
+.bodega-header {
+  text-align: center;
+  margin-top: 2.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+  border: 2px solid #f7931e;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(247, 147, 30, 0.2);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.bodega-title {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #173856;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.bodega-subtitle {
+  font-size: 1.05rem;
+  margin: 0;
+  color: #6c757d;
+  opacity: 0.9;
+}
+
+/* Centrado de tabla */
+.bodega-table-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+.bodega-table {
+  min-width: 900px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.bodega-table thead th {
+  text-align: center;
+  vertical-align: middle;
+}
+.bodega-table tbody td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.btn-icon {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 0 !important;
+  font-size: 1.2rem;
+  box-shadow: none;
+}

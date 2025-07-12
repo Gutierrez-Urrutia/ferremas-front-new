@@ -1,1 +1,107 @@
-<p>auditor works!</p>
+<div class="auditor-header">
+  <h1 class="auditor-title">Panel de Auditoría</h1>
+  <p class="auditor-subtitle">Pedidos entregados para auditoría</p>
+</div>
+
+<div class="container mt-4">
+
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando pedidos entregados...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <!-- Controles y filtros -->
+  <div *ngIf="!loading && pedidos.length > 0" class="controls-section">
+    <div class="search-controls">
+      <!-- Fecha de Inicio -->
+      <div class="filter-group">
+        <label for="fechaInicio" class="form-label">Fecha de Inicio:</label>
+        <input 
+          type="date" 
+          id="fechaInicio"
+          class="form-control"
+          [(ngModel)]="fechaInicio"
+          (change)="onFiltroChange()">
+      </div>
+
+      <!-- Fecha de Término -->
+      <div class="filter-group">
+        <label for="fechaTermino" class="form-label">Fecha de Término:</label>
+        <input 
+          type="date" 
+          id="fechaTermino"
+          class="form-control"
+          [(ngModel)]="fechaTermino"
+          (change)="onFiltroChange()">
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="action-buttons">
+        <button 
+          class="btn btn-outline-secondary"
+          (click)="limpiarFiltros()"
+          title="Limpiar filtros">
+          <i class="bi bi-x-circle"></i> Limpiar
+        </button>
+        <button 
+          class="btn btn-outline-success"
+          (click)="generarInformeExcel()"
+          [disabled]="pedidosFiltrados.length === 0"
+          title="Generar informe Excel">
+          <i class="bi bi-file-earmark-excel"></i> Generar Informe
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="auditor-table-container">
+    <div class="auditor-table">
+      
+      <!-- Información de filtros aplicados -->
+      <div *ngIf="fechaInicio || fechaTermino" class="alert alert-info mb-3">
+        <small>
+          <i class="bi bi-funnel me-1"></i>
+          Filtros aplicados: 
+          <span *ngIf="fechaInicio">Desde {{ fechaInicio | date:'dd/MM/yyyy' }}</span>
+          <span *ngIf="fechaInicio && fechaTermino"> | </span>
+          <span *ngIf="fechaTermino">Hasta {{ fechaTermino | date:'dd/MM/yyyy' }}</span>
+          <span class="text-muted"> ({{ pedidosFiltrados.length }} de {{ pedidos.length }} pedidos)</span>
+        </small>
+      </div>
+
+      <table *ngIf="!loading && pedidos.length > 0" class="table table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Número de Orden</th>
+            <th>Fecha</th>
+            <th>Total sin IVA</th>
+            <th>IVA (19%)</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pedido of pedidosFiltrados; let i = index">
+            <td><strong>#{{ pedido.numeroOrden }}</strong></td>
+            <td>{{ pedido.fechaCreacion | date:'dd/MM/yyyy' }}</td>
+            <td>{{ pedido.total / 1.19 | conversor }}</td>
+            <td>{{ pedido.total - (pedido.total / 1.19) | conversor }}</td>
+            <td><strong>{{ pedido.total | conversor }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="pedidosFiltrados.length === 0 && !loading" class="text-center text-muted my-4">
+        <p class="fs-5">No se encontraron pedidos entregados en el rango de fechas seleccionado.</p>
+        <p>Ajusta los filtros de fecha para ver más resultados.</p>
+      </div>
+
+      <div *ngIf="!loading && pedidos.length === 0" class="text-center text-muted my-5">
+        <p class="fs-4">No hay pedidos entregados disponibles para auditoría.</p>
+      </div>
+    </div>
+  </div>
+</div>
