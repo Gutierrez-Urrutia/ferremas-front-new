@@ -1,0 +1,102 @@
+/* Estilo para la tabla de pedidos en ventas */
+.container {
+  max-width: 1200px;
+}
+h2 {
+  font-weight: 600;
+}
+table {
+  font-size: 0.95rem;
+}
+thead th {
+  text-align: center;
+  vertical-align: middle;
+}
+tbody td {
+  text-align: center;
+  vertical-align: middle;
+}
+td ul {
+  padding-left: 0;
+}
+img.me-2 {
+  vertical-align: middle;
+}
+.badge {
+  font-size: 0.9em;
+}
+.ventas-header {
+  text-align: center;
+  margin-top: 2.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+  border: 2px solid #f7931e;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(247, 147, 30, 0.2);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.ventas-title {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #173856;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.ventas-subtitle {
+  font-size: 1.05rem;
+  margin: 0;
+  color: #6c757d;
+  opacity: 0.9;
+}
+.ventas-table-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+.ventas-table {
+  min-width: 900px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.btn-icon {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 0 !important;
+  font-size: 1.2rem;
+  box-shadow: none;
+}
+.btn-outline-warning {
+  border-color: #ffc107;
+  color: #ffc107;
+  background: transparent;
+}
+.btn-outline-warning:hover, .btn-outline-warning:focus {
+  background: #fff8e1;
+  color: #856404;
+}
+.btn-outline-danger {
+  border-color: #dc3545;
+  color: #dc3545;
+  background: transparent;
+}
+.btn-outline-danger:hover, .btn-outline-danger:focus {
+  background: #f8d7da;
+  color: #721c24;
+}
+.btn-outline-success {
+  border-color: #28a745;
+  color: #28a745;
+  background: transparent;
+}
+.btn-outline-success:hover, .btn-outline-success:focus {
+  background: #e6f4ea;
+  color: #155724;
+}

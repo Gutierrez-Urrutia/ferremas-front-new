@@ -135,7 +135,7 @@
                                 <select id="direccionSelector" class="form-select" [(ngModel)]="direccionSeleccionada" 
                                         name="direccionSelector" (change)="onDireccionChange()">
                                     <option *ngFor="let direccion of direccionesUsuario" [value]="direccion.id">
-                                        {{ direccion.calle }} {{ direccion.numero }}, {{ direccion.comuna }}, {{ direccion.region }}
+                                        {{ direccion.calle }} {{ direccion.numero }}, {{ getComunaNombre(direccion.comuna) }}, {{ getRegionNombre(direccion.region) }}
                                         <span *ngIf="direccion.esPrincipal"> (Principal)</span>
                                     </option>
                                     <option value="nueva">Agregar nueva dirección</option>

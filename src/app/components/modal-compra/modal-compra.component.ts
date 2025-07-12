@@ -13,6 +13,7 @@ import { Producto } from '../../interfaces/producto';
 import { RegionComunaService } from '../../services/region-comuna.service';
 import { HttpClient } from '@angular/common/http';
 import { Usuario, Direccion } from '../../interfaces/usuario';
+import { PedidoService, CrearPedidoRequestBackend, ItemPedidoBackend } from '../../services/pedido.service';
 
 @Component({
   selector: 'app-modal-compra',
@@ -55,7 +56,8 @@ export class ModalCompraComponent implements OnInit {
     private carritoService: CarritoService,
     private authService: AuthService,
     private router: Router,
-    private regionComunaService: RegionComunaService
+    private regionComunaService: RegionComunaService,
+    private pedidoService: PedidoService
   ) { }
 
   ngOnInit() {
@@ -268,11 +270,20 @@ export class ModalCompraComponent implements OnInit {
       if (direccion) {
         this.datosCliente.calle = direccion.calle;
         this.datosCliente.numero = direccion.numero;
-        this.datosCliente.comuna = direccion.comunaId?.toString() || direccion.comuna;
-        this.datosCliente.region = direccion.regionId?.toString() || direccion.region;
         
-        // Cargar comunas si se tiene regionId
-        if (direccion.regionId) {
+        // Manejar comuna (puede ser string o objeto)
+        if (typeof direccion.comuna === 'string') {
+          this.datosCliente.comuna = direccion.comuna;
+        } else {
+          this.datosCliente.comuna = direccion.comuna.id.toString();
+        }
+        
+        // Manejar región (puede ser string o objeto)
+        if (typeof direccion.region === 'string') {
+          this.datosCliente.region = direccion.region;
+        } else {
+          this.datosCliente.region = direccion.region.id.toString();
+          // Cargar comunas si tenemos el ID de región
           this.onRegionChange();
         }
       }
@@ -297,6 +308,16 @@ export class ModalCompraComponent implements OnInit {
   // Marcar que el teléfono fue modificado
   onTelefonoChange() {
     this.telefonoModificado = true;
+  }
+
+  // Helper para mostrar nombre de comuna
+  getComunaNombre(comuna: string | { id: number; nombre: string }): string {
+    return typeof comuna === 'string' ? comuna : comuna.nombre;
+  }
+
+  // Helper para mostrar nombre de región
+  getRegionNombre(region: string | { id: number; nombre: string }): string {
+    return typeof region === 'string' ? region : region.nombre;
   }
 
   continuarPaso3() {
@@ -445,16 +466,40 @@ export class ModalCompraComponent implements OnInit {
     }
   }
 
-  onPagoCompletado(exito: boolean) {
+  async onPagoCompletado(exito: boolean) {
     if (exito) {
-      // Si la compra es desde el carrito, vaciarlo
-      const compra = this.compraService.getCompraActual();
-      if (compra?.esCompraCarrito) {
-        this.carritoService.vaciarCarrito();
-      }
+      try {
+        // Crear el pedido en el backend
+        await this.crearPedidoEnBackend();
 
-      // Mostrar alerta de éxito y cerrar modal en el callback
-      this.mostrarAlertaExito();
+        // Si la compra es desde el carrito, vaciarlo completamente (UI + storage)
+        const compra = this.compraService.getCompraActual();
+        if (compra?.esCompraCarrito) {
+          const usuario = this.authService.getCurrentUser();
+          this.carritoService.vaciarCarrito(usuario); // Pasar usuario para limpiar storage específico
+        }
+
+        // Mostrar alerta de éxito y cerrar modal en el callback
+        this.mostrarAlertaExito();
+      } catch (error) {
+        console.error('Error creando pedido:', error);
+        // Mostrar error pero no fallar el pago
+        Swal.fire({
+          title: 'Pago procesado',
+          text: 'Su pago fue exitoso, pero hubo un problema registrando el pedido. Por favor contacte al soporte.',
+          icon: 'warning',
+          confirmButtonText: 'Entendido',
+          confirmButtonColor: '#ffc107'
+        }).then(() => {
+          // Vaciar carrito y continuar
+          const compra = this.compraService.getCompraActual();
+          if (compra?.esCompraCarrito) {
+            const usuario = this.authService.getCurrentUser();
+            this.carritoService.vaciarCarrito(usuario);
+          }
+          this.mostrarAlertaExito();
+        });
+      }
     } else {
       // Alerta de pago rechazado con SweetAlert2 y volver al resumen
       Swal.fire({
@@ -467,6 +512,67 @@ export class ModalCompraComponent implements OnInit {
         this.paso = 3;
       });
       return;
+    }
+  }
+
+  /**
+   * Crea el pedido en el backend después de un pago exitoso
+   */
+  private async crearPedidoEnBackend(): Promise<void> {
+    const usuario = this.authService.getCurrentUser();
+    const compra = this.compraService.getCompraActual();
+    
+    if (!usuario || !compra) {
+      throw new Error('Usuario o compra no disponible');
+    }
+
+    let direccionId: number;
+    if (this.direccionSeleccionada === 'nueva') {
+      const direccionesActualizadas = await this.authService.getDireccionesUsuario().toPromise();
+      if (!direccionesActualizadas || direccionesActualizadas.length === 0) {
+        throw new Error('No se pudo obtener la dirección recién creada');
+      }
+      direccionId = direccionesActualizadas[direccionesActualizadas.length - 1].id;
+    } else {
+      direccionId = parseInt(this.direccionSeleccionada);
+    }
+
+    // Mapear productos de la compra a items del pedido (formato backend)
+    const items: ItemPedidoBackend[] = compra.productos.map(item => ({
+      producto: { id: item.producto.id },
+      cantidad: item.cantidad,
+      precioUnitario: item.producto.precios[0].precio,
+      nombreProducto: item.producto.nombre // <-- requerido por backend
+    }));
+
+    const tipoEnvioBackend = this.mapearTipoEnvio(this.tipoDespacho);
+
+    const pedidoRequest: CrearPedidoRequestBackend = {
+      usuario: { id: usuario.id },
+      direccionEntrega: { id: direccionId }, // <-- este es el campo correcto
+      tipoEnvio: tipoEnvioBackend,
+      numeroOrden: this.numeroOrden,
+      items: items
+    };
+
+    console.log('Creando pedido (formato backend):', pedidoRequest);
+
+    await this.pedidoService.crearPedido(pedidoRequest).toPromise();
+    
+    console.log('Pedido creado exitosamente');
+  }
+
+  /**
+   * Mapea el tipo de despacho del frontend al valor esperado por el backend
+   */
+  private mapearTipoEnvio(tipoDespacho: string): string {
+    switch (tipoDespacho) {
+      case 'domicilio':
+        return 'DOMICILIO';
+      case 'retiro':
+        return 'RETIRO_TIENDA';
+      default:
+        return 'DOMICILIO'; // Valor por defecto
     }
   }
 
@@ -517,8 +623,9 @@ export class ModalCompraComponent implements OnInit {
   }
 
   limpiarTodosLosDatos() {
-    // Vacía el carrito y limpia la compra actual
-    this.carritoService.vaciarCarrito();
+    // Vacía el carrito y limpia la compra actual - pasar usuario para limpiar storage específico
+    const usuario = this.authService.getCurrentUser();
+    this.carritoService.vaciarCarrito(usuario);
     this.compraService.limpiarCompra();
   }
 }

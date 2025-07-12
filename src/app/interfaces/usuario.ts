@@ -2,8 +2,8 @@ export interface Direccion {
   id?: number;
   calle: string;
   numero: string;
-  comuna: string;
-  region: string;
+  comuna: string | { id: number; nombre: string };
+  region: string | { id: number; nombre: string };
   comunaId?: number;
   regionId?: number;
   esPrincipal?: boolean;
