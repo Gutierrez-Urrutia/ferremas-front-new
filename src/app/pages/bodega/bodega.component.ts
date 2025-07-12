@@ -31,8 +31,13 @@ export class BodegaComponent implements OnInit {
   ngOnInit() {
     this.http.get<any[]>('http://localhost:8090/api/v1/pedidos').subscribe({
       next: (data) => {
-        // Mostrar pedidos en preparación, despachados y entregados
-        this.pedidos = data.filter(p => p.estado === 'EN_PREPARACION' || p.estado === 'DESPACHADO' || p.estado === 'ENTREGADO');
+        // Filtrar pedidos en preparación, despachados y entregados, luego ordenar por fecha más reciente primero
+        const pedidosFiltrados = data.filter(p => p.estado === 'EN_PREPARACION' || p.estado === 'DESPACHADO' || p.estado === 'ENTREGADO');
+        this.pedidos = pedidosFiltrados.sort((a, b) => {
+          const fechaA = new Date(a.fechaCreacion);
+          const fechaB = new Date(b.fechaCreacion);
+          return fechaB.getTime() - fechaA.getTime(); // Orden descendente (más reciente primero)
+        });
         this.isLoading = false;
       },
       error: (err) => {

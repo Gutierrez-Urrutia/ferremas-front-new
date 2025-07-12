@@ -32,7 +32,12 @@ export class VentasComponent implements OnInit {
   ngOnInit() {
     this.http.get<any[]>('http://localhost:8090/api/v1/pedidos').subscribe({
       next: (data) => {
-        this.pedidos = data;
+        // Ordenar por fecha más reciente primero
+        this.pedidos = data.sort((a, b) => {
+          const fechaA = new Date(a.fechaCreacion);
+          const fechaB = new Date(b.fechaCreacion);
+          return fechaB.getTime() - fechaA.getTime(); // Orden descendente (más reciente primero)
+        });
         this.isLoading = false;
       },
       error: (err) => {

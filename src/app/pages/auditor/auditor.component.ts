@@ -42,8 +42,13 @@ export class AuditorComponent implements OnInit {
     
     this.http.get<Pedido[]>('http://localhost:8090/api/v1/pedidos').subscribe({
       next: (data: Pedido[]) => {
-        // Filtrar solo pedidos ENTREGADO
-        this.pedidos = data.filter((pedido: Pedido) => pedido.estado === 'ENTREGADO');
+        // Filtrar solo pedidos ENTREGADO y ordenar por fecha más reciente primero
+        const pedidosEntregados = data.filter((pedido: Pedido) => pedido.estado === 'ENTREGADO');
+        this.pedidos = pedidosEntregados.sort((a, b) => {
+          const fechaA = new Date(a.fechaCreacion);
+          const fechaB = new Date(b.fechaCreacion);
+          return fechaB.getTime() - fechaA.getTime(); // Orden descendente (más reciente primero)
+        });
         this.aplicarFiltroFechas();
         this.loading = false;
       },
@@ -78,10 +83,10 @@ export class AuditorComponent implements OnInit {
     console.log('Total pedidos antes de filtrar:', this.pedidos.length);
     
     if (!this.fechaInicio && !this.fechaTermino) {
-      // Sin filtros, mostrar todos los pedidos
+      // Sin filtros, mostrar todos los pedidos (ya ordenados)
       this.pedidosFiltrados = [...this.pedidos];
     } else {
-      this.pedidosFiltrados = this.pedidos.filter(pedido => {
+      const pedidosFiltrados = this.pedidos.filter(pedido => {
         // Extraer solo la fecha (YYYY-MM-DD) del pedido
         const fechaPedidoStr = pedido.fechaCreacion.split('T')[0]; // Solo parte de fecha
         
@@ -106,6 +111,13 @@ export class AuditorComponent implements OnInit {
 
         console.log(`  Resultado final para pedido ${pedido.numeroOrden}:`, cumpleFiltro);
         return cumpleFiltro;
+      });
+      
+      // Mantener el orden por fecha más reciente primero (ya deberían estar ordenados, pero por seguridad)
+      this.pedidosFiltrados = pedidosFiltrados.sort((a, b) => {
+        const fechaA = new Date(a.fechaCreacion);
+        const fechaB = new Date(b.fechaCreacion);
+        return fechaB.getTime() - fechaA.getTime();
       });
     }
     
