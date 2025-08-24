@@ -44,7 +44,7 @@ export class ModalCompraComponent implements OnInit {
   regiones: any[] = [];
   comunas: any[] = [];
   comunaDisabled: boolean = true;
-  
+
   // Nuevas propiedades para manejo de direcciones
   direccionesUsuario: Direccion[] = [];
   direccionSeleccionada: string = ''; // 'nueva' o id de dirección existente
@@ -193,7 +193,7 @@ export class ModalCompraComponent implements OnInit {
     if (this.cantidad > this.getStockDisponible()) {
       this.cantidad = this.getStockDisponible();
     }
-    
+
     if (this.cantidad >= 1 && this.compra && !this.compra.esCompraCarrito) {
       this.compraService.actualizarCantidad(this.cantidad);
     }
@@ -205,10 +205,10 @@ export class ModalCompraComponent implements OnInit {
       this.mostrarModalRegistro();
       return;
     }
-    
+
     // Pre-completar datos del usuario logueado
     this.precompletarDatosUsuario();
-    
+
     // Si está autenticado, continúa al paso 2
     this.paso = 2;
   }
@@ -219,17 +219,17 @@ export class ModalCompraComponent implements OnInit {
     if (usuario) {
       console.log('=== PRE-COMPLETANDO DATOS DEL USUARIO ===');
       console.log('Usuario logueado:', usuario);
-      
+
       // Pre-completar nombre y email del usuario logueado
       this.datosCliente.nombre = usuario.nombre || '';
       this.datosCliente.email = usuario.email || '';
       this.datosUsuarioPrecompletados = true;
-      
+
       // Manejar teléfono
       if (usuario.telefono) {
         this.datosCliente.telefono = usuario.telefono;
       }
-      
+
       // Manejar direcciones
       if (usuario.direcciones && usuario.direcciones.length > 0) {
         this.direccionesUsuario = usuario.direcciones;
@@ -242,12 +242,12 @@ export class ModalCompraComponent implements OnInit {
         this.direccionSeleccionada = 'nueva';
         this.mostrarFormularioDireccion = true;
       }
-      
+
       console.log('Teléfono pre-completado:', this.datosCliente.telefono);
       console.log('Direcciones disponibles:', this.direccionesUsuario.length);
       console.log('datosUsuarioPrecompletados:', this.datosUsuarioPrecompletados);
       console.log('=========================================');
-      
+
       // Mantener otros campos vacíos para que el usuario los complete
       // this.datosCliente.telefono permanece vacío
       // this.datosCliente.calle permanece vacío
@@ -270,14 +270,14 @@ export class ModalCompraComponent implements OnInit {
       if (direccion) {
         this.datosCliente.calle = direccion.calle;
         this.datosCliente.numero = direccion.numero;
-        
+
         // Manejar comuna (puede ser string o objeto)
         if (typeof direccion.comuna === 'string') {
           this.datosCliente.comuna = direccion.comuna;
         } else {
           this.datosCliente.comuna = direccion.comuna.id.toString();
         }
-        
+
         // Manejar región (puede ser string o objeto)
         if (typeof direccion.region === 'string') {
           this.datosCliente.region = direccion.region;
@@ -320,6 +320,20 @@ export class ModalCompraComponent implements OnInit {
     return typeof region === 'string' ? region : region.nombre;
   }
 
+  // Helper para obtener nombre de región por ID
+  getRegionNombrePorId(regionId: string): string {
+    if (!regionId || !this.regiones) return '';
+    const region = this.regiones.find(r => r.id.toString() === regionId);
+    return region ? region.nombre : regionId;
+  }
+
+  // Helper para obtener nombre de comuna por ID
+  getComunaNombrePorId(comunaId: string): string {
+    if (!comunaId || !this.comunas) return '';
+    const comuna = this.comunas.find(c => c.id.toString() === comunaId);
+    return comuna ? comuna.nombre : comunaId;
+  }
+
   continuarPaso3() {
     if (this.validarDatosCliente()) {
       // Actualizar datos del usuario si es necesario antes de continuar
@@ -339,7 +353,7 @@ export class ModalCompraComponent implements OnInit {
         console.log('Datos pre-completados del usuario:', this.datosUsuarioPrecompletados);
         console.log('Objeto completo datosCliente:', this.datosCliente);
         console.log('=====================================');
-        
+
         this.compraService.actualizarDatosCliente(this.datosCliente);
         this.compraService.actualizarTipoDespacho(this.tipoDespacho);
         this.paso = 3;
@@ -372,8 +386,8 @@ export class ModalCompraComponent implements OnInit {
     try {
       // 1. Actualizar teléfono si fue modificado o es nuevo
       if (this.telefonoModificado || !usuario.telefono) {
-        await this.authService.updateDatosAdicionales({ 
-          telefono: this.datosCliente.telefono 
+        await this.authService.updateDatosAdicionales({
+          telefono: this.datosCliente.telefono
         }).toPromise();
       }
 
@@ -382,21 +396,21 @@ export class ModalCompraComponent implements OnInit {
         // Obtener objetos completos de región y comuna
         const regionCompleta = this.regiones.find(r => r.id.toString() === this.datosCliente.region);
         const comunaCompleta = this.comunas.find(c => c.id.toString() === this.datosCliente.comuna);
-        
+
         if (!regionCompleta || !comunaCompleta) {
           throw new Error('Región o comuna no encontrada');
         }
-        
+
         const nuevaDireccion = {
           calle: this.datosCliente.calle,
           numero: this.datosCliente.numero,
           region: regionCompleta, // Objeto Region completo
           comuna: comunaCompleta  // Objeto Comuna completo
         };
-        
+
         console.log('Creando nueva dirección:', nuevaDireccion);
         await this.authService.addDireccion(nuevaDireccion).toPromise();
-        
+
         // Recargar direcciones del usuario después de agregar la nueva
         const direccionesActualizadas = await this.authService.getDireccionesUsuario().toPromise();
         const usuarioActualizado = { ...usuario, direcciones: direccionesActualizadas };
@@ -430,7 +444,7 @@ export class ModalCompraComponent implements OnInit {
     }).then((result) => {
       // Cerrar el modal de compra primero
       this.cerrarModal();
-      
+
       if (result.isConfirmed) {
         // Usuario quiere iniciar sesión
         this.router.navigate(['/login']);
@@ -521,7 +535,7 @@ export class ModalCompraComponent implements OnInit {
   private async crearPedidoEnBackend(): Promise<void> {
     const usuario = this.authService.getCurrentUser();
     const compra = this.compraService.getCompraActual();
-    
+
     if (!usuario || !compra) {
       throw new Error('Usuario o compra no disponible');
     }
@@ -558,7 +572,7 @@ export class ModalCompraComponent implements OnInit {
     console.log('Creando pedido (formato backend):', pedidoRequest);
 
     await this.pedidoService.crearPedido(pedidoRequest).toPromise();
-    
+
     console.log('Pedido creado exitosamente');
   }
 

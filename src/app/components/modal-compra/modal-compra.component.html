@@ -240,8 +240,8 @@
                     <div class="mt-3">
                         <h6>Datos de entrega:</h6>
                         <p><strong>{{ datosCliente.nombre }}</strong><br>
-                            {{ datosCliente.calle }} {{ datosCliente.numero }}, {{ datosCliente.comuna }}<br>
-                            {{ datosCliente.region }}<br>
+                            {{ datosCliente.calle }} {{ datosCliente.numero }}, {{ getComunaNombrePorId(datosCliente.comuna)}}<br>
+                            {{ getRegionNombrePorId(datosCliente.region)}}<br>
                             {{ datosCliente.telefono }}</p>
                     </div>
                 </div>

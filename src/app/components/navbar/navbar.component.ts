@@ -108,9 +108,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       const user = this.authService.getCurrentUser();
       
       if (!user) return 'Usuario';
+      const firstname = user.nombre.split(' ')[0];
       
       // Retornar el nombre del usuario o email como fallback
-      return user.nombre || user.email || 'Usuario';
+      return firstname || user.email || 'Usuario';
     } catch (error) {
       console.error('Error obteniendo nombre de usuario:', error);
       return 'Usuario';
