@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface ItemPedidoBackend {
   producto: { id: number };
@@ -21,7 +22,7 @@ export interface CrearPedidoRequestBackend {
   providedIn: 'root'
 })
 export class PedidoService {
-  private readonly baseUrl = 'http://localhost:8090/api/v1/pedidos';
+  private readonly baseUrl = `${environment.apiUrl}/pedidos`;
 
   constructor(private http: HttpClient) {}
 

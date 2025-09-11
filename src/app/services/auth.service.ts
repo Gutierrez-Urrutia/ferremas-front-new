@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { LoginResponse, Usuario, Direccion } from '../interfaces/usuario';
 import { CarritoService } from './carrito.service';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +13,8 @@ import { CarritoService } from './carrito.service';
 export class AuthService {
   private readonly TOKEN_KEY = 'ferremas_token';
   private readonly USER_KEY = 'ferremas_user';
-  private readonly BASE_URL = 'http://localhost:8090/api/v1/usuarios'; // tu backend
-
+  private readonly baseUrl = `${environment.apiUrl}/usuarios`;
+  
   // Subject para manejar el estado de autenticación
   private authStatusSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
   public authStatus$ = this.authStatusSubject.asObservable();
@@ -35,7 +37,7 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.BASE_URL}/login`, { email, password }).pipe(
+    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, { email, password }).pipe(
       tap(response => {
         localStorage.setItem(this.TOKEN_KEY, response.token);
         // Guardar el usuario completo que viene del backend
@@ -54,7 +56,7 @@ export class AuthService {
   }
 
   register(nombre: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.BASE_URL}/registro`, { nombre, email, password });
+    return this.http.post(`${this.baseUrl}/registro`, { nombre, email, password });
   }
 
   logout(): void {
@@ -189,7 +191,7 @@ export class AuthService {
   // Método para actualizar teléfono del usuario
   updateTelefono(telefono: string): Observable<Usuario> {
     const userId = this.getCurrentUser()?.id;
-    return this.http.patch<Usuario>(`${this.BASE_URL}/${userId}`, { telefono }).pipe(
+    return this.http.patch<Usuario>(`${this.baseUrl}/${userId}`, { telefono }).pipe(
       tap(updatedUser => {
         // Actualizar el usuario en localStorage
         localStorage.setItem(this.USER_KEY, JSON.stringify(updatedUser));
@@ -211,7 +213,7 @@ export class AuthService {
     
     console.log('Enviando dirección al backend:', direccion);
     // Usar el endpoint POST /usuarios/{id}/direcciones
-    return this.http.post<any>(`${this.BASE_URL}/${usuario?.id}/direcciones`, direccion);
+    return this.http.post<any>(`${this.baseUrl}/${usuario?.id}/direcciones`, direccion);
   }
 
   // Método para obtener direcciones del usuario
@@ -223,7 +225,7 @@ export class AuthService {
   // Método para actualizar datos adicionales del usuario (solo teléfono)
   updateDatosAdicionales(datos: { telefono?: string }): Observable<Usuario> {
     const userId = this.getCurrentUser()?.id;
-    return this.http.patch<Usuario>(`${this.BASE_URL}/${userId}`, datos).pipe(
+    return this.http.patch<Usuario>(`${this.baseUrl}/${userId}`, datos).pipe(
       tap(updatedUser => {
         // Actualizar el usuario en localStorage
         localStorage.setItem(this.USER_KEY, JSON.stringify(updatedUser));

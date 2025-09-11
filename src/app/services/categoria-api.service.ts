@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Categoria } from '../interfaces/categoria';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriaApiService {
   
-  private readonly baseUrl = 'http://localhost:8090/api/v1';
+  private readonly baseUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) { }
 

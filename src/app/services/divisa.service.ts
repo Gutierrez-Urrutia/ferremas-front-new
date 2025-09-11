@@ -47,8 +47,7 @@ export class DivisaService {
   */
   private loadFromBackend(): void {
     console.log('🔄 Iniciando carga desde backend...');
-    console.log('🌐 URL del servicio:', 'http://localhost:8090/api/v1/tasas');
-
+   
     this.tasaService.getTasasCambio().pipe(
       map(response => {
         console.log('✅ Respuesta RAW del backend:', response);
