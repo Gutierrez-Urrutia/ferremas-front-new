@@ -219,7 +219,7 @@ export class AuthService {
   // Método para obtener direcciones del usuario
   getDireccionesUsuario(): Observable<any[]> {
     const userId = this.getCurrentUser()?.id;
-    return this.http.get<any[]>(`http://localhost:8090/api/v1/direcciones/usuario/${userId}`);
+    return this.http.get<any[]>(`${this.baseUrl}/direcciones/usuario/${userId}`);
   }
 
   // Método para actualizar datos adicionales del usuario (solo teléfono)

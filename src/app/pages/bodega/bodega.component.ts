@@ -3,6 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { PedidoService } from '../../services/pedido.service';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-bodega',
@@ -29,7 +30,7 @@ export class BodegaComponent implements OnInit {
   constructor(private http: HttpClient, private pedidoService: PedidoService) {}
 
   ngOnInit() {
-    this.http.get<any[]>('http://localhost:8090/api/v1/pedidos').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/pedidos`).subscribe({
       next: (data) => {
         // Filtrar pedidos en preparación, despachados y entregados, luego ordenar por fecha más reciente primero
         const pedidosFiltrados = data.filter(p => p.estado === 'EN_PREPARACION' || p.estado === 'DESPACHADO' || p.estado === 'ENTREGADO');

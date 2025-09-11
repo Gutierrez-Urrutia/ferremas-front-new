@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ConversorPipe } from '../../pipes/conversor.pipe';
 import * as XLSX from 'xlsx';
+import { environment } from '../../../environments/environment';
 
 interface Pedido {
   id: number;
@@ -40,7 +41,7 @@ export class AuditorComponent implements OnInit {
     this.loading = true;
     this.error = '';
     
-    this.http.get<Pedido[]>('http://localhost:8090/api/v1/pedidos').subscribe({
+    this.http.get<Pedido[]>(`${environment.apiUrl}/pedidos`).subscribe({
       next: (data: Pedido[]) => {
         // Filtrar solo pedidos ENTREGADO y ordenar por fecha más reciente primero
         const pedidosEntregados = data.filter((pedido: Pedido) => pedido.estado === 'ENTREGADO');
