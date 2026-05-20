@@ -9,12 +9,14 @@ import { Producto } from '../../interfaces/producto';
   selector: 'app-destacados',
   imports: [CommonModule, CardComponent, ModalCompraComponent],
   templateUrl: './destacados.component.html',
-  styleUrl: './destacados.component.css'
+  styleUrls: ['./destacados.component.css']
 })
 export class DestacadosComponent implements OnInit {
   productos: Producto[] = [];
+  productosFiltrados: Producto[] = [];
   productosAgrupados: Producto[][] = [];
   productosAMostrar: number = 4; // Cantidad de productos a mostrar por grupo
+  sinResultados = false;
 
   constructor(private productoService: ProductoService) { }
 
@@ -44,18 +46,20 @@ export class DestacadosComponent implements OnInit {
     }
   }
 
-  // Obtiene los productos destacados desde el servicio y los agrupa según el tamaño de pantalla
+  // Obtiene todos los productos desde el servicio y los agrupa según el tamaño de pantalla
   cargarProductosDestacados(): void {
     this.productoService.getProductosDestacados().subscribe(productos => {
       this.productos = productos;
+      this.productosFiltrados = [...this.productos];
+      this.sinResultados = this.productosFiltrados.length === 0;
       this.agruparProductos();
     });
   }
 
   agruparProductos(): void {
     this.productosAgrupados = [];
-    for (let i = 0; i < this.productos.length; i += this.productosAMostrar) {
-      this.productosAgrupados.push(this.productos.slice(i, i + this.productosAMostrar));
+    for (let i = 0; i < this.productosFiltrados.length; i += this.productosAMostrar) {
+      this.productosAgrupados.push(this.productosFiltrados.slice(i, i + this.productosAMostrar));
     }
   }
 }

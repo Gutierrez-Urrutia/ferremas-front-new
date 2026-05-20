@@ -34,6 +34,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/oferta-producto/oferta-producto.component').then(m => m.OfertaProductoComponent),
         canActivate: [RestrictedRoleGuard]
     },
+    {
+        path: 'producto/:id',
+        loadComponent: () => import('./pages/producto/producto.component').then(m => m.ProductoComponent),
+        canActivate: [RestrictedRoleGuard]
+    },
     
     // Rutas protegidas por rol con redirección automática
     { 

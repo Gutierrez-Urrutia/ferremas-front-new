@@ -3,9 +3,80 @@
   <section class="hero-section">
     <app-carrousel></app-carrousel>
   </section>
+
+  <!-- Buscador -->
+  <section class="buscador-section">
+    <div class="container">
+      <div class="buscador-card">
+        <div class="buscador-texto">
+          <span class="buscador-label">Catálogo completo</span>
+          <h2>Encuentra lo que necesitas</h2>
+          <p>Busca en nuestro catálogo completo de productos por nombre, descripción o marca.</p>
+        </div>
+
+        <div class="buscador-controls">
+          <div class="d-flex align-items-center buscador-row">
+            <div class="input-group buscador-input-group">
+              <button
+                class="btn buscador-icon-left"
+                type="button"
+                aria-label="Ir a buscar"
+                (click)="focusBusqueda()"
+              >
+                <i class="bi bi-search" aria-hidden="true"></i>
+              </button>
+
+              <input
+                type="text"
+                class="form-control buscador-input"
+                #buscadorInput
+                [(ngModel)]="terminoBusqueda" (ngModelChange)="onTermChange($event)" (keydown.enter)="onEnter()"
+                placeholder="Buscar productos"
+                aria-label="Buscar productos"
+              />
+              <button
+                class="btn buscador-limpiar"
+                type="button"
+                *ngIf="terminoBusqueda"
+                (click)="limpiarBusqueda()"
+                aria-label="Limpiar búsqueda"
+              >
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <!-- Separate outline search button to the right with gap -->
+            <button class="btn btn-outline-primary buscador-submit" type="button" (click)="onEnter()">Buscar</button>
+          </div>
+
+          <!-- Predictive suggestions removed. Results are shown as cards after Enter. -->
+
+          <!-- Cards with full results shown after pressing Enter -->
+          <div class="search-cards mt-3" *ngIf="showCards">
+            <div class="row">
+              <div class="col-12 col-sm-6 col-md-4 col-xl-3 mb-3" *ngFor="let p of resultadosCards">
+                <app-card [producto]="p"></app-card>
+              </div>
+            </div>
+
+            <div class="search-empty text-center" *ngIf="resultadosCards.length === 0">
+              <div class="search-empty-icon">
+                <i class="bi bi-search" aria-hidden="true"></i>
+              </div>
+              <h3>No encontramos resultados</h3>
+              <p>
+                No hay productos que coincidan con <strong>{{ terminoBusqueda }}</strong>.
+                Prueba con otro nombre o revisa la ortografía.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   <!-- Productos Destacados -->
   <section class="productos-destacados mt-2">
-    <div class="container">
+      <div class="container">
       <app-destacados></app-destacados>
     </div>
   </section>

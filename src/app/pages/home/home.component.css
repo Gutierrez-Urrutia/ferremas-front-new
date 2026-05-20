@@ -9,6 +9,198 @@
   position: relative;
 }
 
+.buscador-section {
+  padding: 2rem 0 1.5rem;
+  background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%);
+}
+
+.buscador-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border: 2px solid var(--accent-color);
+  border-radius: 18px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.12);
+  transition: all 0.3s ease;
+}
+
+.buscador-card:hover {
+  /* Sin efecto al pasar el cursor */
+  box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.12);
+  transform: none;
+}
+
+.buscador-texto {
+  flex: 1 1 auto;
+}
+
+.buscador-label {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  padding: 0.35rem 0.75rem;
+  background: rgba(var(--accent-rgb), 0.08);
+  border-radius: 6px;
+  width: fit-content;
+  text-shadow: 0 3px 10px rgba(24,55,82,0.25);
+  box-shadow: 0 6px 20px rgba(24,55,82,0.12);
+}
+
+.buscador-texto h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.buscador-texto p {
+  margin: 0.35rem 0 0;
+  color: #6b7280;
+}
+
+.buscador-texto { margin-bottom: 0.5rem; }
+
+.buscador-controls {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.buscador-input-group {
+  border-radius: 0; /* rectangular */
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.15);
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.buscador-icon { display: none; }
+
+.buscador-input {
+  border-left: 0;
+  border-right: 0;
+  border-color: rgba(var(--accent-rgb), 0.18);
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: rgba(0,0,0,0.09);
+  border-radius: 0; /* rectangular */
+  height: auto;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.buscador-input::placeholder {
+  color: #9ca3af;
+}
+
+.buscador-input:focus {
+  box-shadow: none;
+  border-color: rgba(var(--accent-rgb), 0.18);
+  background-color: rgba(0,0,0,0.14);
+}
+
+.buscador-results {
+  background: rgba(255,255,255,0.98);
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding: 0.5rem 0.25rem 0.25rem 0.25rem;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.buscador-result-item { border-bottom: 1px solid rgba(0,0,0,0.04); }
+.buscador-result-item:last-child { border-bottom: none; }
+.buscador-result-img { width: 42px; height: 42px; object-fit: cover; border-radius: 6px; }
+
+.buscador-limpiar {
+  border: none;
+  background: #ff9124; /* amarillo app */
+  color: #163854; /* texto oscuro del footer para contraste */
+  font-weight: 600;
+  transition: background 0.12s ease, color 0.12s ease;
+  border-radius: 0; /* rectangular */
+  padding: 0 0.9rem; /* horizontal padding, vertical match by stretch */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.25rem;
+  align-self: stretch; /* make button height match input */
+}
+
+.buscador-limpiar i {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+/* Left search icon box (matches clear button) */
+.buscador-icon-left {
+  border: none;
+  background: #ff9124; /* amarillo app */
+  color: #163854;
+  font-weight: 600;
+  transition: background 0.12s ease, color 0.12s ease;
+  border-radius: 0; /* rectangular */
+  padding: 0.75rem 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0; /* removed gap */
+  align-self: stretch; /* match input height */
+}
+
+.buscador-icon-left i { font-size: 1.05rem; line-height: 1; color: #ffffff; }
+
+.buscador-icon-left:hover {
+  /* Keep background same; do not change icon color */
+  background: #ff9124;
+  color: #163854;
+}
+
+.buscador-limpiar:hover {
+  background: #ff9124;
+  color: #163854;
+}
+.buscador-limpiar:hover i { color: #ffffff; }
+
+/* Row that contains the input and the separate submit button */
+.buscador-row {
+  gap: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.buscador-input-group {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.buscador-submit {
+  height: auto;
+  align-self: stretch; /* match input height */
+  padding: 0 1rem;
+  border-radius: 6px;
+}
+
+/* Make outline color match container accent */
+.buscador-submit {
+  border: 2px solid var(--accent-color, #ff9124);
+  color: var(--accent-color, #ff9124);
+  background: transparent;
+}
+
+.buscador-submit:hover {
+  background: var(--accent-color, #ff9124);
+  color: #ffffff;
+}
+
 .productos-destacados {
   background-color: #ffffff;
 }
@@ -18,8 +210,78 @@
   margin-left: calc(50% - 50vw); 
 }
 
+/* Ajustes para las cards que aparecen como resultado de búsqueda:
+   igualar la altura y apariencia de los botones "Agregar al Carro" y "Comprar"
+   a las tarjetas destacadas. Limitado a .search-cards para no afectar otras views. */
+
+.search-cards .card .card-footer {
+  display: flex;
+  justify-content: flex-start; /* group buttons together like destacados */
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem; /* small padding to give breathing room */
+}
+
+.search-cards .card .card-footer .btn {
+  min-height: 34px;
+  padding: 0.25rem 0.75rem; /* reduce vertical padding to match destacados */
+  font-size: 0.9rem;
+  line-height: 1;
+  border-radius: 6px;
+}
+
+.search-cards .card .card-footer .btn.btn-sm {
+  /* override bootstrap small sizing inside search results */
+  padding: 0.45rem 0.9rem;
+}
+
+.search-empty {
+  margin-top: 1rem;
+  padding: 1.5rem 1rem;
+  border-radius: 16px;
+  border: 1px dashed rgba(var(--accent-rgb), 0.35);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.06), rgba(255, 255, 255, 0.96));
+  color: #334155;
+}
+
+.search-empty-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 0.75rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent-color);
+  font-size: 1.35rem;
+}
+
+.search-empty h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.search-empty p {
+  margin: 0;
+  color: #64748b;
+}
+
 @media (max-width: 768px) {
   .hero-section {
     margin-left: calc(50% - 50vw);
+  }
+
+  .buscador-card {
+    padding: 1rem;
+  }
+
+  .buscador-texto h2 {
+    font-size: 1.15rem;
+  }
+
+  .buscador-controls {
+    flex-basis: auto;
   }
 }

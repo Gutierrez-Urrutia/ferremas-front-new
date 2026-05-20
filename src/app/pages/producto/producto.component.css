@@ -1,0 +1,9 @@
+/* Basic spacing for product page */
+
+.app-card {
+  margin-bottom: 1rem;
+}
+
+p.text-muted {
+  white-space: pre-wrap;
+}

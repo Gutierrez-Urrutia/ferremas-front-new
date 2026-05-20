@@ -1,0 +1,8 @@
+/* Preview: color principal naranja (#d2771d) */
+:root {
+  --accent-color: #d2771d;
+  --accent-color-dark: #b15f17;
+  --accent-rgb: 210,119,29;
+}
+
+/* Para aplicar temporalmente: importar este archivo en index.html o en angular.json */

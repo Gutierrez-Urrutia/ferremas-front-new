@@ -21,6 +21,14 @@ export class ProductoApiService {
     return this.http.get<Producto[]>(`${this.baseUrl}/productos`);
   }
 
+  /**
+   * Busca productos en el backend usando el parámetro `search` (endpoint existente: GET /productos?search=...)
+   */
+  searchProductos(search: string): Observable<Producto[]> {
+    const q = encodeURIComponent(search || '');
+    return this.http.get<Producto[]>(`${this.baseUrl}/productos?search=${q}`);
+  }
+
   /* 
     Busca un producto específico por su ID.
     Retorna un Observable con el producto encontrado.

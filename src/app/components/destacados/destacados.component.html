@@ -1,7 +1,11 @@
 <div class="producto-carrusel container my-5">
   <h2 class="text-center mb-4">Productos Destacados</h2>
 
-  <div id="productosCarrusel" class="carousel slide" data-bs-ride="carousel">
+  <div *ngIf="sinResultados" class="alert alert-light border text-center mb-4">
+    No se encontraron productos para tu búsqueda.
+  </div>
+
+  <div id="productosCarrusel" class="carousel slide" data-bs-ride="carousel" *ngIf="!sinResultados">
     <div class="carousel-inner">
       <!-- Recorre los grupos de productos para cada slide del carrusel -->
       <div *ngFor="let grupo of productosAgrupados; let i = index" class="carousel-item" [class.active]="i === 0">

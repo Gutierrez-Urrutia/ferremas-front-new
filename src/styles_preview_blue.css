@@ -1,0 +1,8 @@
+/* Preview: color principal azul (#183752) */
+:root {
+  --accent-color: #183752;
+  --accent-color-dark: #12283f;
+  --accent-rgb: 24,55,82;
+}
+
+/* Para aplicar temporalmente: importar este archivo en index.html o en angular.json */

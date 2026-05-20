@@ -22,16 +22,16 @@ export class ProductoService {
     console.log('Cargando productos desde backend...');
 
     this.productoApiService.getProductos().pipe(
-      map((productosBackend: any) => {
+      map((productosBackend: Producto[]) => {
         console.log('Productos recibidos del backend:', productosBackend);
-        return productosBackend as Producto[];
+        return productosBackend;
       }),
       catchError((error: any): Observable<Producto[]> => {
         console.error('Error cargando productos desde backend:', error);
         console.warn('Usando productos por defecto');
         return of([]);
       })
-    ).subscribe((productos: Producto[]) => {
+    ).subscribe((productos) => {
       console.log('Productos cargados:', productos);
       this.productosSource.next(productos);
     });
@@ -92,15 +92,35 @@ export class ProductoService {
 
   /* Busca productos cuyo nombre, descripción o marca coincidan con el término de búsqueda y que no estén ocultos */
   buscarProductos(termino: string): Observable<Producto[]> {
+    const normalizedTermino = this.normalizarTexto(termino);
+
     return this.productos$.pipe(
-      map(productos => 
-        productos.filter(producto =>
-          (producto.nombre.toLowerCase().includes(termino.toLowerCase()) ||
-           producto.descripcion.toLowerCase().includes(termino.toLowerCase()) ||
-           producto.marca.toLowerCase().includes(termino.toLowerCase())) &&
-          !producto.oculto
-        )
-      )
+      map((productos: Producto[]) => {
+        if (!normalizedTermino) {
+          return [];
+        }
+
+        return productos.filter(producto => {
+          if (producto.oculto) {
+            return false;
+          }
+
+          const nombre = this.normalizarTexto(producto.nombre);
+          const descripcion = this.normalizarTexto(producto.descripcion);
+          const marca = this.normalizarTexto(producto.marca);
+
+          return nombre.includes(normalizedTermino) || descripcion.includes(normalizedTermino) || marca.includes(normalizedTermino);
+        });
+      })
     );
+  }
+
+  private normalizarTexto(texto: string | null | undefined): string {
+    return (texto || '')
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
   }
 }
